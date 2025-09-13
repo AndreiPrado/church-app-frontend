@@ -1,23 +1,31 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+import { useState } from "react";
+import "./navbar.component.scss";
 
-const Navbar = () => {
+export default function Navbar() {
+  const [open, setOpen] = useState(false);
+
   return (
-    <div className="pos-f-t">
-      <div className="collapse" id="navbarToggleExternalContent">
-        <div className="bg-dark p-4">
-          <h4 className="text-white">Collapsed content</h4>
-          {/* <span className="text-muted">Toggleable via the navbar brand.</span> */}
-        </div>
-      </div>
-      <nav className="navbar navbar-dark bg-dark">
-        <button className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span className="navbar-toggler-icon"></span>
+    <nav className="navbar">
+      {/* Logo */}
+      <div className="logo">Z'ele Church</div>
+
+      {/* Botão hamburguer → vira X */}
+      <div>
+        <button
+          className={`hamburger ${open ? "open" : ""}`}
+          onClick={() => setOpen(!open)}
+        >
+          <span></span>
+          <span></span>
         </button>
-      </nav>
-    </div>
+      </div>
+
+      {/* Menu lateral */}
+      <div className={`side-menu ${open ? "show" : ""}`}>
+        <ul>
+          <li><a href="#sing-up" onClick={() => setOpen(false)}>Quero ser membro</a></li>
+        </ul>
+      </div>
+    </nav>
   );
 }
-
-export default Navbar;

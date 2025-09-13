@@ -1,6 +1,5 @@
 // import './App.css'
 import { useNavigate } from "react-router-dom";
-import logo from "../assets/logo.jpg";
 import "./home.component.scss";
 import Navbar from '../navbar/navbar.component.jsx';
 
@@ -14,7 +13,14 @@ function Login() {
   }
   return (
     <div className="container">
-        <Navbar />
+      <Navbar/>
+      <div className="parallax"></div>
+
+      <div className="footer">
+        <p>Testando</p>
+
+      </div>
+        {/* 
       <header className="header">
         <img src={logo} className='logo' alt="logo" />
       <h1 className="welcome">Bem-vindo(a) a Igreja da Palavra! </h1>
@@ -29,8 +35,7 @@ function Login() {
         <button className="login" onClick={() => area('/login')}>
           Login
         </button>
-        
-      </div>
+      </div> */}
     </div>
 
     // <div>
