@@ -43,21 +43,21 @@ export default function SingUp() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validação específica para a última etapa
     if (!formData.email || !formData.password || !formData.confirmPassword) {
       setFormError(true);
       alert('Preencha todos os campos obrigatórios: e-mail, senha e confirmação de senha.');
       return;
     }
-    
+
     // Verificar se as senhas coincidem
     if (formData.password !== formData.confirmPassword) {
       setFormError(true);
       alert('As senhas não coincidem. Verifique e tente novamente.');
       return;
     }
-    
+
     try {
       const payload = {
         ...formData,
@@ -73,7 +73,7 @@ export default function SingUp() {
       delete payload.confirmPassword;
 
       console.log(payload);
-      const response = await fetch('https://church-app-backend-production.up.railway.app/api/members/', {
+      const response = await fetch('http://localhost:3200/api/members/', {
         method: 'POST',
         headers: {
           'accept': 'application/json',
@@ -202,7 +202,7 @@ export default function SingUp() {
           mask="00000-000"
           type="text"
           id="zipCode"
-          name="zipCode"                
+          name="zipCode"
           placeholder="00000-000"
           value={formData.zipCode}
           onAccept={(value) => setFormData(prev => ({ ...prev, zipCode: value }))}
@@ -295,14 +295,14 @@ export default function SingUp() {
                     const form = formRef.current;
                     const currentStepInputs = form.querySelectorAll('input[required], select[required]');
                     let isValid = true;
-                    
+
                     currentStepInputs.forEach(input => {
                       if (!input.checkValidity()) {
                         isValid = false;
                         input.reportValidity();
                       }
                     });
-                    
+
                     if (isValid) {
                       setFormError(false);
                       setCurrentStep(currentStep + 1);

@@ -9,7 +9,7 @@ export default function Navbar() {
     <nav className="navbar">
       {/* Logo */}
       <div className="logo">
-        <a href="/home"><img src={logo} alt="Z'ele Church"/></a>
+        <a href="/home"><img src={logo} alt="Z'ele Church" /></a>
       </div>
 
       {/* Botão hamburguer → vira X */}
