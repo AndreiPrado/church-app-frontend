@@ -5,9 +5,11 @@ import { IMaskInput } from "react-imask";
 
 import React, { useState } from "react";
 import { ArrowCircleLeft, ArrowCircleRight } from "phosphor-react";
+import { useNavigate } from "react-router-dom";
 import singupVideo from "../assets/singup.mp4";
 
 export default function SingUp() {
+  const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formError, setFormError] = useState(false);
   const [formData, setFormData] = useState({
@@ -59,10 +61,10 @@ export default function SingUp() {
     try {
       const payload = {
         ...formData,
-        baptized: formData.baptized === 'Sim',
-        birthDate: formData.birthDate, // Já está no formato YYYY-MM-DD do input type="date"
-        baptismDate: formData.baptismDate || null, // Já está no formato YYYY-MM-DD do input type="date"
-        cpf: formData.cpf.replace(/\D/g, ''), // Remove formatação
+        baptized: formData.baptized === 'true',
+        birthDate: formData.birthDate,
+        baptismDate: formData.baptismDate || null,
+        cpf: formData.cpf.replace(/\D/g, ''),
         rg: formData.rg.replace(/\D/g, ''),
         phone: formData.phone.replace(/\D/g, ''),
         zipCode: formData.zipCode.replace(/\D/g, ''),
@@ -88,13 +90,13 @@ export default function SingUp() {
           phone: '', profession: '', baptized: '', baptismDate: '', zipCode: '',
           address: '', city: '', state: '', email: '', password: '', confirmPassword: ''
         });
-        setCurrentStep(0);
+        navigate('/home');
       } else {
         const errorData = await response.json();
         alert('Erro no cadastro: ' + (errorData.message || 'Tente novamente'));
       }
     } catch (error) {
-      alert('Erro de conexão: ' + error.message);
+      alert('Erro no cadastro: ' + error.message);
     }
   };
 
@@ -181,8 +183,8 @@ export default function SingUp() {
     <>
       <div className="form-group radio-group">
         <label>Batizado?<span className="required">*</span></label>
-        <label><input type="radio" name="baptized" value="Sim" checked={formData.baptized === 'Sim'} onChange={handleInputChange} required /> Sim</label>
-        <label><input type="radio" name="baptized" value="Não" checked={formData.baptized === 'Não'} onChange={handleInputChange} required /> Não</label>
+        <label><input type="radio" name="baptized" value="true" checked={formData.baptized === 'true'} onChange={handleInputChange} required /> Sim</label>
+        <label><input type="radio" name="baptized" value="false" checked={formData.baptized === 'false'} onChange={handleInputChange} required /> Não</label>
       </div>
       <div className="form-group">
         <label htmlFor="baptismDate">Data de batismo</label>
@@ -228,11 +230,11 @@ export default function SingUp() {
       </div>
       <div className="form-group">
         <label htmlFor="password">Senha<span className="required">*</span></label>
-        <input type="password" id="password" name="password" placeholder="Digite sua senha" value={formData.password} onChange={handleInputChange} minLength={8} required />
+        <input type="password" id="password" name="password" placeholder="Digite sua senha" value={formData.password} onChange={handleInputChange} minLength={import.meta.env.REACT_APP_MIN_PASSWORD_LENGTH} required />
       </div>
       <div className="form-group">
         <label htmlFor="confirmPassword">Confirmar Senha<span className="required">*</span></label>
-        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha" value={formData.confirmPassword} onChange={handleInputChange} minLength={8} required />
+        <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Confirme sua senha" value={formData.confirmPassword} onChange={handleInputChange} minLength={import.meta.env.REACT_APP_MIN_PASSWORD_LENGTH} required />
       </div>
     </>
   ];
@@ -240,7 +242,15 @@ export default function SingUp() {
   return (
     <div className="singup">
       <Navbar />
-      <video className="background-video" autoPlay muted loop>
+      <video
+        className="background-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        disablePictureInPicture
+        controls={false}
+      >
         <source src={singupVideo} type="video/mp4" />
       </video>
       <div className="signup-form">
@@ -282,7 +292,6 @@ export default function SingUp() {
                 <button
                   type="button"
                   onClick={() => {
-                    // Validar apenas os campos da etapa atual
                     const form = formRef.current;
                     const currentStepInputs = form.querySelectorAll('input[required], select[required]');
                     let isValid = true;

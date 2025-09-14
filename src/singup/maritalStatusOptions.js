@@ -1,11 +1,8 @@
-// maritalStatusOptions.js
-// Opções para o dropdown de estado civil
-
 const maritalStatusOptions = [
-  { value: "Solteiro", label: "Solteiro" },
-  { value: "Casado", label: "Casado" },
-  { value: "Divorciado", label: "Divorciado" },
-  { value: "Viuvo", label: "Viúvo" },
+  { value: "Solteiro", label: "Solteiro(a)" },
+  { value: "Casado", label: "Casado(a)" },
+  { value: "Divorciado", label: "Divorciado(a)" },
+  { value: "Viuvo", label: "Viúvo(a)" },
   { value: "Outro", label: "Outro" },
 ];
 

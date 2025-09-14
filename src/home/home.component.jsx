@@ -9,15 +9,26 @@ function Home() {
     <div className="home">
       <Navbar/>
       <div className="parallax">
-        <video className="background-video" autoPlay muted loop>
-          <source src={adoracaoVideo} type="video/mp4" />
-        </video>
+      <video
+        className="background-video"
+        autoPlay
+        muted
+        loop
+        playsInline
+        disablePictureInPicture
+        controls={false}
+      >
+        <source src={adoracaoVideo} type="video/mp4" />
+      </video>
         <img className="logo" src={logoWithoutBackground} alt="Logo" />
       </div>
 
       <div className="footer">
-        <p>Testando</p>
-
+        <h1>Visão que nasce com Zelo.</h1> <br/>
+        <p>
+          A Zele Church <strong>nasce</strong> do coração de <strong>Deus</strong>, em resposta a um tempo onde o mundo clama por cuidado, verdade e direção. <br/>
+          Seu nome vem da palavra "<strong>Zelo</strong>" um chamado ao compromisso, à santidade e à dedicação fervorosa. <strong>Zele</strong> é mais do que um nome: <strong> é uma cultura</strong>.
+        </p>
       </div>
         
     </div>
