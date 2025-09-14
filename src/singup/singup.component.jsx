@@ -93,7 +93,7 @@ export default function SingUp() {
         navigate('/home');
       } else {
         const errorData = await response.json();
-        alert('Erro no cadastro: ' + (errorData.message || 'Tente novamente'));
+        alert('Erro no cadastro: ' + (errorData.error || 'Tente novamente'));
       }
     } catch (error) {
       alert('Erro no cadastro: ' + error.message);
