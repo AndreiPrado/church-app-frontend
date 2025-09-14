@@ -8,7 +8,7 @@
   .parallax {
     position: relative;
     /* precisa para o absolute do ::after */
-    height: 100dvh;
+    height: 100vh;
     display: flex;
     /* para centralizar */
     justify-content: center;
