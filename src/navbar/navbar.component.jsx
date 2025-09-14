@@ -26,7 +26,7 @@ export default function Navbar() {
       {/* Menu lateral */}
       <div className={`side-menu ${open ? "show" : ""}`}>
         <ul>
-          <li><a href="#sing-up" onClick={() => setOpen(false)}>Quero ser membro</a></li>
+          <li><a href="sing-up" onClick={() => setOpen(false)}>Quero ser membro</a></li>
         </ul>
       </div>
     </nav>
