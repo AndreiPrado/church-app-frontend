@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./navbar.component.scss";
+import logo from "../assets/logo-black-white.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -7,10 +8,12 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       {/* Logo */}
-      <div className="logo">Z'ele Church</div>
+      <div className="logo">
+        <img src={logo} alt="Z'ele Church"/>
+      </div>
 
       {/* Botão hamburguer → vira X */}
-      <div>
+      <div className="menu">
         <button
           className={`hamburger ${open ? "open" : ""}`}
           onClick={() => setOpen(!open)}
