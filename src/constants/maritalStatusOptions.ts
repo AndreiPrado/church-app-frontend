@@ -1,4 +1,9 @@
-const maritalStatusOptions = [
+export type MaritalStatusOption = {
+  value: string;
+  label: string;
+};
+
+const maritalStatusOptions: MaritalStatusOption[] = [
   { value: "Solteiro", label: "Solteiro(a)" },
   { value: "Casado", label: "Casado(a)" },
   { value: "Divorciado", label: "Divorciado(a)" },

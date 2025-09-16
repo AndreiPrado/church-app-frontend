@@ -1,27 +1,71 @@
-# React + Vite
+# Z'ele Church
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Este é o frontend da aplicação para a Z'ele Church, desenvolvido com [Next.js](https://nextjs.org), TypeScript e arquitetura moderna. O projeto foi estruturado seguindo as melhores práticas de desenvolvimento web.
 
-Currently, two official plugins are available:
+## Getting Started
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+First, run the development server:
 
-## Parallax
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
 
-This project uses `react-scroll-parallax` to provide a smooth parallax effect on the Home page.
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### Install
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+Este projeto utiliza [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) para otimizar e carregar a fonte [Lato](https://fonts.google.com/specimen/Lato), bem como o módulo de CSS (SCSS) para estilização avançada.
+
+## Estrutura do Projeto
 
 ```
-npm install react-scroll-parallax
+church-app-nextjs/
+├── public/
+│   └── assets/           # Imagens, vídeos e outros recursos estáticos
+├── src/
+│   ├── app/             # Pasta do App Router (Next.js 13+)
+│   │   ├── (pages)/     # Grupo de rotas com layout compartilhado
+│   │   │   ├── home/    # Rota /home
+│   │   │   └── sing-up/ # Rota /sing-up
+│   │   ├── globals.css  # Estilos globais
+│   │   ├── layout.tsx   # Layout raiz da aplicação
+│   │   └── page.tsx     # Página inicial (redirecionamento)
+│   ├── components/      # Componentes reutilizáveis
+│   │   ├── features/    # Componentes específicos de features
+│   │   │   ├── home/    # Componente da página Home
+│   │   │   ├── navbar/  # Componente de navegação
+│   │   │   └── singup/  # Componente de cadastro
+│   │   ├── layout/      # Componentes de layout
+│   │   └── ui/          # Componentes de UI genéricos
+│   ├── constants/       # Constantes e dados estáticos
+│   ├── hooks/           # Hooks personalizados
+│   ├── lib/             # Utilitários e funções
+│   ├── styles/          # Estilos globais e temas
+│   └── types/           # Tipos e interfaces TypeScript
 ```
 
-### Setup
+## Tecnologias Utilizadas
 
-- App provider added in `src/main.jsx`:
-  - Wraps the app with `ParallaxProvider`.
-- Usage example in `src/home/home.component.jsx`:
-  - `<Parallax translateY={[-20, 20]} opacity={[0.9, 1]}>` wraps the logo to create motion on scroll.
+- **Next.js 14**: Framework React com SSR, SSG e App Router
+- **TypeScript**: Tipagem estática para maior segurança e produtividade
+- **SCSS Modules**: Estilização com escopo local para componentes
+- **React Scroll Parallax**: Efeitos de parallax para elementos
+- **Phosphor Icons**: Biblioteca de ícones moderna
 
-No additional configuration is required. If you change the navbar height, consider adjusting layout offsets accordingly.
+## Recursos e Funcionalidades
+
+- **Efeito Parallax**: Implementado na página inicial usando react-scroll-parallax
+- **Formulário Multi-Etapas**: Cadastro de membros com validação
+- **Design Responsivo**: Layout adaptável para desktop e mobile
+- **Rotas Otimizadas**: Utilizando o App Router do Next.js 14
+- **Tipagem Forte**: Todo o código está em TypeScript
+
+## Deployment
+
+O projeto pode ser implantado facilmente usando a [Plataforma Vercel](https://vercel.com/new) ou qualquer outro serviço compatível com Next.js.
