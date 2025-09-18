@@ -1,7 +1,7 @@
 import "./home.component.scss";
 import Navbar from '../navbar/navbar.component.jsx';
-import logoWithoutBackground from '../assets/logo-without-background.png';
-import adoracaoVideo from '../assets/adoracao.mp4';
+import logoWithoutBackground from '../../assets/logo-without-background.png';
+import adoracaoVideo from '../../assets/adoracao.mp4';
 import { Parallax } from 'react-scroll-parallax';
 
 function Home() {

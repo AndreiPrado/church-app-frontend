@@ -1,14 +1,14 @@
-import "./singup.component.scss";
+import "./signup.component.scss";
 import Navbar from "../navbar/navbar.component.jsx";
-import maritalStatusOptions from "./maritalStatusOptions";
+import maritalStatusOptions from "../../constants/maritalStatusOptions.js";
 import { IMaskInput } from "react-imask";
 
 import React, { useState } from "react";
 import { ArrowCircleLeft, ArrowCircleRight } from "phosphor-react";
 import { useNavigate } from "react-router-dom";
-import singupVideo from "../assets/singup.mp4";
+import signupVideo from "../../assets/signup.mp4";
 
-export default function SingUp() {
+export default function signUp() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formError, setFormError] = useState(false);
@@ -240,7 +240,7 @@ export default function SingUp() {
   ];
 
   return (
-    <div className="singup">
+    <div className="signup">
       <Navbar />
       <video
         className="background-video"
@@ -251,7 +251,7 @@ export default function SingUp() {
         disablePictureInPicture
         controls={false}
       >
-        <source src={singupVideo} type="video/mp4" />
+        <source src={signupVideo} type="video/mp4" />
       </video>
       <div className="signup-form">
 

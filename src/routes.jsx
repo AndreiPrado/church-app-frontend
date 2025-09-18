@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Home from './home/home.component.jsx';
-import SingUp from './singup/singup.component.jsx';
+import Home from '../src/components/home/home.component.jsx';
+import SignUp from '../src/components/signup/signup.component.jsx';
 
 const Router = () => {
     return (
@@ -9,7 +9,7 @@ const Router = () => {
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/sing-up" element={<SingUp />} />
+                <Route path="/signup" element={<SignUp />} />
             </Routes>
         </BrowserRouter>
     )

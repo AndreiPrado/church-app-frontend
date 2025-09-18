@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "./navbar.component.scss";
-import logo from "../assets/logo-black-white.png";
+import logo from "../../assets/logo-black-white.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -26,7 +26,7 @@ export default function Navbar() {
       {/* Menu lateral */}
       <div className={`side-menu ${open ? "show" : ""}`}>
         <ul>
-          <li><a href="sing-up" onClick={() => setOpen(false)}>Quero ser membro</a></li>
+          <li><a href="signup" onClick={() => setOpen(false)}>Quero ser membro</a></li>
         </ul>
       </div>
     </nav>
