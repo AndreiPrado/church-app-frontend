@@ -73,7 +73,7 @@ export default function signUp() {
       delete payload.confirmPassword;
 
       console.log(payload);
-      const response = await fetch('https://church-app-backend-production.up.railway.app/api/members/', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/members/`, {
         method: 'POST',
         headers: {
           'accept': 'application/json',
