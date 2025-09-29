@@ -15,7 +15,7 @@ export default function SignUp() {
   const navigate = useNavigate();
   const [currentStep, setCurrentStep] = useState(0);
   const [formError, setFormError] = useState(false);
-  const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' }); 
+  const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [formData, setFormData] = useState({
     fullName: "",
     cpf: "",
@@ -77,21 +77,21 @@ export default function SignUp() {
       payload.status = "ativo";
 
       await memberService.createMember(payload);
-      
-      setAlert({ 
-        isVisible: true, 
-        message: "Cadastro realizado com sucesso!", 
-        type: "success" 
+
+      setAlert({
+        isVisible: true,
+        message: "Cadastro realizado com sucesso!",
+        type: "success"
       });
-      
+
       setTimeout(() => {
         navigate("/home");
       }, 2000);
     } catch (error) {
-      setAlert({ 
-        isVisible: true, 
-        message: error.message, 
-        type: "error" 
+      setAlert({
+        isVisible: true,
+        message: error.message,
+        type: "error"
       });
     }
   };
