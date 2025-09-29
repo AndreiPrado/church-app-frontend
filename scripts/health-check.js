@@ -13,8 +13,21 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 
-// Função para ler variáveis de ambiente
+// Função para ler variáveis de ambiente (local e produção)
 function loadEnvVars() {
+    // Primeiro tenta pegar das variáveis de ambiente do sistema (produção)
+    const systemEnvVars = {
+        VITE_API_URL: process.env.VITE_API_URL,
+        FAIL_ON_HEALTH_CHECK: process.env.FAIL_ON_HEALTH_CHECK
+    };
+
+    // Se encontrou variáveis do sistema, usa elas
+    if (systemEnvVars.VITE_API_URL || systemEnvVars.REACT_APP_API_URL) {
+        console.log('📡 Usando variáveis de ambiente do sistema (produção)');
+        return systemEnvVars;
+    }
+
+    // Senão, tenta ler do arquivo .env (desenvolvimento)
     try {
         const envPath = join(__dirname, '../.env');
         const envContent = readFileSync(envPath, 'utf8');
@@ -23,13 +36,14 @@ function loadEnvVars() {
         envContent.split('\n').forEach(line => {
             const [key, value] = line.split('=');
             if (key && value) {
-                envVars[key.trim()] = value.trim();
+                envVars[key.trim()] = value.trim().replace(/^["']|["']$/g, ''); // Remove aspas
             }
         });
 
+        console.log('📁 Usando variáveis de ambiente do arquivo .env (desenvolvimento)');
         return envVars;
     } catch (error) {
-        console.warn('⚠️  Arquivo .env não encontrado, usando variáveis padrão');
+        console.warn('⚠️  Nenhuma variável de ambiente encontrada');
         return {};
     }
 }
@@ -37,8 +51,10 @@ function loadEnvVars() {
 // Carregar variáveis de ambiente
 const envVars = loadEnvVars();
 
-// URL do backend - tenta pegar do .env ou usa padrão
-const BACKEND_URL = envVars.VITE_API_URL || envVars.REACT_APP_API_URL
+// URL do backend - tenta pegar das variáveis ou usa padrão
+const BACKEND_URL = envVars.VITE_API_URL ||
+    envVars.REACT_APP_API_URL ||
+    'https://church-app-backend-production.up.railway.app';
 
 const HEALTH_ENDPOINT = `${BACKEND_URL}/api/health`;
 const TIMEOUT = 10000; // 10 segundos
@@ -98,7 +114,7 @@ async function checkBackendHealth() {
         console.error('   • Aguarde alguns minutos se o serviço estiver inicializando\n');
 
         // Verificar se deve falhar o build ou apenas avisar
-        const shouldFailBuild = process.env.FAIL_ON_HEALTH_CHECK !== 'false';
+        const shouldFailBuild = envVars.FAIL_ON_HEALTH_CHECK !== 'false';
 
         if (shouldFailBuild) {
             console.error('🛑 Build cancelado devido à falha na verificação de saúde');
