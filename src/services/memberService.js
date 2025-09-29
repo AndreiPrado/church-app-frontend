@@ -1,7 +1,7 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL
 class MemberService {
   async createMember(payload) {
-    const response = await fetch(`${API_BASE_URL}/members/`, {
+    const response = await fetch(`${API_BASE_URL}/api/members/`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
