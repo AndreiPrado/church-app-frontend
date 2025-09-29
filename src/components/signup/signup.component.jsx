@@ -127,14 +127,22 @@ export default function SignUp() {
 
       <div className="form-group">
         <label htmlFor="birthDate">Data de nascimento<span className="required"> *</span></label>
-        <input
-          type="date"
+        <IMaskInput
+          mask={"00/00/0000"}
+          definitions={{
+            '#': /[0-9]/
+          }}
+          overwrite
           id="birthDate"
           name="birthDate"
           value={formData.birthDate}
-          onChange={handleInputChange}
+          onAccept={(value) => {
+            handleInputChange({ target: { name: 'birthDate', value } });
+          }}
+          placeholder="00/00/0000"
+          className="date-input"
           required
-        />
+        /> 
       </div>
 
       <div className="form-group">

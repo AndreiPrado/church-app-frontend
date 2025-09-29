@@ -4,11 +4,17 @@ import "./photo-upload.component.scss";
 
 const PhotoUpload = ({ onPhotoChange }) => {
   const [preview, setPreview] = useState(null);
+  const [imgLoaded, setImgLoaded] = useState(false);
 
   const handleFile = (file) => {
-    if (file && file.type.startsWith("image/")) {
-      setPreview(URL.createObjectURL(file));
-      onPhotoChange(file);
+    setImgLoaded(false);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreview(reader.result);
+        onPhotoChange(file);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -19,6 +25,7 @@ const PhotoUpload = ({ onPhotoChange }) => {
 
   const handleRemovePhoto = () => {
     setPreview(null);
+    setImgLoaded(false);
     onPhotoChange(null);
   };
 
@@ -37,7 +44,17 @@ const PhotoUpload = ({ onPhotoChange }) => {
         <div className="upload-container">
           <div className="upload-dropzone">
             {preview ? (
-              <img src={preview} alt="preview" className="preview-img" />
+              <div className="preview-img-wrapper">
+                {!imgLoaded && (
+                  <div className="img-loading-spinner"></div>
+                )}
+                <img 
+                  src={preview} 
+                  alt="preview" 
+                  className={`preview-img${!imgLoaded ? ' img-blur' : ''}`}
+                  onLoad={() => setImgLoaded(true)}
+                />
+              </div>
             ) : (
               <>
                 <Upload className="upload-icon" size={40} />
