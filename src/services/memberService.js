@@ -11,7 +11,7 @@ class MemberService {
 
     if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      throw new Error(errorData.detail || errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
     }
 
     return await response.json();

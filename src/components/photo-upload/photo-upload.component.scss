@@ -22,7 +22,7 @@
   width: 100%;
   border-bottom: 1px solid #ccc;
   text-align: center;
-  
+
   h2 {
     font-size: 18px;
     font-weight: 600;
@@ -41,9 +41,9 @@
 
 .upload-dropzone {
   position: relative;
-  width: 100%;
-  max-width: 280px;
-  height: 160px;
+  padding: 5px;
+  height: 130px;
+  width: 220px;
   border: 2px dashed #2d4263;
   border-radius: 10px;
   text-align: center;
@@ -54,6 +54,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-size: 14px;
 }
 
 .upload-dropzone:hover {
@@ -87,7 +88,6 @@
   height: 100%;
   min-width: 0;
   min-height: 0;
-  position: absolute;
   top: 0;
   left: 0;
   display: flex;
@@ -104,7 +104,7 @@
   object-fit: cover;
   border-radius: 10px;
   transition: filter 0.3s;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .img-blur {
@@ -127,8 +127,13 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .remove-photo-btn {
@@ -177,11 +182,6 @@
 @media (max-width: 480px) {
   .upload-center {
     padding: 15px;
-  }
-
-  .upload-dropzone {
-    height: 130px;
-    max-width: 220px;
   }
 
   .btn-upload {

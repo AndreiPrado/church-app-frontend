@@ -1,5 +1,4 @@
 .signup {
-
   .button-container {
     display: flex;
     justify-content: end;
@@ -104,10 +103,6 @@
     font-weight: 700;
   }
 
-  .required {
-    color: red;
-  }
-
   .signup-form form {
     width: 100%;
     display: flex;
@@ -134,6 +129,80 @@
     border-radius: 6px;
     font-size: 1rem;
     background: #f8f8f8;
+    transition: border-color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .form-group input.error,
+  .form-group select.error {
+    border: 1px solid #d32f2f;
+    box-shadow: 0 0 0 2px rgba(211, 47, 47, 0.1);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: #2d4263;
+    background: #fff;
+  }
+
+  .error-message {
+    color: #d32f2f;
+    font-size: 0.875rem;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    animation: slideDown 0.3s ease-out forwards;
+    transform-origin: top;
+    overflow: hidden;
+
+    &.fade-out {
+      animation: slideUp 0.3s ease-in forwards;
+    }
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+      margin-top: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      max-height: 50px;
+      margin-top: 4px;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 1;
+      max-height: 50px;
+      margin-top: 4px;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      max-height: 0;
+      margin-top: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  .loading-indicator {
+    color: #2d4263;
+    font-size: 0.875rem;
+    margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    animation: slideDown 0.3s ease-out forwards;
+    transform-origin: top;
+    overflow: hidden;
   }
 
   .form-group input[type="radio"],
@@ -156,7 +225,7 @@
   .signup-form button[type="submit"]:hover {
     background: #11294d;
   }
-  
+
   .alert {
     padding: 12px 18px;
     margin-bottom: 16px;
@@ -165,28 +234,29 @@
     text-align: center;
     animation: fadeIn 0.3s ease-in-out;
   }
-  
+
   .alert.success {
     background-color: #d4edda;
     color: #155724;
     border: 1px solid #c3e6cb;
   }
-  
+
   .alert.error {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
   }
-  
+
   @keyframes fadeIn {
     from {
       opacity: 0;
       transform: translateY(-8px);
     }
+
     to {
       opacity: 1;
       transform: translateY(0);
     }
   }
-  
+
 }
