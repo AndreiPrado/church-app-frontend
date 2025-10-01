@@ -1,4 +1,82 @@
-* {
+/* Define border-box como padrão para todos os elementos */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Remove margens padrões */
+body,
+h1,
+h2,
+h3,
+h4,
+p,
+figure,
+blockquote,
+dl,
+dd {
   margin: 0;
+}
+
+/* Garante altura total */
+html,
+body {
+  height: 100%;
   font-family: "Lato", sans-serif;
+}
+
+/* Melhora tipografia */
+body {
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Remove estilos padrão de listas */
+ul[role='list'],
+ol[role='list'] {
+  list-style: none;
+  padding: 0;
+}
+
+/* Links sem sublinhado automático */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* Imagens responsivas */
+img,
+picture {
+  max-width: 100%;
+  display: block;
+}
+
+/* Inputs e botões herdarem fonte */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+}
+
+/* Botões sem borda/estilo extra */
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+/* Remove animações para quem prefere menos movimento */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0s !important;
+    transition-duration: 0s !important;
+  }
 }

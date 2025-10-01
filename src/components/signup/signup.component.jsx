@@ -43,13 +43,14 @@ export default function SignUp() {
   const [loadingCep, setLoadingCep] = useState(false);
   const [lastFetchedCep, setLastFetchedCep] = useState('');
   const formRef = React.useRef(null);
+  const REQUIRED_FIELDS_MESSAGE = 'Preencha todos os campos obrigatórios corretamente antes de avançar.';
 
   // Monitora os erros e limpa o alerta quando não houver mais erros
   useEffect(() => {
-    if (Object.keys(fieldErrors).length === 0 && alert.isVisible && alert.type === 'error' && alert.message === 'Por favor, preencha todos os campos obrigatórios.') {
-      setAlert({ isVisible: false, message: '', type: '' });
+    if (Object.keys(fieldErrors).length === 0 && formError) {
+      setFormError(false);
     }
-  }, [fieldErrors, alert]);
+  }, [fieldErrors, formError]);
 
   // Função para remover erro com animação
   const removeErrorWithAnimation = (fieldName) => {
@@ -268,16 +269,12 @@ export default function SignUp() {
     if (!isValid) {
       setFieldErrors(newErrors);
       setFormError(true);
-      setAlert({
-        isVisible: true,
-        message: 'Por favor, preencha todos os campos obrigatórios.',
-        type: 'error'
-      });
       return;
     }
 
     try {
       const payload = {};
+      setFormError(false);
       Object.entries(formData).forEach(([key, value]) => {
         if (value !== null && value !== "") {
           if (key === "cpf" || key === "phone" || key === "zipCode") {
@@ -302,7 +299,7 @@ export default function SignUp() {
         payload.photoURL = base64Photo;
       }
 
-      payload.status = "ativo";
+      payload.status = "pendente";
 
       await memberService.createMember(payload);
 
@@ -618,7 +615,7 @@ export default function SignUp() {
         <form ref={formRef} onSubmit={handleSubmit} noValidate>
           {steps[currentStep]}
           {formError && (
-            <div className="form-error">Preencha todos os campos obrigatórios corretamente antes de avançar.</div>
+            <div className="form-error">{REQUIRED_FIELDS_MESSAGE}</div>
           )}
 
           <div className="button-container">
