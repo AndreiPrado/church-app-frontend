@@ -4,7 +4,7 @@ import maritalStatusOptions from "../../constants/maritalStatusOptions.js";
 import { IMaskInput } from "react-imask";
 
 import React, { useState, useEffect } from "react";
-import { ArrowCircleLeft, ArrowCircleRight } from "phosphor-react";
+import { ArrowCircleLeft, ArrowCircleRight } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import signupVideo from "../../assets/signup.mp4";
 import PhotoUpload from "../photo-upload/photo-upload.component.jsx";

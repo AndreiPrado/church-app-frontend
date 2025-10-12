@@ -3,6 +3,14 @@
 *::before,
 *::after {
   box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
 }
 
 /* Remove margens padrões */
@@ -19,36 +27,41 @@ dd {
   margin: 0;
 }
 
-/* Garante altura total */
+/* Garante altura total e tema escuro global */
 html,
 body {
   height: 100%;
-  font-family: "Lato", sans-serif;
+  font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background: #0a0e1a;
+  color: #ffffff;
 }
 
 /* Melhora tipografia */
 body {
-  line-height: 1.5;
-  overflow-x: hidden;
+  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Remove estilos padrão de listas */
-ul[role='list'],
-ol[role='list'] {
+ul,
+ol {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 /* Links sem sublinhado automático */
 a {
   text-decoration: none;
   color: inherit;
+  transition: all 0.3s ease;
 }
 
 /* Imagens responsivas */
 img,
-picture {
+picture,
+video {
   max-width: 100%;
   display: block;
 }
@@ -68,16 +81,46 @@ button {
   cursor: pointer;
 }
 
+/* Scrollbar customizada */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0a0e1a;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #42a5f5;
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #64b5f6;
+}
+
+/* Selection color */
+::selection {
+  background: #42a5f5;
+  color: #ffffff;
+}
+
+::-moz-selection {
+  background: #42a5f5;
+  color: #ffffff;
+}
+
 /* Remove animações para quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
-  html:focus-within {
+  html {
     scroll-behavior: auto;
   }
 
   *,
   *::before,
   *::after {
-    animation-duration: 0s !important;
-    transition-duration: 0s !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
   }
 }

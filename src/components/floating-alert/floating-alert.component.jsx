@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CheckCircle, XCircle, X } from 'phosphor-react';
+import { CheckCircle, XCircle, X } from '@phosphor-icons/react';
 import './floating-alert.component.scss';
 
 const FloatingAlert = ({ message, type, isVisible, onClose, duration = 5000 }) => {
