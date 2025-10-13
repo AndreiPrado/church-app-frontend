@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import signupVideo from "../../assets/signup.mp4";
 import PhotoUpload from "../photo-upload/photo-upload.component.jsx";
 import FloatingAlert from "../floating-alert/floating-alert.component.jsx";
+import LoadingSpinner from "../loading-spinner/loading-spinner.component.jsx";
 import memberService from "../../services/memberService.js";
 import cepService from "../../services/cepService.js";
 import { validateCPF, validateRequired, validateEmail, validatePhone, validateCEP, validateDate } from "../../utils/validators.js";
@@ -18,6 +19,7 @@ export default function SignUp() {
   const [currentStep, setCurrentStep] = useState(0);
   const [formError, setFormError] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     cpf: "",
@@ -35,7 +37,7 @@ export default function SignUp() {
     state: "",
     phone: "",
     email: "",
-    photoURL: null,
+    photoUrl: null,
   });
 
   const [fieldErrors, setFieldErrors] = useState({});
@@ -296,23 +298,21 @@ export default function SignUp() {
 
       if (formData.photo instanceof File) {
         const base64Photo = await convertFileToBase64(formData.photo);
-        payload.photoURL = base64Photo;
+        payload.photoUrl = base64Photo;
       }
 
       payload.status = "pendente";
 
+      setIsLoading(true);
+
       await memberService.createMember(payload);
 
-      setAlert({
-        isVisible: true,
-        message: "Cadastro realizado com sucesso!",
-        type: "success"
-      });
+      setIsLoading(false);
 
-      setTimeout(() => {
-        navigate("/home");
-      }, 2000);
+      // Redirecionar para tela de sucesso
+      navigate("/signup/success");
     } catch (error) {
+      setIsLoading(false);
       setAlert({
         isVisible: true,
         message: error.message,
@@ -440,12 +440,20 @@ export default function SignUp() {
       {formData.baptized === "true" && (
         <div className="form-group">
           <label htmlFor="baptismDate">Data de batismo</label>
-          <input
-            type="date"
+          <IMaskInput
+            mask={"00/00/0000"}
+            definitions={{
+              '#': /[0-9]/
+            }}
+            overwrite
             id="baptismDate"
             name="baptismDate"
             value={formData.baptismDate}
-            onChange={handleInputChange}
+            onAccept={(value) => {
+              handleInputChange({ target: { name: 'baptismDate', value } });
+            }}
+            placeholder="00/00/0000"
+            className="date-input"
           />
         </div>
       )}
@@ -593,6 +601,8 @@ export default function SignUp() {
 
   return (
     <div className="signup">
+      {isLoading && <LoadingSpinner message="Cadastrando membro..." />}
+      
       <Navbar />
       <video className="background-video" autoPlay muted loop playsInline disablePictureInPicture controls={false}>
         <source src={signupVideo} type="video/mp4" />
@@ -621,7 +631,11 @@ export default function SignUp() {
           <div className="button-container">
             <div style={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
               {currentStep > 0 && (
-                <button type="button" onClick={() => { setFormError(false); setCurrentStep(currentStep - 1); }}
+                <button type="button" onClick={() => { 
+                  setFormError(false); 
+                  setCurrentStep(currentStep - 1);
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                }}
                   aria-label="Voltar" className="arrow-nav-btn">
                   <ArrowCircleLeft size={36} weight="fill" color="#2d4263" />
                 </button>
@@ -662,6 +676,7 @@ export default function SignUp() {
                     setFieldErrors({});
                     setFormError(false);
                     setCurrentStep(currentStep + 1);
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }
                 }} aria-label="Próximo" className="arrow-nav-btn">
                   <ArrowCircleRight size={36} weight="fill" color="#2d4263" />

@@ -61,7 +61,7 @@ function Home() {
 
     const interval = setInterval(() => {
       setTypedCharacters((prev) => Math.min(prev + 1, totalCharacters));
-    }, 35);
+    }, 15);
 
     return () => clearInterval(interval);
   }, [hasStartedTyping, typedCharacters, totalCharacters]);
@@ -271,12 +271,12 @@ function Home() {
       <section className="history-section">
         <div className="container">
           <div className="history-content">
-            <Parallax translateX={[-30, 30]} opacity={[0.5, 1]}>
+            <Parallax opacity={[0.3, 1]}>
               <div className="history-text">
                 <CrossIcon size={64} weight="duotone" className="history-icon" />
                 <h2 className="section-title">Vivendo o <span className="highlight">Novo de Deus</span></h2>
                 <p>
-                  Estamos vivendo um tempo onde o ordinário dá lugar ao sobrenatural, 
+                  Estamos vivendo um tempo onde o ordinário dá lugar ao sobrenatural,
                   e o coração queima por aquilo que vem do alto.
                 </p>
                 <p className="scripture">
@@ -286,7 +286,7 @@ function Home() {
                   Não estamos apenas frequentando um lugar. <strong>Estamos sendo tomados por uma paixão santa!</strong>
                 </p>
                 <p>
-                  Somos daqueles que ardem por Jesus. Não por posição, não por aplausos, 
+                  Somos daqueles que ardem por Jesus. Não por posição, não por aplausos,
                   mas por um coração <strong>zeloso</strong> por Ele.
                 </p>
                 <p>
@@ -297,25 +297,29 @@ function Home() {
                 </p>
               </div>
             </Parallax>
-            <Parallax translateX={[30, -30]} opacity={[0.5, 1]}>
-              <div className="history-stats">
+            <div className="history-stats">
+              <Parallax translateX={[-40, 40]} opacity={[0.3, 1]}>
                 <div className="stat-card">
                   <HandsPrayingIcon size={40} weight="fill" />
                   <h3>150+</h3>
                   <p>Membros</p>
                 </div>
+              </Parallax>
+              <Parallax translateX={[40, -40]} opacity={[0.3, 1]}>
                 <div className="stat-card">
                   <BookOpenIcon size={40} weight="fill" />
                   <h3>4</h3>
                   <p>Meses de caminhada</p>
                 </div>
+              </Parallax>
+              <Parallax translateX={[-40, 40]} opacity={[0.3, 1]}>
                 <div className="stat-card">
                   <HeartHalfIcon size={40} weight="fill" />
                   <h3>∞</h3>
                   <p>Vidas impactadas</p>
                 </div>
-              </div>
-            </Parallax>
+              </Parallax>
+            </div>
           </div>
         </div>
       </section>

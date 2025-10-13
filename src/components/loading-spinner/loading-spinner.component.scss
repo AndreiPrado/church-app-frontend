@@ -1,0 +1,54 @@
+.loading-spinner-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(10, 14, 26, 0.9);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeIn 0.3s ease-in-out;
+
+  .loading-spinner-content {
+    text-align: center;
+    padding: 40px;
+    background: rgba(26, 31, 46, 0.8);
+    border-radius: 20px;
+    border: 1px solid rgba(66, 165, 245, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+
+    .spinner-icon {
+      color: #42a5f5;
+      animation: spin 1s linear infinite;
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      font-weight: 500;
+      margin: 0;
+    }
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
