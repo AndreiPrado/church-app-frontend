@@ -1,0 +1,316 @@
+.members-list {
+  .members-header {
+    margin-bottom: 32px;
+
+    .header-title {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      > svg {
+        color: #42a5f5;
+      }
+
+      h1 {
+        color: #ffffff;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin: 0 0 4px 0;
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1rem;
+        margin: 0;
+      }
+    }
+  }
+
+  .members-error {
+    background: rgba(255, 107, 107, 0.1);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    border-radius: 12px;
+    padding: 32px;
+    text-align: center;
+
+    p {
+      color: #ff6b6b;
+      font-size: 1.1rem;
+      margin-bottom: 20px;
+    }
+
+    button {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.3s;
+
+      &:hover {
+        transform: translateY(-2px);
+      }
+    }
+  }
+
+  .members-filters {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 32px;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      svg {
+        position: absolute;
+        left: 16px;
+        color: rgba(255, 255, 255, 0.6);
+      }
+
+      input {
+        width: 100%;
+        padding: 14px 16px 14px 48px;
+        background: rgba(26, 31, 46, 0.6);
+        border: 1px solid rgba(66, 165, 245, 0.2);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 1rem;
+        transition: all 0.3s;
+
+        &::placeholder {
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #42a5f5;
+          background: rgba(26, 31, 46, 0.8);
+          box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
+        }
+      }
+    }
+
+    .filter-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+
+      svg {
+        position: absolute;
+        left: 16px;
+        color: rgba(255, 255, 255, 0.6);
+        pointer-events: none;
+      }
+
+      select {
+        padding: 14px 16px 14px 48px;
+        background: rgba(26, 31, 46, 0.6);
+        border: 1px solid rgba(66, 165, 245, 0.2);
+        border-radius: 12px;
+        color: #ffffff;
+        font-size: 1rem;
+        cursor: pointer;
+        min-width: 200px;
+        transition: all 0.3s;
+
+        option {
+          background: #1a1f2e;
+          color: #ffffff;
+        }
+
+        &:focus {
+          outline: none;
+          border-color: #42a5f5;
+          background: rgba(26, 31, 46, 0.8);
+          box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
+        }
+      }
+    }
+  }
+
+  .members-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    gap: 24px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+    }
+
+    .no-members {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px 32px;
+      background: rgba(26, 31, 46, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+
+      svg {
+        color: rgba(255, 255, 255, 0.3);
+        margin-bottom: 16px;
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 1.1rem;
+      }
+    }
+
+    .member-card {
+      background: rgba(26, 31, 46, 0.6);
+      border-radius: 16px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+      backdrop-filter: blur(20px);
+      transition: all 0.3s ease;
+      overflow: hidden;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(66, 165, 245, 0.2);
+        border-color: rgba(66, 165, 245, 0.4);
+      }
+
+      .member-card-header {
+        padding: 24px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        border-bottom: 1px solid rgba(66, 165, 245, 0.1);
+
+        .member-avatar {
+          width: 64px;
+          height: 64px;
+          border-radius: 50%;
+          background: rgba(66, 165, 245, 0.2);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          overflow: hidden;
+          flex-shrink: 0;
+
+          img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+          }
+
+          svg {
+            color: #42a5f5;
+          }
+        }
+
+        .member-basic-info {
+          flex: 1;
+          min-width: 0;
+
+          h3 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+
+          .member-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+
+            &.pendente {
+              background: rgba(255, 193, 7, 0.15);
+              color: #ffc107;
+            }
+
+            &.aprovado {
+              background: rgba(76, 175, 80, 0.15);
+              color: #4caf50;
+            }
+
+            &.rejeitado {
+              background: rgba(255, 107, 107, 0.15);
+              color: #ff6b6b;
+            }
+          }
+        }
+      }
+
+      .member-card-body {
+        padding: 20px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+
+        .info-item {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.95rem;
+
+          svg {
+            color: #42a5f5;
+            min-width: 18px;
+          }
+
+          span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+        }
+      }
+
+      .member-card-footer {
+        padding: 16px 24px;
+        background: rgba(66, 165, 245, 0.05);
+        border-top: 1px solid rgba(66, 165, 245, 0.1);
+
+        .member-details {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 12px;
+          font-size: 0.9rem;
+
+          .detail-item {
+            color: rgba(255, 255, 255, 0.7);
+
+            strong {
+              color: rgba(255, 255, 255, 0.9);
+              margin-right: 4px;
+            }
+
+            &.baptized {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              color: #4caf50;
+              font-weight: 600;
+
+              svg {
+                color: #4caf50;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
