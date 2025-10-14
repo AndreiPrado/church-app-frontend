@@ -21,6 +21,8 @@ export default function Approvals() {
   const { getToken } = useAuth();
   const [pendingMembers, setPendingMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
+  const [roles, setRoles] = useState([]);
+  const [selectedRole, setSelectedRole] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,15 +32,26 @@ export default function Approvals() {
     try {
       setLoading(true);
       const token = getToken();
-      const data = await authService.getMembers(token);
-      const pending = data.filter(member => member.status === 'pendente');
-      setPendingMembers(pending);
+      
+      // Buscar roles e membros pendentes em paralelo
+      const [rolesData, membersData] = await Promise.all([
+        authService.getRoles(token),
+        authService.getMembers(token, 'pendente') // Filtrar por status na API
+      ]);
+      
+      setRoles(rolesData);
+      setPendingMembers(membersData);
+      
+      // Selecionar primeira role por padrão
+      if (rolesData.length > 0 && !selectedRole) {
+        setSelectedRole(rolesData[0].id);
+      }
     } catch (err) {
       setError(err.message || "Erro ao carregar membros pendentes");
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, [getToken, selectedRole]);
 
   useEffect(() => {
     loadPendingMembers();
@@ -63,10 +76,19 @@ export default function Approvals() {
   };
 
   const handleApproveSingle = async (memberId) => {
+    if (!selectedRole) {
+      setAlert({
+        isVisible: true,
+        message: 'Selecione uma role antes de aprovar',
+        type: 'error'
+      });
+      return;
+    }
+
     try {
       setIsProcessing(true);
       const token = getToken();
-      await authService.approveMember(memberId, token);
+      await authService.approveMember(memberId, selectedRole, token);
       
       setAlert({
         isVisible: true,
@@ -120,10 +142,19 @@ export default function Approvals() {
       return;
     }
 
+    if (!selectedRole) {
+      setAlert({
+        isVisible: true,
+        message: 'Selecione uma role antes de aprovar',
+        type: 'error'
+      });
+      return;
+    }
+
     try {
       setIsProcessing(true);
       const token = getToken();
-      await authService.approveMembersBatch(selectedMembers, token);
+      await authService.approveMembersBatch(selectedMembers, selectedRole, token);
       
       setAlert({
         isVisible: true,
@@ -179,6 +210,22 @@ export default function Approvals() {
 
           {pendingMembers.length > 0 && (
             <div className="bulk-actions">
+              <div className="role-selector">
+                <label htmlFor="role-select">Role:</label>
+                <select 
+                  id="role-select"
+                  value={selectedRole} 
+                  onChange={(e) => setSelectedRole(e.target.value)}
+                  className="role-select"
+                >
+                  <option value="">Selecione uma role</option>
+                  {roles.map(role => (
+                    <option key={role.id} value={role.id}>
+                      {role.name} - {role.description}
+                    </option>
+                  ))}
+                </select>
+              </div>
               <button 
                 className="select-all-btn"
                 onClick={handleSelectAll}
@@ -189,6 +236,7 @@ export default function Approvals() {
                 <button 
                   className="approve-batch-btn"
                   onClick={handleApproveBatch}
+                  disabled={!selectedRole}
                 >
                   <CheckCircle size={20} weight="fill" />
                   Aprovar {selectedMembers.length} Selecionado(s)

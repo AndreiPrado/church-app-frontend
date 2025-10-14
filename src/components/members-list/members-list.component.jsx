@@ -74,11 +74,13 @@ export default function MembersList() {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case "aprovado":
+      case "ativo":
         return <CheckCircle size={20} weight="fill" />;
+      case "visitante":
+        return <UserCircle size={20} weight="fill" />;
       case "pendente":
         return <Clock size={20} weight="fill" />;
-      case "rejeitado":
+      case "inativo":
         return <XCircle size={20} weight="fill" />;
       default:
         return null;
@@ -87,12 +89,14 @@ export default function MembersList() {
 
   const getStatusLabel = (status) => {
     switch (status) {
-      case "aprovado":
-        return "Aprovado";
+      case "ativo":
+        return "Ativo";
+      case "visitante":
+        return "Visitante";
       case "pendente":
         return "Pendente";
-      case "rejeitado":
-        return "Rejeitado";
+      case "inativo":
+        return "Inativo";
       default:
         return status;
     }
@@ -146,9 +150,10 @@ export default function MembersList() {
             <Funnel size={20} />
             <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
               <option value="all">Todos os status</option>
-              <option value="aprovado">Aprovados</option>
+              <option value="ativo">Ativos</option>
+              <option value="visitante">Visitantes</option>
               <option value="pendente">Pendentes</option>
-              <option value="rejeitado">Rejeitados</option>
+              <option value="inativo">Inativos</option>
             </select>
           </div>
         </div>

@@ -34,6 +34,47 @@
       display: flex;
       gap: 12px;
       align-items: center;
+      flex-wrap: wrap;
+
+      .role-selector {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(66, 165, 245, 0.05);
+        padding: 8px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(66, 165, 245, 0.2);
+
+        label {
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.9rem;
+          font-weight: 600;
+          margin: 0;
+        }
+
+        select {
+          background: rgba(10, 14, 26, 0.6);
+          color: #ffffff;
+          border: 1px solid rgba(66, 165, 245, 0.3);
+          border-radius: 6px;
+          padding: 8px 12px;
+          font-size: 0.9rem;
+          min-width: 250px;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:focus {
+            outline: none;
+            border-color: #42a5f5;
+            box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
+          }
+
+          option {
+            background: #0a0e1a;
+            color: #ffffff;
+          }
+        }
+      }
 
       button {
         padding: 12px 20px;
@@ -46,6 +87,12 @@
         display: flex;
         align-items: center;
         gap: 8px;
+
+        &:disabled {
+          opacity: 0.5;
+          cursor: not-allowed;
+          transform: none !important;
+        }
       }
 
       .select-all-btn {
@@ -53,7 +100,7 @@
         border: 1px solid rgba(66, 165, 245, 0.3);
         color: #42a5f5;
 
-        &:hover {
+        &:hover:not(:disabled) {
           background: rgba(66, 165, 245, 0.2);
           border-color: #42a5f5;
         }
@@ -64,7 +111,7 @@
         color: white;
         box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 
-        &:hover {
+        &:hover:not(:disabled) {
           transform: translateY(-2px);
           box-shadow: 0 6px 25px rgba(76, 175, 80, 0.5);
         }

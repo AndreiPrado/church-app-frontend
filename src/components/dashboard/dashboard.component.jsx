@@ -8,12 +8,13 @@ import {
   Users,
   UserCheck,
   UserPlus,
-  Clock,
   TrendUp,
   CalendarBlank,
   GenderMale,
   GenderFemale,
-  ChartPieSlice
+  ChartPieSlice,
+  CheckCircle,
+  XCircle
 } from "@phosphor-icons/react";
 
 export default function Dashboard() {
@@ -58,15 +59,13 @@ export default function Dashboard() {
     );
   }
 
+  // API retorna: { total, active, baptized, byGender: { masculino, feminino }, byAge: { under18, between18and35, between36and60, over60 } }
   const stats = statistics || {
     total: 0,
-    approved: 0,
-    pending: 0,
-    rejected: 0,
-    byGender: { male: 0, female: 0 },
-    byMaritalStatus: {},
-    byMonth: [],
-    recentMembers: []
+    active: 0,
+    baptized: 0,
+    byGender: { masculino: 0, feminino: 0 },
+    byAge: { under18: 0, between18and35: 0, between36and60: 0, over60: 0 }
   };
 
   return (
@@ -94,18 +93,18 @@ export default function Dashboard() {
               <UserCheck size={32} weight="duotone" />
             </div>
             <div className="stat-content">
-              <span className="stat-label">Aprovados</span>
-              <span className="stat-value">{stats.approved}</span>
+              <span className="stat-label">Membros Ativos</span>
+              <span className="stat-value">{stats.active}</span>
             </div>
           </div>
 
-          <div className="stat-card warning">
+          <div className="stat-card info">
             <div className="stat-icon">
-              <Clock size={32} weight="duotone" />
+              <UserPlus size={32} weight="duotone" />
             </div>
             <div className="stat-content">
-              <span className="stat-label">Pendentes</span>
-              <span className="stat-value">{stats.pending}</span>
+              <span className="stat-label">Batizados</span>
+              <span className="stat-value">{stats.baptized}</span>
             </div>
           </div>
 
@@ -114,8 +113,10 @@ export default function Dashboard() {
               <TrendUp size={32} weight="duotone" />
             </div>
             <div className="stat-content">
-              <span className="stat-label">Este Mês</span>
-              <span className="stat-value">{stats.currentMonth || 0}</span>
+              <span className="stat-label">Taxa de Batismo</span>
+              <span className="stat-value">
+                {stats.total > 0 ? Math.round((stats.baptized / stats.total) * 100) : 0}%
+              </span>
             </div>
           </div>
         </div>
@@ -133,12 +134,12 @@ export default function Dashboard() {
                 <GenderMale size={32} weight="duotone" />
                 <div className="gender-info">
                   <span className="gender-label">Masculino</span>
-                  <span className="gender-value">{stats.byGender?.male || 0}</span>
+                  <span className="gender-value">{stats.byGender?.masculino || 0}</span>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill male"
                       style={{ 
-                        width: `${stats.total > 0 ? (stats.byGender?.male || 0) / stats.total * 100 : 0}%` 
+                        width: `${stats.total > 0 ? (stats.byGender?.masculino || 0) / stats.total * 100 : 0}%` 
                       }}
                     />
                   </div>
@@ -148,12 +149,12 @@ export default function Dashboard() {
                 <GenderFemale size={32} weight="duotone" />
                 <div className="gender-info">
                   <span className="gender-label">Feminino</span>
-                  <span className="gender-value">{stats.byGender?.female || 0}</span>
+                  <span className="gender-value">{stats.byGender?.feminino || 0}</span>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill female"
                       style={{ 
-                        width: `${stats.total > 0 ? (stats.byGender?.female || 0) / stats.total * 100 : 0}%` 
+                        width: `${stats.total > 0 ? (stats.byGender?.feminino || 0) / stats.total * 100 : 0}%` 
                       }}
                     />
                   </div>
@@ -162,24 +163,29 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Gráfico de Estado Civil */}
+          {/* Gráfico por Faixa Etária */}
           <div className="chart-card">
             <div className="chart-header">
               <ChartPieSlice size={24} weight="duotone" />
-              <h3>Estado Civil</h3>
+              <h3>Distribuição por Idade</h3>
             </div>
-            <div className="marital-chart">
-              {Object.entries(stats.byMaritalStatus || {}).map(([status, count]) => (
-                <div key={status} className="marital-item">
-                  <div className="marital-info">
-                    <span className="marital-label">{status}</span>
-                    <span className="marital-value">{count}</span>
+            <div className="age-chart">
+              {[
+                { key: 'under18', label: 'Menores de 18 anos' },
+                { key: 'between18and35', label: '18 a 35 anos' },
+                { key: 'between36and60', label: '36 a 60 anos' },
+                { key: 'over60', label: 'Acima de 60 anos' }
+              ].map(({ key, label }) => (
+                <div key={key} className="age-item">
+                  <div className="age-info">
+                    <span className="age-label">{label}</span>
+                    <span className="age-value">{stats.byAge?.[key] || 0}</span>
                   </div>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill"
                       style={{ 
-                        width: `${stats.total > 0 ? count / stats.total * 100 : 0}%` 
+                        width: `${stats.total > 0 ? (stats.byAge?.[key] || 0) / stats.total * 100 : 0}%` 
                       }}
                     />
                   </div>
@@ -188,64 +194,43 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* Cadastros por Mês */}
+          {/* Resumo de Batismos */}
           <div className="chart-card full-width">
             <div className="chart-header">
               <CalendarBlank size={24} weight="duotone" />
-              <h3>Cadastros nos Últimos 6 Meses</h3>
+              <h3>Estatísticas de Batismo</h3>
             </div>
-            <div className="monthly-chart">
-              {(stats.byMonth || []).map((item, index) => (
-                <div key={index} className="month-item">
-                  <div 
-                    className="month-bar"
-                    style={{ 
-                      height: `${item.count > 0 ? Math.max(20, (item.count / Math.max(...stats.byMonth.map(m => m.count))) * 100) : 20}%` 
-                    }}
-                    title={`${item.count} cadastros`}
-                  >
-                    <span className="bar-value">{item.count}</span>
-                  </div>
-                  <span className="month-label">{item.month}</span>
+            <div className="baptism-stats">
+              <div className="baptism-item">
+                <div className="baptism-icon baptized">
+                  <CheckCircle size={32} weight="duotone" />
                 </div>
-              ))}
+                <div className="baptism-info">
+                  <span className="baptism-value">{stats.baptized}</span>
+                  <span className="baptism-label">Batizados</span>
+                </div>
+              </div>
+              <div className="baptism-item">
+                <div className="baptism-icon not-baptized">
+                  <XCircle size={32} weight="duotone" />
+                </div>
+                <div className="baptism-info">
+                  <span className="baptism-value">{stats.total - stats.baptized}</span>
+                  <span className="baptism-label">Não Batizados</span>
+                </div>
+              </div>
+              <div className="baptism-item">
+                <div className="baptism-icon percentage">
+                  <TrendUp size={32} weight="duotone" />
+                </div>
+                <div className="baptism-info">
+                  <span className="baptism-value">
+                    {stats.total > 0 ? Math.round((stats.baptized / stats.total) * 100) : 0}%
+                  </span>
+                  <span className="baptism-label">Taxa de Batismo</span>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-
-        {/* Membros Recentes */}
-        <div className="recent-members">
-          <div className="section-header">
-            <UserPlus size={24} weight="duotone" />
-            <h3>Cadastros Recentes</h3>
-          </div>
-          <div className="members-list">
-            {(stats.recentMembers || []).length === 0 ? (
-              <p className="no-data">Nenhum cadastro recente</p>
-            ) : (
-              stats.recentMembers.map((member) => (
-                <div key={member.id} className="member-item">
-                  <div className="member-avatar">
-                    {member.photoUrl ? (
-                      <img src={member.photoUrl} alt={member.fullName} />
-                    ) : (
-                      <Users size={24} weight="duotone" />
-                    )}
-                  </div>
-                  <div className="member-info">
-                    <span className="member-name">{member.fullName}</span>
-                    <span className="member-email">{member.email}</span>
-                  </div>
-                  <span className={`member-status ${member.status}`}>
-                    {member.status === 'pendente' ? 'Pendente' : 
-                     member.status === 'aprovado' ? 'Aprovado' : 'Rejeitado'}
-                  </span>
-                  <span className="member-date">
-                    {new Date(member.createdAt).toLocaleDateString('pt-BR')}
-                  </span>
-                </div>
-              ))
-            )}
           </div>
         </div>
       </div>
