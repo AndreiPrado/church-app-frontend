@@ -318,8 +318,36 @@ headers: {
 }
 ```
 
+### **Sistema de Refresh Token:**
+
+O sistema agora suporta renovação automática de tokens:
+
+1. **Login** retorna:
+   - `token` - Access token (30 minutos)
+   - `refreshToken` - Refresh token (7 dias)
+   - `member` - Dados do usuário
+
+2. **Renovação Automática:**
+   - Timer agendado para 25 minutos após login
+   - Renova automaticamente antes de expirar
+   - Sem interrupção para o usuário
+
+3. **Renovação sob Demanda:**
+   - Se requisição retornar 401, tenta renovar
+   - Retry automático com novo token
+   - Se falhar, desloga e redireciona
+
+**Endpoint de Refresh:**
+```javascript
+POST /api/auth/refresh
+Headers: { 'x-refresh-token': '<refresh-token>' }
+Response: { success: true, data: { token, refreshToken, member } }
+```
+
+📚 **Documentação completa:** [REFRESH_TOKEN.md](./REFRESH_TOKEN.md)
+
 ### **Erros de Autenticação:**
-- `401 Unauthorized` - Token inválido ou expirado
+- `401 Unauthorized` - Token inválido ou expirado (tenta renovar automaticamente)
 - `403 Forbidden` - Sem permissão para acessar recurso
 
 ---

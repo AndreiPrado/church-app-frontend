@@ -1,6 +1,5 @@
 import "./approvals.component.scss";
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
@@ -18,7 +17,6 @@ import {
 } from "@phosphor-icons/react";
 
 export default function Approvals() {
-  const { getToken } = useAuth();
   const [pendingMembers, setPendingMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -31,12 +29,11 @@ export default function Approvals() {
   const loadPendingMembers = useCallback(async () => {
     try {
       setLoading(true);
-      const token = getToken();
       
       // Buscar roles e membros pendentes em paralelo
       const [rolesData, membersData] = await Promise.all([
-        authService.getRoles(token),
-        authService.getMembers(token, 'pendente') // Filtrar por status na API
+        authService.getRoles(),
+        authService.getMembers('pendente') // Filtrar por status na API
       ]);
       
       setRoles(rolesData);
@@ -51,7 +48,7 @@ export default function Approvals() {
     } finally {
       setLoading(false);
     }
-  }, [getToken, selectedRole]);
+  }, [selectedRole]);
 
   useEffect(() => {
     loadPendingMembers();
@@ -87,8 +84,7 @@ export default function Approvals() {
 
     try {
       setIsProcessing(true);
-      const token = getToken();
-      await authService.approveMember(memberId, selectedRole, token);
+      await authService.approveMember(memberId, selectedRole);
       
       setAlert({
         isVisible: true,
@@ -111,8 +107,7 @@ export default function Approvals() {
   const handleRejectSingle = async (memberId) => {
     try {
       setIsProcessing(true);
-      const token = getToken();
-      await authService.rejectMember(memberId, token);
+      await authService.rejectMember(memberId);
       
       setAlert({
         isVisible: true,
@@ -153,8 +148,7 @@ export default function Approvals() {
 
     try {
       setIsProcessing(true);
-      const token = getToken();
-      await authService.approveMembersBatch(selectedMembers, selectedRole, token);
+      await authService.approveMembersBatch(selectedMembers, selectedRole);
       
       setAlert({
         isVisible: true,

@@ -121,19 +121,21 @@ export default function Login() {
 
       console.log('Login response completa:', response); // Debug
 
-      // A API retorna { success: true, data: { user, token } }
+      // A API retorna { success: true, data: { member, token, refreshToken } }
       const userData = response.data?.member;
       const token = response.data?.token;
+      const refreshToken = response.data?.refreshToken;
 
       console.log('User extraído:', userData); // Debug
       console.log('Token extraído:', token); // Debug
+      console.log('RefreshToken extraído:', refreshToken); // Debug
 
       // Verificar se temos os dados necessários
       if (!userData || !token) {
         throw new Error('Resposta da API inválida - user ou token não encontrados');
       }
 
-      login(userData, token);
+      login(userData, token, refreshToken);
 
       console.log('Login function chamada, redirecionando...'); // Debug
 

@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { storage } from '../utils/storage';
 
 const AuthContext = createContext(null);
 
@@ -15,60 +16,80 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  /**
+   * Logout - limpa dados e redireciona
+   */
+  const logout = () => {
+    storage.clear();
+    setUser(null);
+    // Opcional: redirecionar para login
+    window.location.href = '/login';
+  };
+
+  /**
+   * Carregar usuário do localStorage ao iniciar
+   */
   useEffect(() => {
     try {
-      // Verificar se há usuário salvo no localStorage
-      const savedUser = localStorage.getItem('user');
-      const token = localStorage.getItem('token');
+      const savedUser = storage.getUser();
+      const token = storage.getAccessToken();
       
-      if (savedUser && token && savedUser !== 'undefined' && token !== 'undefined') {
-        setUser(JSON.parse(savedUser));
+      if (savedUser && token) {
+        setUser(savedUser);
       } else {
         // Limpar dados inválidos
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
+        storage.clear();
       }
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
-      // Limpar localStorage se houver erro
-      localStorage.removeItem('user');
-      localStorage.removeItem('token');
+      storage.clear();
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const login = (userData, token) => {
-    console.log('AuthContext.login chamado com:', { userData, token }); // Debug
+  /**
+   * Login - salva tokens e usuário
+   */
+  const login = (userData, token, refreshToken) => {
     if (userData && token) {
-      localStorage.setItem('user', JSON.stringify(userData));
-      localStorage.setItem('token', token);
+      storage.setUser(userData);
+      storage.setTokens(token, refreshToken);
       setUser(userData);
-      console.log('User setado no state:', userData); // Debug
     } else {
-      console.error('Login falhou: userData ou token ausentes'); // Debug
+      console.error('Login falhou: userData ou token ausentes');
     }
   };
 
-  const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    setUser(null);
-  };
-
+  /**
+   * Atualizar dados do usuário
+   */
   const updateUser = (userData) => {
     if (userData) {
-      localStorage.setItem('user', JSON.stringify(userData));
+      storage.setUser(userData);
       setUser(userData);
     }
   };
 
+  /**
+   * Verificar se está autenticado
+   */
   const isAuthenticated = () => {
-    return !!user;
+    return !!user && !!storage.getAccessToken();
   };
 
+  /**
+   * Pegar token atual
+   */
   const getToken = () => {
-    return localStorage.getItem('token');
+    return storage.getAccessToken();
+  };
+
+  /**
+   * Pegar refresh token
+   */
+  const getRefreshToken = () => {
+    return storage.getRefreshToken();
   };
 
   const value = {
@@ -78,6 +99,7 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     isAuthenticated,
     getToken,
+    getRefreshToken,
     loading
   };
 

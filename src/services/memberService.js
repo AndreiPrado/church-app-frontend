@@ -1,11 +1,21 @@
-const API_BASE_URL = import.meta.env.VITE_API_URL
+/**
+ * Serviço de Membros
+ * Cadastro público de membros (não requer autenticação)
+ */
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+
 class MemberService {
+  /**
+   * Criar novo membro (endpoint público)
+   */
   async createMember(payload) {
-    const response = await fetch(`${API_BASE_URL}/api/members/`, {
+    const response = await fetch(`${API_BASE_URL}/api/members`, {
       method: "POST",
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Importante: para receber cookies se necessário
       body: JSON.stringify(payload),
     });
 

@@ -1,12 +1,25 @@
+/**
+ * Serviço de Autenticação
+ * Usa o cliente API centralizado com auto-refresh automático
+ */
+
+import api from './api';
+import { storage } from '../utils/storage';
+
 const API_BASE_URL = import.meta.env.VITE_API_URL;
 
 class AuthService {
+  /**
+   * Login com email e senha
+   */
   async login(email, password) {
+    // Login não precisa de token, usa fetch direto
     const response = await fetch(`${API_BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      credentials: 'include', // Importante: recebe cookie de fingerprint
       body: JSON.stringify({ email, password }),
     });
 
@@ -18,95 +31,50 @@ class AuthService {
     return await response.json();
   }
 
-  async getMembers(token, status = null, search = null) {
-    let url = `${API_BASE_URL}/api/members/`;
+  /**
+   * Buscar membros (com auto-refresh de token)
+   */
+  async getMembers(status = null, search = null) {
     const params = new URLSearchParams();
     
     if (status) params.append('status', status);
     if (search) params.append('search', search);
     
-    if (params.toString()) url += `?${params.toString()}`;
-
-    const response = await fetch(url, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao buscar membros');
-    }
-
-    const result = await response.json();
-    // API retorna { success: true, data: [...], count: number }
+    const queryString = params.toString() ? `?${params.toString()}` : '';
+    const result = await api.get(`/api/members${queryString}`);
+    
     return result.data || [];
   }
 
-  async getMemberById(id, token) {
-    const response = await fetch(`${API_BASE_URL}/api/members/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao buscar membro');
-    }
-
-    const result = await response.json();
-    // API retorna { success: true, data: { ...member } }
+  /**
+   * Buscar membro por ID
+   */
+  async getMemberById(id) {
+    const result = await api.get(`/api/members/${id}`);
     return result.data;
   }
 
-  async approveMember(id, roleId, token) {
-    // API requer roleId no body
-    const response = await fetch(`${API_BASE_URL}/api/members/${id}/approve`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({ roleId }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao aprovar membro');
-    }
-
-    const result = await response.json();
+  /**
+   * Aprovar membro
+   */
+  async approveMember(id, roleId) {
+    const result = await api.patch(`/api/members/${id}/approve`, { roleId });
     return result.data;
   }
 
-  async rejectMember(id, token) {
-    // API não tem endpoint específico de reject, usa update com status
-    const response = await fetch(`${API_BASE_URL}/api/members/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify({ status: 'inativo' }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao rejeitar membro');
-    }
-
-    const result = await response.json();
+  /**
+   * Rejeitar membro (atualiza status para inativo)
+   */
+  async rejectMember(id) {
+    const result = await api.patch(`/api/members/${id}`, { status: 'inativo' });
     return result.data;
   }
 
-  async approveMembersBatch(ids, roleId, token) {
-    // API não tem endpoint de batch, fazer aprovações individuais
-    const promises = ids.map(id => this.approveMember(id, roleId, token));
+  /**
+   * Aprovar múltiplos membros
+   */
+  async approveMembersBatch(ids, roleId) {
+    const promises = ids.map(id => this.approveMember(id, roleId));
     
     try {
       const results = await Promise.all(promises);
@@ -120,63 +88,58 @@ class AuthService {
     }
   }
 
-  async getStatistics(token) {
-    // API usa /api/members/stats (não /statistics)
-    const response = await fetch(`${API_BASE_URL}/api/members/stats`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao buscar estatísticas');
-    }
-
-    const result = await response.json();
-    // API retorna { success: true, data: { total, active, baptized, byGender, byAge } }
+  /**
+   * Buscar estatísticas de membros
+   */
+  async getStatistics() {
+    const result = await api.get('/api/members/stats');
     return result.data;
   }
 
-  async updateMember(id, data, token) {
-    // API usa PATCH (não PUT)
-    const response = await fetch(`${API_BASE_URL}/api/members/${id}`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-      body: JSON.stringify(data),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.message || 'Erro ao atualizar membro');
-    }
-
-    const result = await response.json();
-    // API retorna { success: true, data: { ...member } }
+  /**
+   * Atualizar membro
+   */
+  async updateMember(id, data) {
+    const result = await api.patch(`/api/members/${id}`, data);
     return result.data;
   }
 
-  async getRoles(token) {
-    const response = await fetch(`${API_BASE_URL}/api/roles`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || errorData.error || 'Erro ao buscar roles');
-    }
-
-    const result = await response.json();
+  /**
+   * Buscar roles/papéis
+   */
+  async getRoles() {
+    const result = await api.get('/api/roles');
     return result.data || [];
+  }
+
+  /**
+   * Renovar token manualmente (geralmente não é necessário)
+   * O cliente API já faz isso automaticamente
+   */
+  async refreshToken(refreshToken) {
+    const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-refresh-token': refreshToken,
+      },
+      credentials: 'include'
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || errorData.detail || 'Erro ao renovar token');
+    }
+
+    const result = await response.json();
+    return result.data;
+  }
+
+  /**
+   * Logout
+   */
+  logout() {
+    storage.clear();
   }
 }
 
