@@ -26,10 +26,18 @@ const FOOTER_TEXT_SEGMENTS = [
   { text: '.', bold: false }
 ];
 
+const TYPING_WORDS = ['Zelar', 'Servir', 'Pertencer', 'Amar', 'Cuidar', 'Ficar'];
+
 function Home() {
   const footerRef = useRef(null);
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const [typedCharacters, setTypedCharacters] = useState(0);
+
+  // Estados para o efeito de digitação do subtítulo
+  const [currentWordIndex, setCurrentWordIndex] = useState(0);
+  const [currentText, setCurrentText] = useState('');
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
 
   const totalCharacters = useMemo(
     () => FOOTER_TEXT_SEGMENTS.reduce((acc, segment) => acc + (segment.break ? 1 : segment.text.length), 0),
@@ -65,6 +73,45 @@ function Home() {
 
     return () => clearInterval(interval);
   }, [hasStartedTyping, typedCharacters, totalCharacters]);
+
+  // Efeito para cursor piscante
+  useEffect(() => {
+    const cursorInterval = setInterval(() => {
+      setShowCursor((prev) => !prev);
+    }, 500);
+    return () => clearInterval(cursorInterval);
+  }, []);
+
+  // Efeito para digitação e apagamento
+  useEffect(() => {
+    const currentWord = TYPING_WORDS[currentWordIndex];
+    const typingSpeed = isDeleting ? 50 : 100;
+    const pauseBeforeDelete = 2000;
+    const pauseBeforeType = 500;
+
+    const timer = setTimeout(() => {
+      if (!isDeleting && currentText === currentWord) {
+        // Pausar antes de começar a apagar
+        setTimeout(() => setIsDeleting(true), pauseBeforeDelete);
+      } else if (isDeleting && currentText === '') {
+        // Mudar para próxima palavra (aleatória)
+        setIsDeleting(false);
+        let nextIndex;
+        do {
+          nextIndex = Math.floor(Math.random() * TYPING_WORDS.length);
+        } while (nextIndex === currentWordIndex && TYPING_WORDS.length > 1);
+        setCurrentWordIndex(nextIndex);
+      } else if (isDeleting) {
+        // Apagando
+        setCurrentText(currentWord.substring(0, currentText.length - 1));
+      } else {
+        // Digitando
+        setCurrentText(currentWord.substring(0, currentText.length + 1));
+      }
+    }, isDeleting && currentText === '' ? pauseBeforeType : typingSpeed);
+
+    return () => clearTimeout(timer);
+  }, [currentText, isDeleting, currentWordIndex]);
 
   const renderTypedFooterText = () => {
     let remaining = typedCharacters;
@@ -137,7 +184,10 @@ function Home() {
           </Parallax>
           <Parallax translateY={[0, 15]}>
             <h1 className="hero-title">Bem-vindo à <span className="highlight">Zele Church</span></h1>
-            <p className="hero-subtitle">Uma igreja de fé, amor e Zelo</p>
+            <p className="hero-subtitle">
+              Uma igreja para <span className="typing-word">{currentText}</span>
+              <span className="typing-cursor" style={{ opacity: showCursor ? 1 : 0 }}>|</span>
+            </p>
           </Parallax>
         </div>
         <div className="scroll-indicator">

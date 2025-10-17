@@ -83,9 +83,39 @@
       .hero-subtitle {
         font-size: clamp(1.1rem, 2vw, 1.4rem);
         color: rgba(255, 255, 255, 0.85);
-        margin-bottom: 2rem;
+        margin: 2rem 0;
         font-weight: 300;
         letter-spacing: 0.5px;
+
+        .typing-word {
+          display: inline-block;
+          text-align: left;
+          font-weight: 500;
+          background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+
+        .typing-cursor {
+          display: inline-block;
+          margin-left: 2px;
+          font-weight: 300;
+          color: #ffffff;
+          animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+
+          0%,
+          100% {
+            opacity: 1;
+          }
+
+          50% {
+            opacity: 0;
+          }
+        }
       }
 
       .hero-buttons {
