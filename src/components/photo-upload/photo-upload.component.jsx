@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Upload, Trash2 } from "lucide-react"; 
+import { useState } from "react";
+import { Upload, Trash2 } from "lucide-react";
 import "./photo-upload.component.scss";
 
 const PhotoUpload = ({ onPhotoChange }) => {
@@ -37,7 +37,7 @@ const PhotoUpload = ({ onPhotoChange }) => {
     >
       <div className="upload-center">
         <div className="upload-title">
-          <h2>Foto de Perfil</h2>
+          <h2 className="upload-profile">Foto de Perfil</h2>
           <p>Escolha uma foto bem bonita e que mostre seu rosto!</p>
         </div>
 
@@ -48,9 +48,9 @@ const PhotoUpload = ({ onPhotoChange }) => {
                 {!imgLoaded && (
                   <div className="img-loading-spinner"></div>
                 )}
-                <img 
-                  src={preview} 
-                  alt="preview" 
+                <img
+                  src={preview}
+                  alt="preview"
                   className={`preview-img${!imgLoaded ? ' img-blur' : ''}`}
                   onLoad={() => setImgLoaded(true)}
                 />
@@ -69,7 +69,7 @@ const PhotoUpload = ({ onPhotoChange }) => {
             />
           </div>
           {preview && (
-            <button 
+            <button
               type="button"
               className="remove-photo-btn"
               onClick={handleRemovePhoto}

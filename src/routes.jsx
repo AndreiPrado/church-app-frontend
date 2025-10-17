@@ -8,10 +8,12 @@ import MembersList from '../src/components/members-list/members-list.component.j
 import Approvals from '../src/components/approvals/approvals.component.jsx';
 import Profile from '../src/components/profile/profile.component.jsx';
 import ProtectedRoute from '../src/components/protected-route/protected-route.component.jsx';
+import ScrollToTop from '../src/components/scroll-to-top/scroll-to-top.component.jsx';
 
 const Router = () => {
     return (
         <BrowserRouter>
+            <ScrollToTop />
             <Routes>
                 {/* Rotas Públicas */}
                 <Route path="/" element={<Home />} />

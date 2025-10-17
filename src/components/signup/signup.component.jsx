@@ -54,6 +54,26 @@ export default function SignUp() {
     }
   }, [fieldErrors, formError]);
 
+  // Scroll para o topo e foca no primeiro campo quando muda de step
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
+    // Aguarda scroll completar e foca no primeiro campo do step
+    const timer = setTimeout(() => {
+      const firstFieldIds = ['fullName', 'zipCode', 'phone'];
+      const firstFieldId = firstFieldIds[currentStep];
+      
+      if (firstFieldId) {
+        const firstField = document.getElementById(firstFieldId);
+        if (firstField) {
+          firstField.focus();
+        }
+      }
+    }, 300); // Aguarda animação de scroll (smooth)
+
+    return () => clearTimeout(timer);
+  }, [currentStep]);
+
   // Função para remover erro com animação
   const removeErrorWithAnimation = (fieldName) => {
     // Marca o erro como "saindo" (fading out)
@@ -634,7 +654,6 @@ export default function SignUp() {
                 <button type="button" onClick={() => { 
                   setFormError(false); 
                   setCurrentStep(currentStep - 1);
-                  window.scrollTo({ top: 0, behavior: 'smooth' });
                 }}
                   aria-label="Voltar" className="arrow-nav-btn">
                   <ArrowCircleLeft size={36} weight="fill" color="#2d4263" />
@@ -676,7 +695,6 @@ export default function SignUp() {
                     setFieldErrors({});
                     setFormError(false);
                     setCurrentStep(currentStep + 1);
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
                   }
                 }} aria-label="Próximo" className="arrow-nav-btn">
                   <ArrowCircleRight size={36} weight="fill" color="#2d4263" />
