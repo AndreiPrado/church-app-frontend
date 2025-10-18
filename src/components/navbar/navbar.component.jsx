@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import "./navbar.component.scss";
 import logo from "../../assets/logo-blue.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +21,19 @@ export default function Navbar() {
     };
   }, []);
 
+  // Navegação suave apenas em desktop (não conflita com parallax)
+  const handleNavClick = (e, hash) => {
+    // Se estamos na mesma página e é desktop
+    if (location.pathname === '/home' && window.innerWidth > 768) {
+      e.preventDefault();
+      const element = document.querySelector(hash);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+    // Mobile e outras páginas: navegação nativa (mais rápida)
+  };
+
   return (
     <nav className={`navbar${open ? ' open' : ''}${isScrolled ? ' scrolled' : ''}`}>
       {/* Logo */}
@@ -28,11 +43,11 @@ export default function Navbar() {
 
       {/* Links desktop - visível apenas em desktop */}
       <div className="nav-links">
-        <a href="/home#sobre">Sobre</a>
-        <a href="/home#valores">Valores</a>
-        <a href="/home#cultos">Cultos</a>
-        <a href="/home#historia">História</a>
-        <a href="/home#ministerios">Ministérios</a>
+        <a href="/home#sobre" onClick={(e) => handleNavClick(e, '#sobre')}>Sobre</a>
+        <a href="/home#valores" onClick={(e) => handleNavClick(e, '#valores')}>Valores</a>
+        <a href="/home#cultos" onClick={(e) => handleNavClick(e, '#cultos')}>Cultos</a>
+        <a href="/home#historia" onClick={(e) => handleNavClick(e, '#historia')}>História</a>
+        <a href="/home#ministerios" onClick={(e) => handleNavClick(e, '#ministerios')}>Ministérios</a>
         <a href="/signup" className="cta-button">Quero ser membro</a>
       </div>
 

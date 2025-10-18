@@ -54,24 +54,22 @@ export default function SignUp() {
     }
   }, [fieldErrors, formError]);
 
-  // Scroll para o topo e foca no primeiro campo quando muda de step
+  // Foca no primeiro campo quando muda de step (sem forçar scroll)
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Foca no primeiro campo do step (se for mudança de step)
+    const firstFieldIds = ['fullName', 'zipCode', 'phone'];
+    const firstFieldId = firstFieldIds[currentStep];
     
-    // Aguarda scroll completar e foca no primeiro campo do step
-    const timer = setTimeout(() => {
-      const firstFieldIds = ['fullName', 'zipCode', 'phone'];
-      const firstFieldId = firstFieldIds[currentStep];
-      
-      if (firstFieldId) {
+    if (firstFieldId) {
+      const timer = setTimeout(() => {
         const firstField = document.getElementById(firstFieldId);
         if (firstField) {
           firstField.focus();
         }
-      }
-    }, 300); // Aguarda animação de scroll (smooth)
-
-    return () => clearTimeout(timer);
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
   }, [currentStep]);
 
   // Função para remover erro com animação
@@ -178,6 +176,17 @@ export default function SignUp() {
         if (!validateRequired(value)) error = 'Por favor, informe se você já foi batizado(a).';
         break;
 
+      case 'baptismDate':
+        // Só valida se baptized === "true"
+        if (formData.baptized === "true") {
+          if (!validateRequired(value)) {
+            error = 'Informe a data do seu batismo, por favor.';
+          } else if (!validateDate(value)) {
+            error = 'Essa data não parece válida. Use o formato DD/MM/AAAA.';
+          }
+        }
+        break;
+
       case 'address':
         if (!validateRequired(value)) error = 'Informe o endereço onde você mora.';
         break;
@@ -269,7 +278,12 @@ export default function SignUp() {
     // Valida todos os campos obrigatórios antes de enviar
     let isValid = true;
     const newErrors = {};
-    const requiredFields = ['fullName', 'cpf', 'birthDate', 'gender', 'maritalStatus', 'baptized', 'zipCode', 'address', 'number', 'city', 'state', 'phone', 'email'];
+    let requiredFields = ['fullName', 'cpf', 'birthDate', 'gender', 'maritalStatus', 'baptized', 'zipCode', 'address', 'number', 'city', 'state', 'phone', 'email'];
+    
+    // Adiciona baptismDate aos campos obrigatórios se baptized === "true"
+    if (formData.baptized === "true") {
+      requiredFields.push('baptismDate');
+    }
 
     requiredFields.forEach((fieldName) => {
       const value = formData[fieldName];
@@ -307,7 +321,7 @@ export default function SignUp() {
               formDataMultipart.append(key, value.replace(/\D/g, ""));
             } else if (key === "baptized") {
               formDataMultipart.append(key, value === "true" ? "true" : "false");
-            } else if (key === "birthDate") {
+            } else if (key === "birthDate" || key === "baptismDate") {
               formDataMultipart.append(key, convertDateToISO(value));
             } else if (key === "address") {
               formDataMultipart.append(key, `${value}, ${formData.number}`);
@@ -329,7 +343,7 @@ export default function SignUp() {
               payload[key] = value.replace(/\D/g, "");
             } else if (key === "baptized") {
               payload[key] = value === "true";
-            } else if (key === "birthDate") {
+            } else if (key === "birthDate" || key === "baptismDate") {
               payload[key] = convertDateToISO(value);
             } else if (key !== "photoFile" && key !== "number") {
               payload[key] = value;
@@ -473,7 +487,7 @@ export default function SignUp() {
 
       {formData.baptized === "true" && (
         <div className="form-group">
-          <label htmlFor="baptismDate">Data de batismo</label>
+          <label htmlFor="baptismDate">Data de batismo <span className="required">*</span></label>
           <IMaskInput
             mask={"00/00/0000"}
             definitions={{
@@ -486,9 +500,13 @@ export default function SignUp() {
             onAccept={(value) => {
               handleInputChange({ target: { name: 'baptismDate', value } });
             }}
+            onBlur={(e) => {
+              handleBlur({ target: { name: 'baptismDate', value: e.target.value } });
+            }}
             placeholder="00/00/0000"
             className="date-input"
           />
+          {renderErrorMessage('baptismDate')}
         </div>
       )}
     </>,

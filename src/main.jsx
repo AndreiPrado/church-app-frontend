@@ -11,7 +11,7 @@ import { AuthProvider } from './contexts/AuthContext';
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <AuthProvider>
-      <ParallaxProvider>
+      <ParallaxProvider scrollAxis="vertical">
         <Router />
       </ParallaxProvider>
     </AuthProvider>

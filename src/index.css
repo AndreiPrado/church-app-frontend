@@ -7,10 +7,16 @@
   padding: 0;
 }
 
-/* Smooth scroll */
+/* Smooth scroll - desabilitado no mobile para não conflitar com parallax */
 html {
   scroll-behavior: smooth;
   overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Remove margens padrões */
@@ -108,6 +114,20 @@ button {
 ::-moz-selection {
   background: #42a5f5;
   color: #ffffff;
+}
+
+/* Otimizações para performance de animações e parallax */
+@media (max-width: 768px) {
+  /* Otimiza GPU rendering para elementos com parallax */
+  [class*="parallax"],
+  [class*="Parallax"] {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    -webkit-transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -webkit-perspective: 1000px;
+  }
 }
 
 /* Remove animações para quem prefere menos movimento */
