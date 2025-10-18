@@ -254,14 +254,7 @@ export default function SignUp() {
     }
   };
 
-  const convertFileToBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = error => reject(error);
-    });
-  };
+  // Conversão base64 removida - agora usa upload via R2 Storage
 
   // Função para converter data de DD/MM/YYYY para YYYY-MM-DD
   const convertDateToISO = (dateString) => {
@@ -295,37 +288,58 @@ export default function SignUp() {
     }
 
     try {
-      const payload = {};
       setFormError(false);
-      Object.entries(formData).forEach(([key, value]) => {
-        if (value !== null && value !== "") {
-          if (key === "cpf" || key === "phone" || key === "zipCode") {
-            payload[key] = value.replace(/\D/g, "");
-          } else if (key === "baptized") {
-            payload[key] = value === "true";
-          } else if (key === "birthDate") {
-            // Converter data de nascimento para formato ISO (YYYY-MM-DD)
-            payload[key] = convertDateToISO(value);
-          } else if (key === "address") {
-            // Junta endereço + número separado por vírgula
-            payload[key] = `${value}, ${formData.number}`;
-          } else if (key !== "photo" && key !== "number") {
-            // Pula o campo 'number' pois já foi incluído no address
-            payload[key] = value;
-          }
-        }
-      });
-
-      if (formData.photo instanceof File) {
-        const base64Photo = await convertFileToBase64(formData.photo);
-        payload.photoUrl = base64Photo;
-      }
-
-      payload.status = "pendente";
-
       setIsLoading(true);
 
-      await memberService.createMember(payload);
+      // Se houver foto, enviar via FormData (multipart)
+      if (formData.photoFile instanceof File) {
+        const formDataMultipart = new FormData();
+        
+        // Adicionar arquivo
+        formDataMultipart.append('photo', formData.photoFile);
+        
+        // Adicionar outros campos
+        Object.entries(formData).forEach(([key, value]) => {
+          if (key === "photoFile") return; // Já adicionado como 'photo'
+          
+          if (value !== null && value !== "") {
+            if (key === "cpf" || key === "phone" || key === "zipCode") {
+              formDataMultipart.append(key, value.replace(/\D/g, ""));
+            } else if (key === "baptized") {
+              formDataMultipart.append(key, value === "true" ? "true" : "false");
+            } else if (key === "birthDate") {
+              formDataMultipart.append(key, convertDateToISO(value));
+            } else if (key === "address") {
+              formDataMultipart.append(key, `${value}, ${formData.number}`);
+            } else if (key !== "number") {
+              formDataMultipart.append(key, value);
+            }
+          }
+        });
+        
+        formDataMultipart.append('status', 'pendente');
+        
+        await memberService.createMember(formDataMultipart);
+      } else {
+        // Sem foto - enviar JSON normal
+        const payload = {};
+        Object.entries(formData).forEach(([key, value]) => {
+          if (value !== null && value !== "") {
+            if (key === "cpf" || key === "phone" || key === "zipCode") {
+              payload[key] = value.replace(/\D/g, "");
+            } else if (key === "baptized") {
+              payload[key] = value === "true";
+            } else if (key === "birthDate") {
+              payload[key] = convertDateToISO(value);
+            } else if (key !== "photoFile" && key !== "number") {
+              payload[key] = value;
+            }
+          }
+        });
+        
+        payload.status = "pendente";
+        await memberService.createMember(payload);
+      }
 
       setIsLoading(false);
 
@@ -615,7 +629,9 @@ export default function SignUp() {
         {renderErrorMessage('email')}
       </div>
 
-      <PhotoUpload onPhotoChange={(file) => setFormData((prev) => ({ ...prev, photo: file }))} />
+      <PhotoUpload 
+        onPhotoChange={(file) => setFormData((prev) => ({ ...prev, photoFile: file }))} 
+      />
     </>,
   ];
 
