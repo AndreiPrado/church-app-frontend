@@ -26,7 +26,17 @@ export default function Navbar() {
         <a href="/home"><img src={logo} alt="Z'ele Church" /></a>
       </div>
 
-      {/* Botão hamburguer → vira X */}
+      {/* Links desktop - visível apenas em desktop */}
+      <div className="nav-links">
+        <a href="/home#sobre">Sobre</a>
+        <a href="/home#valores">Valores</a>
+        <a href="/home#cultos">Cultos</a>
+        <a href="/home#historia">História</a>
+        <a href="/home#ministerios">Ministérios</a>
+        <a href="/signup" className="cta-button">Quero ser membro</a>
+      </div>
+
+      {/* Botão hamburguer → vira X (apenas mobile) */}
       <div className="menu">
         <button
           className={`hamburger ${open ? 'open' : ''}`}
@@ -38,10 +48,15 @@ export default function Navbar() {
         </button>
       </div>
 
-      {/* Menu lateral */}
+      {/* Menu lateral (apenas mobile) */}
       <div className={`side-menu ${open ? 'show' : ''}`}>
         <ul>
-          <li><a href="/signup" onClick={() => setOpen(false)}>Quero ser membro</a></li>
+          <li><a href="/home#sobre" onClick={() => setOpen(false)}>Sobre</a></li>
+          <li><a href="/home#valores" onClick={() => setOpen(false)}>Valores</a></li>
+          <li><a href="/home#cultos" onClick={() => setOpen(false)}>Cultos</a></li>
+          <li><a href="/home#historia" onClick={() => setOpen(false)}>História</a></li>
+          <li><a href="/home#ministerios" onClick={() => setOpen(false)}>Ministérios</a></li>
+          <li className="cta-link"><a href="/signup" onClick={() => setOpen(false)}>Quero ser membro</a></li>
         </ul>
       </div>
     </nav>

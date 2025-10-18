@@ -1,11 +1,15 @@
 import "./home.component.scss";
 import Navbar from '../navbar/navbar.component.jsx';
+import NavigationDropdown from '../navigation-dropdown/navigation-dropdown.component.jsx';
 import logoWithoutBackground from '../../assets/logo-without-background.png';
 import adoracaoVideo from '../../assets/intro.mp4';
 import encontro1 from '../../assets/encontro_1.jpeg';
 import encontro2 from '../../assets/encontro_2.jpeg';
 import encontro3 from '../../assets/encontro_3.jpeg';
 import encontro4 from '../../assets/encontro_4.jpeg';
+import historia1 from '../../assets/historia_1.jpeg';
+import historia2 from '../../assets/historia_2.jpeg';
+import historia3 from '../../assets/historia_3.jpeg';
 import { Parallax } from 'react-scroll-parallax';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, UsersFourIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
@@ -30,6 +34,7 @@ const TYPING_WORDS = ['Zelar', 'Servir', 'Pertencer', 'Amar', 'Cuidar', 'Ficar']
 
 function Home() {
   const footerRef = useRef(null);
+  const videoRef = useRef(null);
   const [hasStartedTyping, setHasStartedTyping] = useState(false);
   const [typedCharacters, setTypedCharacters] = useState(0);
 
@@ -38,6 +43,84 @@ function Home() {
   const [currentText, setCurrentText] = useState('');
   const [isDeleting, setIsDeleting] = useState(false);
   const [showCursor, setShowCursor] = useState(true);
+
+  // Estado para dropdown de navegação
+  const [isNavigationDropdownOpen, setIsNavigationDropdownOpen] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState('');
+
+  // Estado para flip cards
+  const [flippedCards, setFlippedCards] = useState([false, false, false, false]);
+  const valueCardsRef = useRef([]);
+
+  // Estado para ministérios selecionados
+  const [selectedMinistry, setSelectedMinistry] = useState(null);
+
+  // Dados dos ministérios
+  const ministries = [
+    {
+      icon: HandsPrayingIcon,
+      iconColor: '#9c27b0', // Roxo - música/louvor/espiritual
+      title: 'Zele Music',
+      description: 'Louvor com propósito, presença e santidade.',
+      mysteryMessage: 'Novidades sobre ensaios, cultos e escalas em breve.'
+    },
+    {
+      icon: GenderMaleIcon,
+      iconColor: '#1976d2', // Azul escuro - força/liderança
+      title: 'Zele Men',
+      description: 'Homens que zelam por sua fé, casa e chamado.',
+      mysteryMessage: 'Prepare-se para encontros que fortalecem e edificam.'
+    },
+    {
+      icon: GenderFemaleIcon,
+      iconColor: '#e91e63', // Rosa/Pink - feminino/empoderamento
+      title: 'Preciosa(Z)',
+      description: 'Mulheres intensas, curadas e cheias de propósito.',
+      mysteryMessage: 'Um movimento poderoso está por vir. Fique ligada!'
+    },
+    {
+      icon: HeartIcon,
+      iconColor: '#ff9800', // Laranja - alegria/infância
+      title: 'ZKids',
+      description: 'Pequenos corações, grandes destinos.',
+      mysteryMessage: 'Diversão, aprendizado e presença. Aguarde novidades!'
+    },
+    {
+      icon: HandHeartIcon,
+      iconColor: '#f44336', // Vermelho - amor/serviço
+      title: 'Zele Serve',
+      description: 'Servir é a linguagem do céu.',
+      mysteryMessage: 'Descubra onde suas mãos podem transformar vidas.'
+    },
+    {
+      icon: UsersFourIcon,
+      iconColor: '#ff5722', // Laranja escuro - energia jovem
+      title: 'Zele Next Level',
+      description: 'Fogo jovem, raízes firmes.',
+      mysteryMessage: 'Conexão real, propósito eterno. Vem aí!'
+    },
+    {
+      icon: UsersThreeIcon,
+      iconColor: '#00bcd4', // Ciano - transição/adolescência
+      title: 'Zele Next Teen',
+      description: 'A próxima geração já está aqui.',
+      mysteryMessage: 'Amizade, identidade e poder. Fique de olho!'
+    },
+    {
+      icon: HouseIcon,
+      iconColor: '#4caf50', // Verde - família/crescimento
+      title: 'Zele Family',
+      description: 'Casas que honram a presença.',
+      mysteryMessage: 'Eventos e recursos para famílias em construção.'
+    },
+    {
+      icon: PlantIcon,
+      iconColor: '#8bc34a', // Verde claro - natureza/sustentabilidade
+      title: 'Zele Impact',
+      description: 'Zelo pela terra e pelo próximo.',
+      mysteryMessage: 'Projetos que cuidam da criação e transformam vidas.'
+    }
+  ];
 
   const totalCharacters = useMemo(
     () => FOOTER_TEXT_SEGMENTS.reduce((acc, segment) => acc + (segment.break ? 1 : segment.text.length), 0),
@@ -82,6 +165,63 @@ function Home() {
     return () => clearInterval(cursorInterval);
   }, []);
 
+  // Fix para Safari: forçar play do vídeo
+  useEffect(() => {
+    const video = videoRef.current;
+    if (video) {
+      // Tentar reproduzir após um pequeno delay
+      const playVideo = () => {
+        video.play().catch(err => {
+          console.log('Autoplay prevented:', err);
+          // Se falhar, tentar novamente após interação do usuário
+          const playOnInteraction = () => {
+            video.play();
+            document.removeEventListener('touchstart', playOnInteraction);
+            document.removeEventListener('click', playOnInteraction);
+          };
+          document.addEventListener('touchstart', playOnInteraction);
+          document.addEventListener('click', playOnInteraction);
+        });
+      };
+
+      // Delay pequeno para garantir que o vídeo está carregado
+      setTimeout(playVideo, 100);
+    }
+  }, []);
+
+  // Flip cards no scroll
+  useEffect(() => {
+    const observers = valueCardsRef.current.map((card, index) => {
+      if (!card) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+            setFlippedCards(prev => {
+              const newState = [...prev];
+              newState[index] = true;
+              return newState;
+            });
+          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
+            setFlippedCards(prev => {
+              const newState = [...prev];
+              newState[index] = false;
+              return newState;
+            });
+          }
+        },
+        { threshold: [0, 0.3, 0.7, 1] }
+      );
+
+      observer.observe(card);
+      return observer;
+    });
+
+    return () => {
+      observers.forEach(observer => observer?.disconnect());
+    };
+  }, []);
+
   // Efeito para digitação e apagamento
   useEffect(() => {
     const currentWord = TYPING_WORDS[currentWordIndex];
@@ -112,6 +252,20 @@ function Home() {
 
     return () => clearTimeout(timer);
   }, [currentText, isDeleting, currentWordIndex]);
+
+  // Scroll suave para seção quando vier de outra página com hash
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash) {
+      // Delay para garantir que a página carregou completamente
+      setTimeout(() => {
+        const element = document.querySelector(hash);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      }, 100);
+    }
+  }, []);
 
   const renderTypedFooterText = () => {
     let remaining = typedCharacters;
@@ -156,20 +310,33 @@ function Home() {
     return elements;
   };
 
+  const handleAddressClick = (address) => {
+    setSelectedAddress(address);
+    setIsNavigationDropdownOpen(true);
+  };
+
   const showCaret = hasStartedTyping && typedCharacters < totalCharacters;
 
   return (
     <div className="home">
       <Navbar />
 
+      <NavigationDropdown
+        isOpen={isNavigationDropdownOpen}
+        onClose={() => setIsNavigationDropdownOpen(false)}
+        address={selectedAddress}
+      />
+
       {/* Hero Section */}
       <section className="hero-section">
         <video
+          ref={videoRef}
           className="background-video"
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
           disablePictureInPicture
           controls={false}
         >
@@ -210,36 +377,60 @@ function Home() {
       </section>
 
       {/* Valores Section */}
-      <section className="values-section">
+      <section className="values-section" id="valores">
         <div className="container">
           <h2 className="section-title">Nossos <span className="highlight">Valores</span></h2>
           <div className="values-grid">
-            <Parallax rotate={[-5, 5]} opacity={[0.6, 1]}>
-              <div className="value-card">
-                <HeartIcon size={48} weight="fill" className="value-icon" />
-                <h3>Amor</h3>
-                <p>Demonstramos o amor de Cristo</p>
+            <Parallax opacity={[0.6, 1]}>
+              <div className="value-card-flip" ref={el => valueCardsRef.current[0] = el}>
+                <div className={`value-card-inner ${flippedCards[0] ? 'flipped' : ''}`}>
+                  <div className="value-card-front">
+                    <HeartIcon size={48} weight="fill" className="value-icon" />
+                    <h3>Amor</h3>
+                  </div>
+                  <div className="value-card-back">
+                    <p>Demonstramos o amor de Cristo em cada ação e palavra, refletindo Seu cuidado incondicional</p>
+                  </div>
+                </div>
               </div>
             </Parallax>
-            <Parallax rotate={[5, -5]} opacity={[0.6, 1]}>
-              <div className="value-card">
-                <HandHeartIcon size={48} weight="fill" className="value-icon" />
-                <h3>Zelo</h3>
-                <p>Comprometidos a zelar por todos</p>
+            <Parallax opacity={[0.6, 1]}>
+              <div className="value-card-flip" ref={el => valueCardsRef.current[1] = el}>
+                <div className={`value-card-inner ${flippedCards[1] ? 'flipped' : ''}`}>
+                  <div className="value-card-front">
+                    <HandHeartIcon size={48} weight="fill" className="value-icon" />
+                    <h3>Zelo</h3>
+                  </div>
+                  <div className="value-card-back">
+                    <p>Comprometidos a zelar por cada pessoa com dedicação e paixão santa pelo Reino de Deus</p>
+                  </div>
+                </div>
               </div>
             </Parallax>
-            <Parallax rotate={[-5, 5]} opacity={[0.6, 1]}>
-              <div className="value-card">
-                <MapPinIcon size={48} weight="fill" className="value-icon" />
-                <h3>Propósito</h3>
-                <p>Guiados pela palavra e direção de Deus</p>
+            <Parallax opacity={[0.6, 1]}>
+              <div className="value-card-flip" ref={el => valueCardsRef.current[2] = el}>
+                <div className={`value-card-inner ${flippedCards[2] ? 'flipped' : ''}`}>
+                  <div className="value-card-front">
+                    <MapPinIcon size={48} weight="fill" className="value-icon" />
+                    <h3>Propósito</h3>
+                  </div>
+                  <div className="value-card-back">
+                    <p>Guiados pela palavra e direção de Deus, vivendo com intenção e significado eterno</p>
+                  </div>
+                </div>
               </div>
             </Parallax>
-            <Parallax rotate={[5, -5]} opacity={[0.6, 1]}>
-              <div className="value-card">
-                <UsersIcon size={48} weight="fill" className="value-icon" />
-                <h3>Comunidade</h3>
-                <p>Somos uma família unida pela fé</p>
+            <Parallax opacity={[0.6, 1]}>
+              <div className="value-card-flip" ref={el => valueCardsRef.current[3] = el}>
+                <div className={`value-card-inner ${flippedCards[3] ? 'flipped' : ''}`}>
+                  <div className="value-card-front">
+                    <UsersIcon size={48} weight="fill" className="value-icon" />
+                    <h3>Comunidade</h3>
+                  </div>
+                  <div className="value-card-back">
+                    <p>Somos uma família unida pela fé, onde cada pessoa é valorizada e tem seu lugar</p>
+                  </div>
+                </div>
               </div>
             </Parallax>
           </div>
@@ -271,7 +462,7 @@ function Home() {
       </section>
 
       {/* Cultos Section */}
-      <section className="services-section">
+      <section className="services-section" id="cultos">
         <div className="container">
           <h2 className="section-title">Nossos <span className="highlight">Cultos</span></h2>
           <div className="services-grid">
@@ -283,15 +474,13 @@ function Home() {
                   <ClockIcon size={20} />
                   <span>10h</span>
                 </div>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Avenida+Jacu+Pêssego,+7639,+São+Paulo"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleAddressClick('Avenida Jacu Pêssego, 7639, São Paulo')}
                   className="service-address"
                 >
                   <MapPinIcon size={18} weight="fill" />
                   <span>Av. Jacu Pêssego, 7639</span>
-                </a>
+                </button>
               </div>
             </Parallax>
             <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
@@ -302,15 +491,13 @@ function Home() {
                   <ClockIcon size={20} />
                   <span>20h</span>
                 </div>
-                <a
-                  href="https://www.google.com/maps/search/?api=1&query=Rua+Mexiris,+201,+São+Paulo"
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <button
+                  onClick={() => handleAddressClick('Rua Mexiris, 201, São Paulo')}
                   className="service-address"
                 >
                   <MapPinIcon size={18} weight="fill" />
                   <span>Rua Mexiris, 201</span>
-                </a>
+                </button>
               </div>
             </Parallax>
           </div>
@@ -318,10 +505,21 @@ function Home() {
       </section>
 
       {/* História Section */}
-      <section className="history-section">
+      <section className="history-section" id="historia">
+        {/* Background Images */}
+        <Parallax translateY={[-50, 80]} className="history-bg-img history-bg-img-1">
+          <img src={historia1} alt="" />
+        </Parallax>
+        <Parallax translateY={[-40, 100]} className="history-bg-img history-bg-img-2">
+          <img src={historia2} alt="" />
+        </Parallax>
+        <Parallax translateY={[-80, 60]} className="history-bg-img history-bg-img-3">
+          <img src={historia3} alt="" />
+        </Parallax>
+
         <div className="container">
           <div className="history-content">
-            <Parallax opacity={[0.3, 1]}>
+            <Parallax opacity={[0.6, 1]}>
               <div className="history-text">
                 <CrossIcon size={64} weight="duotone" className="history-icon" />
                 <h2 className="section-title">Vivendo o <span className="highlight">Novo de Deus</span></h2>
@@ -348,7 +546,7 @@ function Home() {
               </div>
             </Parallax>
             <div className="history-stats">
-              <Parallax translateX={[-40, 40]} opacity={[0.3, 1]}>
+              <Parallax translateX={[-40, 40]} opacity={[0.6, 1]}>
                 <div className="stat-card">
                   <HandsPrayingIcon size={40} weight="fill" />
                   <h3>150+</h3>
@@ -375,73 +573,39 @@ function Home() {
       </section>
 
       {/* Ministérios Section */}
-      <section className="ministries-section">
+      <section className="ministries-section" id="ministerios">
         <div className="container">
           <h2 className="section-title">Nossos <span className="highlight">Ministérios</span></h2>
           <div className="ministries-grid">
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <HeartIcon size={48} weight="duotone" />
-                <h3>Crianças</h3>
-                <p>Ensinando os pequenos sobre o amor de Jesus de forma lúdica</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <UsersThreeIcon size={48} weight="duotone" />
-                <h3>Adolescentes</h3>
-                <p>Formando identidade em Cristo na fase mais importante da vida</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <UsersFourIcon size={48} weight="duotone" />
-                <h3>Jovens</h3>
-                <p>Um espaço para os jovens se conectarem e crescerem na fé</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <HouseIcon size={48} weight="duotone" />
-                <h3>Famílias</h3>
-                <p>Fortalecendo os laços familiares através da fé</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <HandsPrayingIcon size={48} weight="duotone" />
-                <h3>Louvor</h3>
-                <p>Adoração que nos conecta com a presença de Deus</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <HandHeartIcon size={48} weight="duotone" />
-                <h3>Voluntários</h3>
-                <p>Servindo com amor e dedicação ao próximo</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <GenderFemaleIcon size={48} weight="duotone" />
-                <h3>Mulheres</h3>
-                <p>Empoderamento feminino através da palavra de Deus</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <GenderMaleIcon size={48} weight="duotone" />
-                <h3>Homens</h3>
-                <p>Construindo homens de fé e caráter íntegro</p>
-              </div>
-            </Parallax>
-            <Parallax scale={[0.8, 1]} opacity={[0.5, 1]}>
-              <div className="ministry-card">
-                <PlantIcon size={48} weight="duotone" />
-                <h3>Socioambiental</h3>
-                <p>Cuidando da criação de Deus e do meio ambiente</p>
-              </div>
-            </Parallax>
+            {ministries.map((ministry, index) => {
+              const IconComponent = ministry.icon;
+              const isSelected = selectedMinistry === index;
+
+              return (
+                <Parallax key={index} scale={[0.8, 1]} opacity={[0.5, 1]}>
+                  <div
+                    className={`ministry-card ${isSelected ? 'selected' : ''}`}
+                    onClick={() => setSelectedMinistry(isSelected ? null : index)}
+                  >
+                    <IconComponent
+                      size={48}
+                      weight="duotone"
+                      className="ministry-icon"
+                      style={{ color: ministry.iconColor }}
+                    />
+                    <h3>{ministry.title}</h3>
+                    <div className="ministry-content">
+                      <p className={`ministry-description ${isSelected ? 'fade-out' : 'fade-in'}`}>
+                        {ministry.description}
+                      </p>
+                      <p className={`ministry-mystery ${isSelected ? 'fade-in' : 'fade-out'}`}>
+                        {ministry.mysteryMessage}
+                      </p>
+                    </div>
+                  </div>
+                </Parallax>
+              );
+            })}
           </div>
         </div>
       </section>
