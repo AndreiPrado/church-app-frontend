@@ -11,7 +11,7 @@ import historia1 from '../../assets/historia_1.jpeg';
 import historia2 from '../../assets/historia_2.jpeg';
 import historia3 from '../../assets/historia_3.jpeg';
 import { Parallax } from 'react-scroll-parallax';
-import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, UsersFourIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
 
 const FOOTER_TEXT_SEGMENTS = [
@@ -198,36 +198,32 @@ function Home() {
     }
   }, []);
 
-  // Flip cards no scroll - otimizado com useCallback
-  const handleCardIntersection = useCallback((index) => {
-    return ([entry]) => {
-      if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
-        setFlippedCards(prev => {
-          if (prev[index] === true) return prev; // Evita re-render desnecessário
-          const newState = [...prev];
-          newState[index] = true;
-          return newState;
-        });
-      } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
-        setFlippedCards(prev => {
-          if (prev[index] === false) return prev; // Evita re-render desnecessário
-          const newState = [...prev];
-          newState[index] = false;
-          return newState;
-        });
-      }
-    };
-  }, []);
-
+  // Flip cards no scroll
   useEffect(() => {
     // No mobile, usar threshold mais simples para melhor performance
     const threshold = isMobile ? [0, 0.5, 1] : [0, 0.3, 0.7, 1];
-    
+
     const observers = valueCardsRef.current.map((card, index) => {
       if (!card) return null;
 
       const observer = new IntersectionObserver(
-        handleCardIntersection(index),
+        ([entry]) => {
+          if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+            setFlippedCards(prev => {
+              if (prev[index] === true) return prev;
+              const newState = [...prev];
+              newState[index] = true;
+              return newState;
+            });
+          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
+            setFlippedCards(prev => {
+              if (prev[index] === false) return prev;
+              const newState = [...prev];
+              newState[index] = false;
+              return newState;
+            });
+          }
+        },
         { threshold }
       );
 
@@ -238,18 +234,18 @@ function Home() {
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
-  }, [handleCardIntersection, isMobile]);
+  }, [isMobile]);
 
   // Efeito para digitação e apagamento
   useEffect(() => {
     const currentWord = TYPING_WORDS[currentWordIndex];
-    
+
     // Mobile: velocidades mais lentas (menos CPU)
     // Desktop: velocidades normais
-    const typingSpeed = isMobile 
+    const typingSpeed = isMobile
       ? (isDeleting ? 80 : 150)  // Mobile: mais lento
       : (isDeleting ? 50 : 100);  // Desktop: normal
-    
+
     const pauseBeforeDelete = 2000;
     const pauseBeforeType = 500;
 
@@ -340,13 +336,6 @@ function Home() {
     setIsNavigationDropdownOpen(true);
   };
 
-  // Helper para valores de parallax - reduzido no mobile para melhor performance
-  const getParallaxValues = useCallback((desktopValues) => {
-    if (!isMobile) return desktopValues;
-    // Mobile: reduz movimento pela metade
-    return desktopValues.map(val => Math.round(val / 2));
-  }, [isMobile]);
-
   const showCaret = hasStartedTyping && typedCharacters < totalCharacters;
 
   return (
@@ -376,12 +365,12 @@ function Home() {
         </video>
         <div className="hero-overlay" />
         <div className="hero-content">
-          <Parallax translateY={getParallaxValues([-20, 20])} opacity={[0.8, 1]}>
+          <Parallax translateY={[-10, 10]} opacity={[0.9, 1]}>
             <div className="logo-container">
               <img className="hero-logo" src={logoWithoutBackground} alt="Zele Church Logo" />
             </div>
           </Parallax>
-          <Parallax translateY={getParallaxValues([0, 15])}>
+          <Parallax translateY={[0, 10]}>
             <h1 className="hero-title">Bem-vindo à <span className="highlight">Zele Church</span></h1>
             <p className="hero-subtitle">
               Uma igreja para <span className="typing-word">{currentText}</span>
@@ -398,7 +387,7 @@ function Home() {
       {/* Sobre Section */}
       <section className="about-section" id="sobre" ref={footerRef}>
         <div className="container">
-          <Parallax translateY={getParallaxValues([-30, 30])}>
+          <Parallax translateY={[-15, 15]}>
             <h2 className="section-title">Visão que nasce com <span className="highlight">Zelo</span></h2>
             <div className="typing-text">
               {renderedFooterText}
@@ -473,16 +462,16 @@ function Home() {
       <section className="photos-parallax-section">
         <div className="parallax-content">
           <div className="parallax-images">
-            <Parallax translateY={getParallaxValues([-60, 60])} className="parallax-img parallax-img-1">
+            <Parallax translateY={[-30, 30]} className="parallax-img parallax-img-1">
               <img src={encontro1} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={getParallaxValues([80, -80])} className="parallax-img parallax-img-2">
+            <Parallax translateY={[40, -40]} className="parallax-img parallax-img-2">
               <img src={encontro2} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={getParallaxValues([-40, 40])} className="parallax-img parallax-img-3">
+            <Parallax translateY={[-20, 20]} className="parallax-img parallax-img-3">
               <img src={encontro3} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={getParallaxValues([50, -50])} className="parallax-img parallax-img-4">
+            <Parallax translateY={[25, -25]} className="parallax-img parallax-img-4">
               <img src={encontro4} alt="Noite do Encontro na Zele" />
             </Parallax>
           </div>
@@ -539,15 +528,15 @@ function Home() {
       {/* História Section */}
       <section className="history-section" id="historia">
         {/* Background Images */}
-        <Parallax translateY={getParallaxValues([-50, 80])} className="history-bg-img history-bg-img-1">
+        <div className="history-bg-img history-bg-img-1">
           <img src={historia1} alt="" />
-        </Parallax>
-        <Parallax translateY={getParallaxValues([-40, 100])} className="history-bg-img history-bg-img-2">
+        </div>
+        <div className="history-bg-img history-bg-img-2">
           <img src={historia2} alt="" />
-        </Parallax>
-        <Parallax translateY={getParallaxValues([-80, 60])} className="history-bg-img history-bg-img-3">
+        </div>
+        <div className="history-bg-img history-bg-img-3">
           <img src={historia3} alt="" />
-        </Parallax>
+        </div>
 
         <div className="container">
           <div className="history-content">
@@ -614,28 +603,27 @@ function Home() {
               const isSelected = selectedMinistry === index;
 
               return (
-                <Parallax key={index} scale={[0.8, 1]} opacity={[0.5, 1]}>
-                  <div
-                    className={`ministry-card ${isSelected ? 'selected' : ''}`}
-                    onClick={() => setSelectedMinistry(isSelected ? null : index)}
-                  >
-                    <IconComponent
-                      size={48}
-                      weight="duotone"
-                      className="ministry-icon"
-                      style={{ color: ministry.iconColor }}
-                    />
-                    <h3>{ministry.title}</h3>
-                    <div className="ministry-content">
-                      <p className={`ministry-description ${isSelected ? 'fade-out' : 'fade-in'}`}>
-                        {ministry.description}
-                      </p>
-                      <p className={`ministry-mystery ${isSelected ? 'fade-in' : 'fade-out'}`}>
-                        {ministry.mysteryMessage}
-                      </p>
-                    </div>
+                <div
+                  key={index}
+                  className={`ministry-card ${isSelected ? 'selected' : ''}`}
+                  onClick={() => setSelectedMinistry(isSelected ? null : index)}
+                >
+                  <IconComponent
+                    size={48}
+                    weight="duotone"
+                    className="ministry-icon"
+                    style={{ color: ministry.iconColor }}
+                  />
+                  <h3>{ministry.title}</h3>
+                  <div className="ministry-content">
+                    <p className={`ministry-description ${isSelected ? 'fade-out' : 'fade-in'}`}>
+                      {ministry.description}
+                    </p>
+                    <p className={`ministry-mystery ${isSelected ? 'fade-in' : 'fade-out'}`}>
+                      {ministry.mysteryMessage}
+                    </p>
                   </div>
-                </Parallax>
+                </div>
               );
             })}
           </div>

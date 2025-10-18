@@ -6,9 +6,21 @@
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
 
-  // Remove scroll-behavior smooth no mobile (conflita com parallax)
+  // Otimizações mobile - desabilita parallax completamente
   @media (max-width: 768px) {
     scroll-behavior: auto;
+    
+    // Desabilita APENAS elementos parallax (react-scroll-parallax injeta classe .parallax-inner)
+    .parallax-inner {
+      transform: translate3d(0, 0, 0) !important;
+      opacity: 1 !important;
+      will-change: auto !important;
+    }
+    
+    // Garante que imagens de fundo da história fiquem fixas
+    .history-bg-img img {
+      transform: none !important;
+    }
   }
 
   // Container global

@@ -22,9 +22,8 @@
 
   &:not(.open) {
     &.scrolled {
-      background: rgba(10, 14, 26, 0.95);
+      background: rgba(10, 14, 26, 0.15);
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      border-bottom: 1px solid rgba(66, 165, 245, 0.2);
     }
   }
 
@@ -283,7 +282,7 @@
   .side-menu li.cta-link {
     margin-top: 2rem;
     border: none;
-    
+
     a {
       background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%);
       color: #ffffff;
@@ -292,7 +291,7 @@
       border-radius: 12px;
       text-align: center;
       box-shadow: 0 4px 20px rgba(66, 165, 245, 0.3);
-      
+
       &:hover {
         padding-left: 24px;
         transform: translateY(-2px);
