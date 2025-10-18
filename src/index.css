@@ -116,20 +116,6 @@ button {
   color: #ffffff;
 }
 
-/* Otimizações para performance de animações e parallax */
-@media (max-width: 768px) {
-  /* Otimiza GPU rendering para elementos com parallax */
-  [class*="parallax"],
-  [class*="Parallax"] {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-    -webkit-transform: translateZ(0);
-    -webkit-backface-visibility: hidden;
-    -webkit-perspective: 1000px;
-  }
-}
-
 /* Remove animações para quem prefere menos movimento */
 @media (prefers-reduced-motion: reduce) {
   html {

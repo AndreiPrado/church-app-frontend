@@ -11,7 +11,7 @@ import historia1 from '../../assets/historia_1.jpeg';
 import historia2 from '../../assets/historia_2.jpeg';
 import historia3 from '../../assets/historia_3.jpeg';
 import { Parallax } from 'react-scroll-parallax';
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useCallback } from "react";
 import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, UsersFourIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
 
 const FOOTER_TEXT_SEGMENTS = [
@@ -54,6 +54,11 @@ function Home() {
 
   // Estado para ministérios selecionados
   const [selectedMinistry, setSelectedMinistry] = useState(null);
+
+  // Detectar se é mobile para otimizações
+  const isMobile = useMemo(() => {
+    return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
+  }, []);
 
   // Dados dos ministérios
   const ministries = [
@@ -150,12 +155,16 @@ function Home() {
     if (!hasStartedTyping) return undefined;
     if (typedCharacters >= totalCharacters) return undefined;
 
+    // Mobile: 30ms (mais lento, menos CPU)
+    // Desktop: 15ms (mais rápido)
+    const typingInterval = isMobile ? 30 : 15;
+
     const interval = setInterval(() => {
       setTypedCharacters((prev) => Math.min(prev + 1, totalCharacters));
-    }, 15);
+    }, typingInterval);
 
     return () => clearInterval(interval);
-  }, [hasStartedTyping, typedCharacters, totalCharacters]);
+  }, [hasStartedTyping, typedCharacters, totalCharacters, isMobile]);
 
   // Efeito para cursor piscante
   useEffect(() => {
@@ -189,28 +198,37 @@ function Home() {
     }
   }, []);
 
-  // Flip cards no scroll
+  // Flip cards no scroll - otimizado com useCallback
+  const handleCardIntersection = useCallback((index) => {
+    return ([entry]) => {
+      if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
+        setFlippedCards(prev => {
+          if (prev[index] === true) return prev; // Evita re-render desnecessário
+          const newState = [...prev];
+          newState[index] = true;
+          return newState;
+        });
+      } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
+        setFlippedCards(prev => {
+          if (prev[index] === false) return prev; // Evita re-render desnecessário
+          const newState = [...prev];
+          newState[index] = false;
+          return newState;
+        });
+      }
+    };
+  }, []);
+
   useEffect(() => {
+    // No mobile, usar threshold mais simples para melhor performance
+    const threshold = isMobile ? [0, 0.5, 1] : [0, 0.3, 0.7, 1];
+    
     const observers = valueCardsRef.current.map((card, index) => {
       if (!card) return null;
 
       const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting && entry.intersectionRatio > 0.7) {
-            setFlippedCards(prev => {
-              const newState = [...prev];
-              newState[index] = true;
-              return newState;
-            });
-          } else if (!entry.isIntersecting || entry.intersectionRatio < 0.3) {
-            setFlippedCards(prev => {
-              const newState = [...prev];
-              newState[index] = false;
-              return newState;
-            });
-          }
-        },
-        { threshold: [0, 0.3, 0.7, 1] }
+        handleCardIntersection(index),
+        { threshold }
       );
 
       observer.observe(card);
@@ -220,12 +238,18 @@ function Home() {
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
-  }, []);
+  }, [handleCardIntersection, isMobile]);
 
   // Efeito para digitação e apagamento
   useEffect(() => {
     const currentWord = TYPING_WORDS[currentWordIndex];
-    const typingSpeed = isDeleting ? 50 : 100;
+    
+    // Mobile: velocidades mais lentas (menos CPU)
+    // Desktop: velocidades normais
+    const typingSpeed = isMobile 
+      ? (isDeleting ? 80 : 150)  // Mobile: mais lento
+      : (isDeleting ? 50 : 100);  // Desktop: normal
+    
     const pauseBeforeDelete = 2000;
     const pauseBeforeType = 500;
 
@@ -251,7 +275,7 @@ function Home() {
     }, isDeleting && currentText === '' ? pauseBeforeType : typingSpeed);
 
     return () => clearTimeout(timer);
-  }, [currentText, isDeleting, currentWordIndex]);
+  }, [currentText, isDeleting, currentWordIndex, isMobile]);
 
   // Scroll suave para seção quando vier de outra página com hash
   useEffect(() => {
@@ -267,7 +291,8 @@ function Home() {
     }
   }, []);
 
-  const renderTypedFooterText = () => {
+  // Otimizado com useMemo para evitar recálculos desnecessários
+  const renderedFooterText = useMemo(() => {
     let remaining = typedCharacters;
     const elements = [];
 
@@ -308,12 +333,19 @@ function Home() {
     });
 
     return elements;
-  };
+  }, [typedCharacters]);
 
   const handleAddressClick = (address) => {
     setSelectedAddress(address);
     setIsNavigationDropdownOpen(true);
   };
+
+  // Helper para valores de parallax - reduzido no mobile para melhor performance
+  const getParallaxValues = useCallback((desktopValues) => {
+    if (!isMobile) return desktopValues;
+    // Mobile: reduz movimento pela metade
+    return desktopValues.map(val => Math.round(val / 2));
+  }, [isMobile]);
 
   const showCaret = hasStartedTyping && typedCharacters < totalCharacters;
 
@@ -344,12 +376,12 @@ function Home() {
         </video>
         <div className="hero-overlay" />
         <div className="hero-content">
-          <Parallax translateY={[-20, 20]} opacity={[0.8, 1]}>
+          <Parallax translateY={getParallaxValues([-20, 20])} opacity={[0.8, 1]}>
             <div className="logo-container">
               <img className="hero-logo" src={logoWithoutBackground} alt="Zele Church Logo" />
             </div>
           </Parallax>
-          <Parallax translateY={[0, 15]}>
+          <Parallax translateY={getParallaxValues([0, 15])}>
             <h1 className="hero-title">Bem-vindo à <span className="highlight">Zele Church</span></h1>
             <p className="hero-subtitle">
               Uma igreja para <span className="typing-word">{currentText}</span>
@@ -366,10 +398,10 @@ function Home() {
       {/* Sobre Section */}
       <section className="about-section" id="sobre" ref={footerRef}>
         <div className="container">
-          <Parallax translateY={[-30, 30]}>
+          <Parallax translateY={getParallaxValues([-30, 30])}>
             <h2 className="section-title">Visão que nasce com <span className="highlight">Zelo</span></h2>
             <div className="typing-text">
-              {renderTypedFooterText()}
+              {renderedFooterText}
               {showCaret && <span className="typing-caret" />}
             </div>
           </Parallax>
@@ -441,16 +473,16 @@ function Home() {
       <section className="photos-parallax-section">
         <div className="parallax-content">
           <div className="parallax-images">
-            <Parallax translateY={[-60, 60]} className="parallax-img parallax-img-1">
+            <Parallax translateY={getParallaxValues([-60, 60])} className="parallax-img parallax-img-1">
               <img src={encontro1} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={[80, -80]} className="parallax-img parallax-img-2">
+            <Parallax translateY={getParallaxValues([80, -80])} className="parallax-img parallax-img-2">
               <img src={encontro2} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={[-40, 40]} className="parallax-img parallax-img-3">
+            <Parallax translateY={getParallaxValues([-40, 40])} className="parallax-img parallax-img-3">
               <img src={encontro3} alt="Noite do Encontro na Zele" />
             </Parallax>
-            <Parallax translateY={[50, -50]} className="parallax-img parallax-img-4">
+            <Parallax translateY={getParallaxValues([50, -50])} className="parallax-img parallax-img-4">
               <img src={encontro4} alt="Noite do Encontro na Zele" />
             </Parallax>
           </div>
@@ -507,13 +539,13 @@ function Home() {
       {/* História Section */}
       <section className="history-section" id="historia">
         {/* Background Images */}
-        <Parallax translateY={[-50, 80]} className="history-bg-img history-bg-img-1">
+        <Parallax translateY={getParallaxValues([-50, 80])} className="history-bg-img history-bg-img-1">
           <img src={historia1} alt="" />
         </Parallax>
-        <Parallax translateY={[-40, 100]} className="history-bg-img history-bg-img-2">
+        <Parallax translateY={getParallaxValues([-40, 100])} className="history-bg-img history-bg-img-2">
           <img src={historia2} alt="" />
         </Parallax>
-        <Parallax translateY={[-80, 60]} className="history-bg-img history-bg-img-3">
+        <Parallax translateY={getParallaxValues([-80, 60])} className="history-bg-img history-bg-img-3">
           <img src={historia3} alt="" />
         </Parallax>
 

@@ -6,18 +6,9 @@
   scroll-behavior: smooth;
   scroll-padding-top: 80px;
 
-  // Otimizações para parallax suave no mobile
+  // Remove scroll-behavior smooth no mobile (conflita com parallax)
   @media (max-width: 768px) {
-    // Remove scroll-behavior smooth que pode conflitar com parallax
     scroll-behavior: auto;
-    
-    // Otimiza rendering das animações parallax
-    [class*="parallax"] {
-      will-change: transform;
-      backface-visibility: hidden;
-      transform: translateZ(0);
-      -webkit-font-smoothing: antialiased;
-    }
   }
 
   // Container global
