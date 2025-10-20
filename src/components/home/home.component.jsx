@@ -79,7 +79,7 @@ function Home() {
     {
       icon: GenderFemaleIcon,
       iconColor: '#e91e63', // Rosa/Pink - feminino/empoderamento
-      title: 'Preciosa(Z)',
+      title: 'PreciosaZ',
       description: 'Mulheres intensas, curadas e cheias de propósito.',
       mysteryMessage: 'Um movimento poderoso está por vir. Fique ligada!'
     },
@@ -91,25 +91,18 @@ function Home() {
       mysteryMessage: 'Diversão, aprendizado e presença. Aguarde novidades!'
     },
     {
-      icon: HandHeartIcon,
-      iconColor: '#f44336', // Vermelho - amor/serviço
-      title: 'Zele Serve',
-      description: 'Servir é a linguagem do céu.',
-      mysteryMessage: 'Descubra onde suas mãos podem transformar vidas.'
+      icon: UsersThreeIcon,
+      iconColor: '#00bcd4', // Ciano - transição/adolescência
+      title: 'Next Teen',
+      description: 'A próxima geração já está aqui.',
+      mysteryMessage: 'Amizade, identidade e poder. Fique de olho!'
     },
     {
       icon: UsersFourIcon,
       iconColor: '#ff5722', // Laranja escuro - energia jovem
-      title: 'Zele Next Level',
+      title: 'Next Level',
       description: 'Fogo jovem, raízes firmes.',
       mysteryMessage: 'Conexão real, propósito eterno. Vem aí!'
-    },
-    {
-      icon: UsersThreeIcon,
-      iconColor: '#00bcd4', // Ciano - transição/adolescência
-      title: 'Zele Next Teen',
-      description: 'A próxima geração já está aqui.',
-      mysteryMessage: 'Amizade, identidade e poder. Fique de olho!'
     },
     {
       icon: HouseIcon,
@@ -117,6 +110,13 @@ function Home() {
       title: 'Zele Family',
       description: 'Casas que honram a presença.',
       mysteryMessage: 'Eventos e recursos para famílias em construção.'
+    },
+    {
+      icon: HandHeartIcon,
+      iconColor: '#f44336', // Vermelho - amor/serviço
+      title: 'Zele Serve',
+      description: 'Servir é a linguagem do céu.',
+      mysteryMessage: 'Descubra onde suas mãos podem transformar vidas.'
     },
     {
       icon: PlantIcon,
