@@ -59,7 +59,7 @@ export default function SignUp() {
     // Foca no primeiro campo do step (se for mudança de step)
     const firstFieldIds = ['fullName', 'zipCode', 'phone'];
     const firstFieldId = firstFieldIds[currentStep];
-    
+
     if (firstFieldId) {
       const timer = setTimeout(() => {
         const firstField = document.getElementById(firstFieldId);
@@ -67,7 +67,7 @@ export default function SignUp() {
           firstField.focus();
         }
       }, 100);
-      
+
       return () => clearTimeout(timer);
     }
   }, [currentStep]);
@@ -279,7 +279,7 @@ export default function SignUp() {
     let isValid = true;
     const newErrors = {};
     let requiredFields = ['fullName', 'cpf', 'birthDate', 'gender', 'maritalStatus', 'baptized', 'zipCode', 'address', 'number', 'city', 'state', 'phone', 'email'];
-    
+
     // Adiciona baptismDate aos campos obrigatórios se baptized === "true"
     if (formData.baptized === "true") {
       requiredFields.push('baptismDate');
@@ -308,50 +308,73 @@ export default function SignUp() {
       // Se houver foto, enviar via FormData (multipart)
       if (formData.photoFile instanceof File) {
         const formDataMultipart = new FormData();
-        
+
         // Adicionar arquivo
         formDataMultipart.append('photo', formData.photoFile);
-        
-        // Adicionar outros campos
+
+        // Adicionar outros campos - ENVIAR TODOS, incluindo vazios para detectar erros
         Object.entries(formData).forEach(([key, value]) => {
           if (key === "photoFile") return; // Já adicionado como 'photo'
-          
-          if (value !== null && value !== "") {
-            if (key === "cpf" || key === "phone" || key === "zipCode") {
-              formDataMultipart.append(key, value.replace(/\D/g, ""));
-            } else if (key === "baptized") {
-              formDataMultipart.append(key, value === "true" ? "true" : "false");
-            } else if (key === "birthDate" || key === "baptismDate") {
-              formDataMultipart.append(key, convertDateToISO(value));
-            } else if (key === "address") {
-              formDataMultipart.append(key, `${value}, ${formData.number}`);
-            } else if (key !== "number") {
-              formDataMultipart.append(key, value);
-            }
+
+          // Processar o valor independente de estar vazio ou não
+          let processedValue = value || ""; // Garantir que não seja null
+
+          if (key === "cpf" || key === "phone" || key === "zipCode") {
+            processedValue = processedValue.replace(/\D/g, "");
+          } else if (key === "baptized") {
+            processedValue = value === "true" ? "true" : "false";
+          } else if (key === "birthDate" || key === "baptismDate") {
+            processedValue = value ? convertDateToISO(value) : "";
+          } else if (key === "address") {
+            processedValue = value ? `${value}, ${formData.number}` : "";
+          }
+
+          // Enviar TODOS os campos (exceto 'number' que já foi concatenado no address)
+          if (key !== "number") {
+            formDataMultipart.append(key, processedValue);
           }
         });
-        
+
         formDataMultipart.append('status', 'pendente');
-        
+
+        // 🔍 LOG DE DEBUG: Verificar o que está sendo enviado via FormData
+        console.log('📤 ENVIANDO VIA MULTIPART:', {
+          hasPhoto: true,
+          formDataEntries: Array.from(formDataMultipart.entries())
+        });
+
         await memberService.createMember(formDataMultipart);
       } else {
-        // Sem foto - enviar JSON normal
+        // Sem foto - enviar JSON normal - INCLUIR TODOS OS CAMPOS
         const payload = {};
         Object.entries(formData).forEach(([key, value]) => {
-          if (value !== null && value !== "") {
+          if (key !== "photoFile" && key !== "number") {
+            // Processar o valor independente de estar vazio ou não
+            let processedValue = value || ""; // Garantir que não seja null
+
             if (key === "cpf" || key === "phone" || key === "zipCode") {
-              payload[key] = value.replace(/\D/g, "");
+              processedValue = processedValue.replace(/\D/g, "");
             } else if (key === "baptized") {
-              payload[key] = value === "true";
+              processedValue = value === "true";
             } else if (key === "birthDate" || key === "baptismDate") {
-              payload[key] = convertDateToISO(value);
-            } else if (key !== "photoFile" && key !== "number") {
-              payload[key] = value;
+              processedValue = value ? convertDateToISO(value) : "";
+            } else if (key === "address") {
+              processedValue = value ? `${value}, ${formData.number}` : "";
             }
+
+            // Adicionar TODOS os campos ao payload
+            payload[key] = processedValue;
           }
         });
-        
+
         payload.status = "pendente";
+
+        // 🔍 LOG DE DEBUG: Verificar o que está sendo enviado via JSON
+        console.log('📤 ENVIANDO VIA JSON:', {
+          hasPhoto: false,
+          payload
+        });
+
         await memberService.createMember(payload);
       }
 
@@ -361,9 +384,46 @@ export default function SignUp() {
       navigate("/signup/success");
     } catch (error) {
       setIsLoading(false);
+
+      // 🔍 LOG DE DEBUG: Verificar estrutura do erro
+      console.error('❌ ERRO NO CADASTRO:', error);
+
+      let errorMessage = 'Erro ao cadastrar membro. Tente novamente.';
+
+      // Tratar diferentes tipos de erro do backend
+      if (error.response?.data) {
+        const responseData = error.response.data;
+
+        // Erro de validação específico (campos obrigatórios)
+        if (responseData.code === 'MISSING_EMAIL') {
+          errorMessage = '📧 Email é obrigatório e não pode estar vazio';
+        } else if (responseData.code === 'MISSING_PHONE') {
+          errorMessage = '📱 Telefone é obrigatório e não pode estar vazio';
+        }
+        // Erros de validação Zod
+        else if (responseData.details && Array.isArray(responseData.details)) {
+          const fieldErrors = responseData.details.map(detail =>
+            `${detail.path.join('.')}: ${detail.message}`
+          ).join(', ');
+          errorMessage = `❌ Dados inválidos: ${fieldErrors}`;
+        }
+        // Outros erros com mensagem específica
+        else if (responseData.detail) {
+          errorMessage = `❌ ${responseData.detail}`;
+        } else if (responseData.message) {
+          errorMessage = `❌ ${responseData.message}`;
+        } else if (responseData.error && typeof responseData.error === 'string') {
+          errorMessage = `❌ ${responseData.error}`;
+        }
+      }
+      // Erro de rede ou sem resposta
+      else if (error.message) {
+        errorMessage = `🌐 ${error.message}`;
+      }
+
       setAlert({
         isVisible: true,
-        message: error.message,
+        message: errorMessage,
         type: "error"
       });
     }
@@ -647,8 +707,8 @@ export default function SignUp() {
         {renderErrorMessage('email')}
       </div>
 
-      <PhotoUpload 
-        onPhotoChange={(file) => setFormData((prev) => ({ ...prev, photoFile: file }))} 
+      <PhotoUpload
+        onPhotoChange={(file) => setFormData((prev) => ({ ...prev, photoFile: file }))}
       />
     </>,
   ];
@@ -656,7 +716,7 @@ export default function SignUp() {
   return (
     <div className="signup">
       {isLoading && <LoadingSpinner message="Cadastrando membro..." />}
-      
+
       <Navbar />
       <video className="background-video" autoPlay muted loop playsInline disablePictureInPicture controls={false}>
         <source src={signupVideo} type="video/mp4" />
@@ -685,8 +745,8 @@ export default function SignUp() {
           <div className="button-container">
             <div style={{ flex: 1, display: "flex", justifyContent: "flex-start" }}>
               {currentStep > 0 && (
-                <button type="button" onClick={() => { 
-                  setFormError(false); 
+                <button type="button" onClick={() => {
+                  setFormError(false);
                   setCurrentStep(currentStep - 1);
                 }}
                   aria-label="Voltar" className="arrow-nav-btn">
@@ -728,6 +788,14 @@ export default function SignUp() {
                   } else {
                     setFieldErrors({});
                     setFormError(false);
+
+                    // 🔍 LOG DE DEBUG: Verificar dados ao avançar etapa
+                    console.log(`📈 AVANÇANDO PARA ETAPA ${currentStep + 1}:`, {
+                      etapaAtual: currentStep,
+                      proximaEtapa: currentStep + 1,
+                      dadosAtuais: formData
+                    });
+
                     setCurrentStep(currentStep + 1);
                   }
                 }} aria-label="Próximo" className="arrow-nav-btn">
