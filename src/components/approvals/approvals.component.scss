@@ -30,6 +30,41 @@
       }
     }
 
+    .view-controls {
+      display: flex;
+      gap: 4px;
+      background: rgba(66, 165, 245, 0.05);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+
+      .view-btn {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+          background: rgba(66, 165, 245, 0.1);
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        &.active {
+          background: #42a5f5;
+          color: #ffffff;
+          font-weight: 600;
+        }
+      }
+    }
+
     .bulk-actions {
       display: flex;
       gap: 12px;
@@ -151,7 +186,89 @@
   .approvals-list {
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 20px;
+
+    // Modo Cards (padrão) - cards menores
+    &.cards-view {
+      .approval-card {
+        .approval-card-header {
+          padding: 16px 20px;
+        }
+
+        .approval-card-body {
+          padding: 0 20px 20px 20px;
+
+          .info-section {
+            margin-bottom: 16px;
+
+            h4 {
+              font-size: 0.9rem;
+            }
+
+            .info-grid {
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 8px;
+            }
+
+            .info-item {
+              font-size: 0.85rem;
+            }
+          }
+        }
+
+        .approval-card-actions {
+          padding: 16px 20px;
+        }
+      }
+    }
+
+    // Modo Lista - layout horizontal compacto
+    &.list-view {
+      .approval-card {
+        .approval-card-header {
+          padding: 12px 20px;
+        }
+
+        .approval-card-body {
+          display: flex;
+          gap: 20px;
+          padding: 0 20px 12px 20px;
+
+          .info-section {
+            flex: 1;
+            margin-bottom: 0;
+
+            h4 {
+              font-size: 0.8rem;
+              margin-bottom: 8px;
+            }
+
+            .info-grid {
+              grid-template-columns: 1fr;
+              gap: 4px;
+            }
+
+            .info-item {
+              font-size: 0.8rem;
+              padding: 2px 0;
+            }
+          }
+        }
+
+        .approval-card-actions {
+          padding: 12px 20px;
+
+          .action-buttons {
+            gap: 8px;
+
+            button {
+              padding: 6px 12px;
+              font-size: 0.8rem;
+            }
+          }
+        }
+      }
+    }
 
     .no-approvals {
       display: flex;

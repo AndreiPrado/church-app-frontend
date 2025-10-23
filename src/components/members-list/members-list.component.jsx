@@ -1,9 +1,9 @@
 import "./members-list.component.scss";
 import { useState, useEffect, useCallback } from "react";
-import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
+import MemberPhoto from "../member-photo/member-photo.component";
 import {
   Users,
   MagnifyingGlass,
@@ -19,7 +19,6 @@ import {
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
-  const { getToken } = useAuth();
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,8 +29,8 @@ export default function MembersList() {
   const loadMembers = useCallback(async () => {
     try {
       setLoading(true);
-      const token = getToken();
-      const data = await authService.getMembers(token);
+      // authService.getMembers já usa o token internamente via api.get
+      const data = await authService.getMembers();
       setMembers(data);
       setFilteredMembers(data);
     } catch (err) {
@@ -39,7 +38,7 @@ export default function MembersList() {
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, []);
 
   useEffect(() => {
     loadMembers();
@@ -170,11 +169,12 @@ export default function MembersList() {
               <div key={member.id} className="member-card">
                 <div className="member-card-header">
                   <div className="member-avatar">
-                    {member.photoUrl ? (
-                      <img src={member.photoUrl} alt={member.fullName} />
-                    ) : (
-                      <UserCircle size={48} weight="duotone" />
-                    )}
+                    <MemberPhoto 
+                      memberId={member.id}
+                      memberName={member.fullName}
+                      size={48}
+                      fallbackIcon={UserCircle}
+                    />
                   </div>
                   <div className="member-basic-info">
                     <h3>{member.fullName}</h3>

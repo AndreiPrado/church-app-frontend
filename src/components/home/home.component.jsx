@@ -410,6 +410,7 @@ function Home() {
                     <h3>Amor</h3>
                   </div>
                   <div className="value-card-back">
+                    <h3>Amor</h3>
                     <p>Demonstramos o amor de Cristo em cada ação e palavra, refletindo Seu cuidado incondicional</p>
                   </div>
                 </div>
@@ -423,6 +424,7 @@ function Home() {
                     <h3>Zelo</h3>
                   </div>
                   <div className="value-card-back">
+                    <h3>Zelo</h3>
                     <p>Comprometidos a zelar por cada pessoa com dedicação e paixão santa pelo Reino de Deus</p>
                   </div>
                 </div>
@@ -436,6 +438,7 @@ function Home() {
                     <h3>Propósito</h3>
                   </div>
                   <div className="value-card-back">
+                    <h3>Propósito</h3>
                     <p>Guiados pela palavra e direção de Deus, vivendo com intenção e significado eterno</p>
                   </div>
                 </div>
@@ -449,6 +452,7 @@ function Home() {
                     <h3>Comunidade</h3>
                   </div>
                   <div className="value-card-back">
+                    <h3>Comunidade</h3>
                     <p>Somos uma família unida pela fé, onde cada pessoa é valorizada e tem seu lugar</p>
                   </div>
                 </div>

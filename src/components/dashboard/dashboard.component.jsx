@@ -59,10 +59,11 @@ export default function Dashboard() {
     );
   }
 
-  // API retorna: { total, active, baptized, byGender: { masculino, feminino }, byAge: { under18, between18and35, between36and60, over60 } }
+  // API retorna: { total, active, pending, baptized, byGender: { masculino, feminino }, byAge: { under18, between18and35, between36and60, over60 } }
   const stats = statistics || {
     total: 0,
     active: 0,
+    pending: 0,
     baptized: 0,
     byGender: { masculino: 0, feminino: 0 },
     byAge: { under18: 0, between18and35: 0, between36and60: 0, over60: 0 }
@@ -98,9 +99,19 @@ export default function Dashboard() {
             </div>
           </div>
 
-          <div className="stat-card info">
+          <div className="stat-card warning">
             <div className="stat-icon">
               <UserPlus size={32} weight="duotone" />
+            </div>
+            <div className="stat-content">
+              <span className="stat-label">Pendentes</span>
+              <span className="stat-value">{stats.pending}</span>
+            </div>
+          </div>
+
+          <div className="stat-card info">
+            <div className="stat-icon">
+              <CheckCircle size={32} weight="duotone" />
             </div>
             <div className="stat-content">
               <span className="stat-label">Batizados</span>

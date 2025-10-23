@@ -9,14 +9,14 @@
   // Otimizações mobile - desabilita parallax completamente
   @media (max-width: 768px) {
     scroll-behavior: auto;
-    
+
     // Desabilita APENAS elementos parallax (react-scroll-parallax injeta classe .parallax-inner)
     .parallax-inner {
       transform: translate3d(0, 0, 0) !important;
       opacity: 1 !important;
       will-change: auto !important;
     }
-    
+
     // Garante que imagens de fundo da história fiquem fixas
     .history-bg-img img {
       transform: none !important;
@@ -311,6 +311,9 @@
       background: transparent;
       perspective: 1000px;
       height: 280px;
+      
+      // Garantir isolamento do contexto 3D
+      transform-style: preserve-3d;
 
       .value-card-inner {
         position: relative;
@@ -319,9 +322,17 @@
         text-align: center;
         transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         transform-style: preserve-3d;
+        
+        // Garantir transformação 3D suave
+        -webkit-transform-style: preserve-3d;
+        -moz-transform-style: preserve-3d;
+        -ms-transform-style: preserve-3d;
 
         &.flipped {
           transform: rotateY(180deg);
+          -webkit-transform: rotateY(180deg);
+          -moz-transform: rotateY(180deg);
+          -ms-transform: rotateY(180deg);
         }
       }
 
@@ -330,6 +341,9 @@
         position: absolute;
         width: 100%;
         height: 100%;
+        -webkit-backface-visibility: hidden;
+        -moz-backface-visibility: hidden;
+        -ms-backface-visibility: hidden;
         backface-visibility: hidden;
         border-radius: 20px;
         display: flex;
@@ -339,6 +353,15 @@
         padding: 3rem 2rem;
         border: 1px solid rgba(66, 165, 245, 0.1);
         backdrop-filter: blur(10px);
+        
+        // Garantir que não haja overflow visível
+        overflow: hidden;
+        
+        // Forçar rasterização no hardware para melhor performance
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
       }
 
       .value-card-front {
@@ -366,12 +389,21 @@
         border-color: rgba(255, 255, 255, 0.3);
         box-shadow: 0 12px 40px rgba(66, 165, 245, 0.4);
 
+        h3 {
+          font-size: 1.6rem;
+          font-weight: 700;
+          color: #ffffff;
+          margin: 0 0 1.5rem 0;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
         p {
           color: #ffffff;
           font-size: 1.05rem;
           line-height: 1.7;
           margin: 0;
           font-weight: 500;
+          text-align: center;
         }
       }
     }
@@ -677,6 +709,11 @@
           box-shadow: 0 12px 40px rgba(66, 165, 245, 0.3);
         }
 
+        @media (max-width: 992px) {
+          width: 260px;
+          height: 260px;
+        }
+
         @media (max-width: 768px) {
           width: 160px;
           height: 160px;
@@ -685,43 +722,43 @@
 
       &.parallax-img-1 {
         top: 5%;
-        left: 3%;
+        left: 5%;
       }
 
       &.parallax-img-2 {
         top: 5%;
-        right: 3%;
+        right: 5%;
       }
 
       &.parallax-img-3 {
         bottom: 5%;
-        left: 8%;
+        left: 15%;
       }
 
       &.parallax-img-4 {
         bottom: 5%;
-        right: 8%;
+        right: 15%;
       }
 
       @media (max-width: 768px) {
         &.parallax-img-1 {
           top: 3%;
-          left: 2%;
+          left: 5%;
         }
 
         &.parallax-img-2 {
           top: 3%;
-          right: 2%;
+          right: 5%;
         }
 
         &.parallax-img-3 {
           bottom: 3%;
-          left: 2%;
+          left: 5%;
         }
 
         &.parallax-img-4 {
           bottom: 3%;
-          right: 2%;
+          right: 5%;
         }
       }
     }
@@ -813,7 +850,8 @@
         color: rgba(255, 255, 255, 0.75);
         line-height: 1.6;
         font-size: 1rem;
-        transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        will-change: opacity, transform;
       }
 
       .ministry-mystery {
@@ -825,25 +863,30 @@
 
       .fade-in {
         opacity: 1;
-        transform: translateY(0) scale(1);
-        animation: slideInScale 0.5s ease;
+        transform: translateY(0) scale(1) rotateX(0deg);
+        animation: smoothSlideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
       }
 
       .fade-out {
         opacity: 0;
-        transform: translateY(20px) scale(0.95);
+        transform: translateY(15px) scale(0.98) rotateX(-5deg);
         pointer-events: none;
       }
 
-      @keyframes slideInScale {
-        from {
+      @keyframes smoothSlideIn {
+        0% {
           opacity: 0;
-          transform: translateY(-20px) scale(0.9);
+          transform: translateY(-10px) scale(0.95) rotateX(10deg);
+        }
+        
+        60% {
+          opacity: 0.8;
+          transform: translateY(-2px) scale(1.02) rotateX(-2deg);
         }
 
-        to {
+        100% {
           opacity: 1;
-          transform: translateY(0) scale(1);
+          transform: translateY(0) scale(1) rotateX(0deg);
         }
       }
 

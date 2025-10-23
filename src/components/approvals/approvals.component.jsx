@@ -4,6 +4,7 @@ import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
+import MemberPhoto from "../member-photo/member-photo.component";
 import {
   UserCheck,
   CheckCircle,
@@ -13,7 +14,9 @@ import {
   EnvelopeSimple,
   MapPin,
   CalendarBlank,
-  IdentificationCard
+  IdentificationCard,
+  GridFour,
+  ListBullets
 } from "@phosphor-icons/react";
 
 export default function Approvals() {
@@ -25,6 +28,7 @@ export default function Approvals() {
   const [error, setError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
+  const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
 
   const loadPendingMembers = useCallback(async () => {
     try {
@@ -202,6 +206,23 @@ export default function Approvals() {
             </div>
           </div>
 
+          <div className="view-controls">
+            <button 
+              className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
+              onClick={() => setViewMode('cards')}
+            >
+              <GridFour size={20} weight="duotone" />
+              Cards
+            </button>
+            <button 
+              className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+            >
+              <ListBullets size={20} weight="duotone" />
+              Lista
+            </button>
+          </div>
+
           {pendingMembers.length > 0 && (
             <div className="bulk-actions">
               <div className="role-selector">
@@ -241,7 +262,7 @@ export default function Approvals() {
         </div>
 
         {/* Lista de Membros Pendentes */}
-        <div className="approvals-list">
+        <div className={`approvals-list ${viewMode === 'list' ? 'list-view' : 'cards-view'}`}>
           {pendingMembers.length === 0 ? (
             <div className="no-approvals">
               <UserCheck size={64} weight="duotone" />
@@ -258,11 +279,12 @@ export default function Approvals() {
                     className="member-checkbox"
                   />
                   <div className="member-avatar">
-                    {member.photoUrl ? (
-                      <img src={member.photoUrl} alt={member.fullName} />
-                    ) : (
-                      <UserCircle size={64} weight="duotone" />
-                    )}
+                    <MemberPhoto 
+                      memberId={member.id}
+                      memberName={member.fullName}
+                      size={64}
+                      fallbackIcon={UserCircle}
+                    />
                   </div>
                   <div className="member-basic-info">
                     <h3>{member.fullName}</h3>

@@ -97,6 +97,24 @@ class AuthService {
   }
 
   /**
+   * Obter foto de membro de forma autenticada
+   */
+  async getMemberPhoto(memberId) {
+    try {
+      const response = await api.get(`/api/members/photo/${memberId}`, {
+        responseType: 'blob' // Importante: receber como blob
+      });
+      
+      // Criar URL temporária para a imagem
+      return URL.createObjectURL(response.data);
+    } catch (error) {
+      // Se não conseguir carregar a foto, retornar null
+      console.warn(`Não foi possível carregar a foto do membro ${memberId}:`, error);
+      return null;
+    }
+  }
+
+  /**
    * Atualizar membro
    */
   async updateMember(id, data) {

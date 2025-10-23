@@ -26,7 +26,7 @@ class CepService {
       }
 
       const result = await response.json();
-      
+
       // Mapeia o retorno da API para o formato esperado
       if (result.success && result.data) {
         return {
@@ -40,7 +40,7 @@ class CepService {
           ddd: result.data.ddd || ''
         };
       }
-      
+
       throw new Error('CEP não encontrado.');
     } catch (error) {
       if (error.message.includes('CEP')) {
