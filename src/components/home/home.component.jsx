@@ -2,7 +2,6 @@ import "./home.component.scss";
 import Navbar from '../navbar/navbar.component.jsx';
 import NavigationDropdown from '../navigation-dropdown/navigation-dropdown.component.jsx';
 import logoWithoutBackground from '../../assets/logo-without-background.png';
-import adoracaoVideo from '../../assets/intro.mp4';
 import encontro1 from '../../assets/encontro_1.jpeg';
 import encontro2 from '../../assets/encontro_2.jpeg';
 import encontro3 from '../../assets/encontro_3.jpeg';
@@ -360,9 +359,12 @@ function Home() {
           preload="auto"
           disablePictureInPicture
           controls={false}
+          poster="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/frame.jpg"
         >
-          <source src={adoracaoVideo} type="video/mp4" />
+          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/video-h265.mp4" type="video/mp4; codecs=hevc" />
+          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/video-h264.mp4" type="video/mp4; codecs=avc1" />
         </video>
+
         <div className="hero-overlay" />
         <div className="hero-content">
           <Parallax translateY={[-10, 10]} opacity={[0.9, 1]}>
