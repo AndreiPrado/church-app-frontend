@@ -517,11 +517,11 @@ function Home() {
                   <span>20h</span>
                 </div>
                 <button
-                  onClick={() => handleAddressClick('Rua Mexiris, 201, São Paulo')}
+                  onClick={() => handleAddressClick('Avenida Jacu Pêssego, 7639, São Paulo')}
                   className="service-address"
                 >
                   <MapPinIcon size={18} weight="fill" />
-                  <span>Rua Mexiris, 201</span>
+                  <span>Av. Jacu Pêssego, 7639</span>
                 </button>
               </div>
             </Parallax>
