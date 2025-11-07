@@ -25,35 +25,49 @@ export default function MemberPhoto({
       return;
     }
 
+    let isMounted = true;
+    let currentUrl = null;
+
     const loadPhoto = async () => {
       try {
         setIsLoading(true);
         setHasError(false);
         
         const url = await authService.getMemberPhoto(memberId);
+        currentUrl = url;
         
-        if (url) {
-          setPhotoUrl(url);
-        } else {
-          setHasError(true);
+        if (isMounted) {
+          if (url) {
+            setPhotoUrl(url);
+          } else {
+            setHasError(true);
+          }
+        } else if (url) {
+          // Se o componente foi desmontado antes da foto carregar, revogar imediatamente
+          URL.revokeObjectURL(url);
         }
       } catch (error) {
-        console.error('Erro ao carregar foto do membro:', error);
-        setHasError(true);
+        console.error('Erro ao carregar foto:', error);
+        if (isMounted) {
+          setHasError(true);
+        }
       } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
     };
 
     loadPhoto();
 
-    // Cleanup: revogar URL temporária quando componente for desmontado
+    // Cleanup: revogar URL temporária quando componente for desmontado ou memberId mudar
     return () => {
-      if (photoUrl) {
-        URL.revokeObjectURL(photoUrl);
+      isMounted = false;
+      if (currentUrl) {
+        URL.revokeObjectURL(currentUrl);
       }
     };
-  }, [memberId, photoUrl]);
+  }, [memberId]);
 
   const containerStyle = {
     width: size,

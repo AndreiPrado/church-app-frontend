@@ -11,13 +11,13 @@ import {
   UserCircle,
   Phone,
   EnvelopeSimple,
-  MapPin,
   CalendarBlank,
   CheckCircle,
   XCircle,
   Clock,
   GridFour,
-  ListBullets
+  ListBullets,
+  IdentificationCard
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
@@ -214,16 +214,20 @@ export default function MembersList() {
                     <Phone size={18} weight="duotone" />
                     <span>{member.phone}</span>
                   </div>
-                  <div className="info-item">
-                    <MapPin size={18} weight="duotone" />
-                    <span>{member.city} - {member.state}</span>
-                  </div>
-                  <div className="info-item">
-                    <CalendarBlank size={18} weight="duotone" />
-                    <span>
-                      Cadastrado em {new Date(member.createdAt).toLocaleDateString('pt-BR')}
-                    </span>
-                  </div>
+                  {member.cpf && (
+                    <div className="info-item">
+                      <IdentificationCard size={18} weight="duotone" />
+                      <span>{member.cpf}</span>
+                    </div>
+                  )}
+                  {member.birthDate && (
+                    <div className="info-item">
+                      <CalendarBlank size={18} weight="duotone" />
+                      <span>
+                        {new Date(member.birthDate).toLocaleDateString('pt-BR')} ({member.age} anos)
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="member-card-footer">
@@ -232,12 +236,17 @@ export default function MembersList() {
                       <strong>Gênero:</strong> {member.gender}
                     </span>
                     <span className="detail-item">
-                      <strong>Estado Civil:</strong> {member.maritalStatus}
+                      <strong>Nº Membro:</strong> {member.memberNumber}
                     </span>
-                    {member.baptized && (
+                    {member.baptized ? (
                       <span className="detail-item baptized">
                         <CheckCircle size={16} weight="fill" />
                         Batizado
+                      </span>
+                    ) : (
+                      <span className="detail-item">
+                        <XCircle size={16} weight="fill" />
+                        Não batizado
                       </span>
                     )}
                   </div>
@@ -255,10 +264,11 @@ export default function MembersList() {
                   <th>Status</th>
                   <th>Email</th>
                   <th>Telefone</th>
-                  <th>Cidade/UF</th>
+                  <th>CPF</th>
+                  <th>Nascimento</th>
                   <th>Gênero</th>
                   <th>Batizado</th>
-                  <th>Cadastro</th>
+                  <th>Nº Membro</th>
                 </tr>
               </thead>
               <tbody>
@@ -285,7 +295,18 @@ export default function MembersList() {
                     </td>
                     <td>{member.email}</td>
                     <td>{member.phone}</td>
-                    <td>{member.city} - {member.state}</td>
+                    <td>{member.cpf || '-'}</td>
+                    <td>
+                      {member.birthDate ? (
+                        <>
+                          {new Date(member.birthDate).toLocaleDateString('pt-BR')}
+                          <br />
+                          <small style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+                            {member.age} anos
+                          </small>
+                        </>
+                      ) : '-'}
+                    </td>
                     <td>{member.gender}</td>
                     <td className="baptized-cell">
                       {member.baptized ? (
@@ -294,9 +315,7 @@ export default function MembersList() {
                         <XCircle size={18} weight="fill" className="not-baptized-icon" />
                       )}
                     </td>
-                    <td>
-                      {new Date(member.createdAt).toLocaleDateString('pt-BR')}
-                    </td>
+                    <td>{member.memberNumber}</td>
                   </tr>
                 ))}
               </tbody>

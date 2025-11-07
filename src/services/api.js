@@ -66,9 +66,13 @@ class ApiClient {
     
     // Preparar headers
     const headers = {
-      'Content-Type': 'application/json',
       ...options.headers
     };
+
+    // Adicionar Content-Type apenas se não for requisição de blob
+    if (options.responseType !== 'blob' && !headers['Content-Type']) {
+      headers['Content-Type'] = 'application/json';
+    }
 
     // Adicionar token de autenticação se disponível
     const token = storage.getAccessToken();
@@ -96,7 +100,7 @@ class ApiClient {
             config.headers['Authorization'] = `Bearer ${newToken}`;
             return fetch(url, { ...config, _retry: true });
           })
-          .then(response => this.handleResponse(response))
+          .then(response => this.handleResponse(response, options))
           .catch(error => {
             throw error;
           });
@@ -142,15 +146,33 @@ class ApiClient {
       }
     }
 
-    return this.handleResponse(response);
+    return this.handleResponse(response, options);
   }
 
   /**
    * Trata resposta da API
    */
-  async handleResponse(response) {
-    // Se não for JSON, retorna resposta crua
+  async handleResponse(response, options = {}) {
     const contentType = response.headers.get('content-type');
+    
+    // Se responseType for 'blob', retornar como Blob (compatível com axios)
+    if (options.responseType === 'blob') {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const blob = await response.blob();
+      
+      // Retornar no formato axios-like { data: blob, status, headers }
+      return {
+        data: blob,
+        status: response.status,
+        statusText: response.statusText,
+        headers: Object.fromEntries(response.headers.entries())
+      };
+    }
+    
+    // Se não for JSON, retorna resposta crua
     if (!contentType || !contentType.includes('application/json')) {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);

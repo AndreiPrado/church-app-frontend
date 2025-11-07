@@ -105,11 +105,16 @@ class AuthService {
         responseType: 'blob' // Importante: receber como blob
       });
       
+      if (!response.data || !(response.data instanceof Blob)) {
+        console.warn(`Foto não disponível para membro ${memberId}`);
+        return null;
+      }
+      
       // Criar URL temporária para a imagem
       return URL.createObjectURL(response.data);
     } catch (error) {
-      // Se não conseguir carregar a foto, retornar null
-      console.warn(`Não foi possível carregar a foto do membro ${memberId}:`, error);
+      // Se não conseguir carregar a foto, retornar null (silencioso)
+      console.debug(`Foto não carregada para membro ${memberId}:`, error.message);
       return null;
     }
   }
