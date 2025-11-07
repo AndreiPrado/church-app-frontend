@@ -15,7 +15,9 @@ import {
   CalendarBlank,
   CheckCircle,
   XCircle,
-  Clock
+  Clock,
+  GridFour,
+  ListBullets
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
@@ -25,6 +27,7 @@ export default function MembersList() {
   const [error, setError] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
 
   const loadMembers = useCallback(async () => {
     try {
@@ -131,6 +134,23 @@ export default function MembersList() {
               <p>{filteredMembers.length} de {members.length} membros</p>
             </div>
           </div>
+
+          <div className="view-controls">
+            <button 
+              className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
+              onClick={() => setViewMode('cards')}
+            >
+              <GridFour size={20} weight="duotone" />
+              Cards
+            </button>
+            <button 
+              className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
+              onClick={() => setViewMode('list')}
+            >
+              <ListBullets size={20} weight="duotone" />
+              Lista
+            </button>
+          </div>
         </div>
 
         {/* Filtros */}
@@ -158,14 +178,14 @@ export default function MembersList() {
         </div>
 
         {/* Lista de Membros */}
-        <div className="members-grid">
-          {filteredMembers.length === 0 ? (
-            <div className="no-members">
-              <Users size={64} weight="duotone" />
-              <p>Nenhum membro encontrado</p>
-            </div>
-          ) : (
-            filteredMembers.map((member) => (
+        {filteredMembers.length === 0 ? (
+          <div className="no-members">
+            <Users size={64} weight="duotone" />
+            <p>Nenhum membro encontrado</p>
+          </div>
+        ) : viewMode === 'cards' ? (
+          <div className="members-grid">
+            {filteredMembers.map((member) => (
               <div key={member.id} className="member-card">
                 <div className="member-card-header">
                   <div className="member-avatar">
@@ -223,9 +243,66 @@ export default function MembersList() {
                   </div>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="members-table-container">
+            <table className="members-table">
+              <thead>
+                <tr>
+                  <th>Foto</th>
+                  <th>Nome</th>
+                  <th>Status</th>
+                  <th>Email</th>
+                  <th>Telefone</th>
+                  <th>Cidade/UF</th>
+                  <th>Gênero</th>
+                  <th>Batizado</th>
+                  <th>Cadastro</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredMembers.map((member) => (
+                  <tr key={member.id}>
+                    <td>
+                      <div className="table-avatar">
+                        <MemberPhoto 
+                          memberId={member.id}
+                          memberName={member.fullName}
+                          size={32}
+                          fallbackIcon={UserCircle}
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <strong>{member.fullName}</strong>
+                    </td>
+                    <td>
+                      <span className={`table-status ${member.status}`}>
+                        {getStatusIcon(member.status)}
+                        {getStatusLabel(member.status)}
+                      </span>
+                    </td>
+                    <td>{member.email}</td>
+                    <td>{member.phone}</td>
+                    <td>{member.city} - {member.state}</td>
+                    <td>{member.gender}</td>
+                    <td className="baptized-cell">
+                      {member.baptized ? (
+                        <CheckCircle size={18} weight="fill" className="baptized-icon" />
+                      ) : (
+                        <XCircle size={18} weight="fill" className="not-baptized-icon" />
+                      )}
+                    </td>
+                    <td>
+                      {new Date(member.createdAt).toLocaleDateString('pt-BR')}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </AdminLayout>
   );

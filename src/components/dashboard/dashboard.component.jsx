@@ -59,14 +59,14 @@ export default function Dashboard() {
     );
   }
 
-  // API retorna: { total, active, pending, baptized, byGender: { masculino, feminino }, byAge: { under18, between18and35, between36and60, over60 } }
+  // API retorna: { total, active, pending, baptized, byGender: { masculino, feminino }, byAge: { under13, between13and17, between18and25, between26and35, between36and50, between51and65, over65 } }
   const stats = statistics || {
     total: 0,
     active: 0,
     pending: 0,
     baptized: 0,
     byGender: { masculino: 0, feminino: 0 },
-    byAge: { under18: 0, between18and35: 0, between36and60: 0, over60: 0 }
+    byAge: { under13: 0, between13and17: 0, between18and25: 0, between26and35: 0, between36and50: 0, between51and65: 0, over65: 0 }
   };
 
   return (
@@ -182,10 +182,13 @@ export default function Dashboard() {
             </div>
             <div className="age-chart">
               {[
-                { key: 'under18', label: 'Menores de 18 anos' },
-                { key: 'between18and35', label: '18 a 35 anos' },
-                { key: 'between36and60', label: '36 a 60 anos' },
-                { key: 'over60', label: 'Acima de 60 anos' }
+                { key: 'under13', label: 'Crianças (0-12 anos)' },
+                { key: 'between13and17', label: 'Adolescentes (13-17 anos)' },
+                { key: 'between18and25', label: 'Jovens Adultos (18-25 anos)' },
+                { key: 'between26and35', label: 'Adultos Jovens (26-35 anos)' },
+                { key: 'between36and50', label: 'Adultos (36-50 anos)' },
+                { key: 'between51and65', label: 'Meia-idade (51-65 anos)' },
+                { key: 'over65', label: 'Idosos (65+ anos)' }
               ].map(({ key, label }) => (
                 <div key={key} className="age-item">
                   <div className="age-info">

@@ -1,6 +1,11 @@
 .members-list {
   .members-header {
     margin-bottom: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 20px;
 
     .header-title {
       display: flex;
@@ -22,6 +27,41 @@
         color: rgba(255, 255, 255, 0.7);
         font-size: 1rem;
         margin: 0;
+      }
+    }
+
+    .view-controls {
+      display: flex;
+      gap: 4px;
+      background: rgba(66, 165, 245, 0.05);
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+
+      .view-btn {
+        padding: 8px 16px;
+        border: none;
+        background: transparent;
+        color: rgba(255, 255, 255, 0.7);
+        border-radius: 6px;
+        font-size: 0.9rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.3s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+
+        &:hover {
+          background: rgba(66, 165, 245, 0.1);
+          color: rgba(255, 255, 255, 0.9);
+        }
+
+        &.active {
+          background: #42a5f5;
+          color: #ffffff;
+          font-weight: 600;
+        }
       }
     }
   }
@@ -310,6 +350,138 @@
             }
           }
         }
+      }
+    }
+  }
+
+  // Modo Tabela
+  .members-table-container {
+    background: rgba(26, 31, 46, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(66, 165, 245, 0.2);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+
+    .members-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        background: rgba(66, 165, 245, 0.1);
+        
+        tr {
+          th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #42a5f5;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(66, 165, 245, 0.3);
+            white-space: nowrap;
+
+            &:first-child {
+              padding-left: 24px;
+            }
+
+            &:last-child {
+              padding-right: 24px;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          transition: all 0.3s ease;
+          border-bottom: 1px solid rgba(66, 165, 245, 0.1);
+
+          &:hover {
+            background: rgba(66, 165, 245, 0.05);
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          td {
+            padding: 16px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            vertical-align: middle;
+
+            &:first-child {
+              padding-left: 24px;
+            }
+
+            &:last-child {
+              padding-right: 24px;
+            }
+
+            strong {
+              color: rgba(255, 255, 255, 0.95);
+              font-weight: 600;
+            }
+
+            .table-avatar {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            .table-status {
+              display: inline-flex;
+              align-items: center;
+              gap: 6px;
+              padding: 4px 12px;
+              border-radius: 12px;
+              font-size: 0.85rem;
+              font-weight: 600;
+
+              &.ativo {
+                background: rgba(76, 175, 80, 0.15);
+                color: #4caf50;
+              }
+
+              &.pendente {
+                background: rgba(255, 193, 7, 0.15);
+                color: #ffc107;
+              }
+
+              &.visitante {
+                background: rgba(33, 150, 243, 0.15);
+                color: #2196f3;
+              }
+
+              &.inativo {
+                background: rgba(255, 107, 107, 0.15);
+                color: #ff6b6b;
+              }
+            }
+
+            &.baptized-cell {
+              text-align: center;
+
+              .baptized-icon {
+                color: #4caf50;
+              }
+
+              .not-baptized-icon {
+                color: rgba(255, 255, 255, 0.3);
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Responsividade da tabela
+    @media (max-width: 1400px) {
+      overflow-x: auto;
+
+      .members-table {
+        min-width: 1200px;
       }
     }
   }

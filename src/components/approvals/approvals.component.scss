@@ -468,4 +468,155 @@
       }
     }
   }
+
+  // Modo Tabela
+  .approvals-table-container {
+    background: rgba(26, 31, 46, 0.6);
+    border-radius: 16px;
+    border: 1px solid rgba(66, 165, 245, 0.2);
+    overflow: hidden;
+    backdrop-filter: blur(20px);
+
+    .approvals-table {
+      width: 100%;
+      border-collapse: collapse;
+
+      thead {
+        background: rgba(66, 165, 245, 0.1);
+        
+        tr {
+          th {
+            padding: 16px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: #42a5f5;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid rgba(66, 165, 245, 0.3);
+            white-space: nowrap;
+
+            &:first-child {
+              padding-left: 24px;
+              width: 50px;
+              text-align: center;
+            }
+
+            &:last-child {
+              padding-right: 24px;
+              width: 120px;
+              text-align: center;
+            }
+          }
+        }
+      }
+
+      tbody {
+        tr {
+          transition: all 0.3s ease;
+          border-bottom: 1px solid rgba(66, 165, 245, 0.1);
+
+          &:hover {
+            background: rgba(66, 165, 245, 0.05);
+          }
+
+          &:last-child {
+            border-bottom: none;
+          }
+
+          td {
+            padding: 16px 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            vertical-align: middle;
+
+            &:first-child {
+              padding-left: 24px;
+              text-align: center;
+
+              input[type="checkbox"] {
+                cursor: pointer;
+                width: 18px;
+                height: 18px;
+              }
+            }
+
+            &:last-child {
+              padding-right: 24px;
+              text-align: center;
+            }
+
+            strong {
+              color: rgba(255, 255, 255, 0.95);
+              font-weight: 600;
+            }
+
+            .table-avatar {
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            }
+
+            &.baptized-cell {
+              text-align: center;
+
+              .baptized-icon {
+                color: #4caf50;
+              }
+
+              .not-baptized-icon {
+                color: rgba(255, 255, 255, 0.3);
+              }
+            }
+
+            .table-actions {
+              display: flex;
+              gap: 8px;
+              justify-content: center;
+
+              button {
+                padding: 8px 12px;
+                border: none;
+                border-radius: 8px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+
+                &.table-reject-btn {
+                  background: rgba(255, 107, 107, 0.15);
+                  color: #ff6b6b;
+
+                  &:hover {
+                    background: rgba(255, 107, 107, 0.25);
+                    transform: translateY(-2px);
+                  }
+                }
+
+                &.table-approve-btn {
+                  background: rgba(76, 175, 80, 0.15);
+                  color: #4caf50;
+
+                  &:hover {
+                    background: rgba(76, 175, 80, 0.25);
+                    transform: translateY(-2px);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    // Responsividade da tabela
+    @media (max-width: 1400px) {
+      overflow-x: auto;
+
+      .approvals-table {
+        min-width: 1200px;
+      }
+    }
+  }
 }

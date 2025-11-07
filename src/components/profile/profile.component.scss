@@ -12,7 +12,7 @@
       align-items: center;
       gap: 16px;
 
-      > svg {
+      >svg {
         color: #42a5f5;
       }
 
@@ -187,7 +187,6 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 8px 16px;
             border-radius: 8px;
             font-weight: 600;
             width: fit-content;
@@ -212,9 +211,15 @@
             }
           }
 
-          .member-since {
-            color: rgba(255, 255, 255, 0.6);
+          .member-role {
+            color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
+            font-weight: 500;
+
+            strong {
+              color: #42a5f5;
+              font-weight: 600;
+            }
           }
         }
       }
@@ -259,7 +264,8 @@
             font-weight: 500;
           }
 
-          input, select {
+          input,
+          select {
             padding: 12px 16px;
             background: rgba(10, 14, 26, 0.6);
             border: 1px solid rgba(66, 165, 245, 0.3);

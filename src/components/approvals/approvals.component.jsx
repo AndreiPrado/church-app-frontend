@@ -262,14 +262,14 @@ export default function Approvals() {
         </div>
 
         {/* Lista de Membros Pendentes */}
-        <div className={`approvals-list ${viewMode === 'list' ? 'list-view' : 'cards-view'}`}>
-          {pendingMembers.length === 0 ? (
-            <div className="no-approvals">
-              <UserCheck size={64} weight="duotone" />
-              <p>Nenhum cadastro pendente de aprovação</p>
-            </div>
-          ) : (
-            pendingMembers.map((member) => (
+        {pendingMembers.length === 0 ? (
+          <div className="no-approvals">
+            <UserCheck size={64} weight="duotone" />
+            <p>Nenhum cadastro pendente de aprovação</p>
+          </div>
+        ) : viewMode === 'cards' ? (
+          <div className="approvals-list cards-view">
+            {pendingMembers.map((member) => (
               <div key={member.id} className="approval-card">
                 <div className="approval-card-header">
                   <input
@@ -368,9 +368,92 @@ export default function Approvals() {
                   </button>
                 </div>
               </div>
-            ))
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="approvals-table-container">
+            <table className="approvals-table">
+              <thead>
+                <tr>
+                  <th>
+                    <input
+                      type="checkbox"
+                      checked={selectedMembers.length === pendingMembers.length && pendingMembers.length > 0}
+                      onChange={handleSelectAll}
+                    />
+                  </th>
+                  <th>Foto</th>
+                  <th>Nome</th>
+                  <th>Email</th>
+                  <th>Telefone</th>
+                  <th>CPF</th>
+                  <th>Cidade/UF</th>
+                  <th>Batizado</th>
+                  <th>Cadastro</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {pendingMembers.map((member) => (
+                  <tr key={member.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        checked={selectedMembers.includes(member.id)}
+                        onChange={() => handleSelectMember(member.id)}
+                      />
+                    </td>
+                    <td>
+                      <div className="table-avatar">
+                        <MemberPhoto 
+                          memberId={member.id}
+                          memberName={member.fullName}
+                          size={32}
+                          fallbackIcon={UserCircle}
+                        />
+                      </div>
+                    </td>
+                    <td>
+                      <strong>{member.fullName}</strong>
+                    </td>
+                    <td>{member.email}</td>
+                    <td>{member.phone}</td>
+                    <td>{member.cpf}</td>
+                    <td>{member.city} - {member.state}</td>
+                    <td className="baptized-cell">
+                      {member.baptized ? (
+                        <CheckCircle size={18} weight="fill" className="baptized-icon" />
+                      ) : (
+                        <XCircle size={18} weight="fill" className="not-baptized-icon" />
+                      )}
+                    </td>
+                    <td>
+                      {new Date(member.createdAt).toLocaleDateString('pt-BR')}
+                    </td>
+                    <td>
+                      <div className="table-actions">
+                        <button
+                          className="table-reject-btn"
+                          onClick={() => handleRejectSingle(member.id)}
+                          title="Rejeitar"
+                        >
+                          <XCircle size={18} weight="fill" />
+                        </button>
+                        <button
+                          className="table-approve-btn"
+                          onClick={() => handleApproveSingle(member.id)}
+                          title="Aprovar"
+                        >
+                          <CheckCircle size={18} weight="fill" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
 
       <FloatingAlert

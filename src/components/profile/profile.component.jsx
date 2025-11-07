@@ -20,6 +20,7 @@ import {
 export default function Profile() {
   const { user, getToken, updateUser } = useAuth();
   const [memberData, setMemberData] = useState(null);
+  const [memberRole, setMemberRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -33,6 +34,19 @@ export default function Profile() {
       const data = await authService.getMemberById(user.id, token);
       setMemberData(data);
       setEditData(data);
+
+      // Buscar dados da role se houver roleId
+      if (data.roleId) {
+        try {
+          const roles = await authService.getRoles(token);
+          const role = roles.find(r => r.id === data.roleId);
+          if (role) {
+            setMemberRole(role);
+          }
+        } catch (roleErr) {
+          console.warn('Não foi possível carregar role:', roleErr);
+        }
+      }
     } catch (err) {
       setAlert({
         isVisible: true,
@@ -58,11 +72,11 @@ export default function Profile() {
       setIsSaving(true);
       const token = getToken();
       const updatedData = await authService.updateMember(user.id, editData, token);
-      
+
       setMemberData(updatedData);
       updateUser(updatedData);
       setIsEditing(false);
-      
+
       setAlert({
         isVisible: true,
         message: 'Dados atualizados com sucesso!',
@@ -106,7 +120,7 @@ export default function Profile() {
   return (
     <AdminLayout>
       {isSaving && <LoadingSpinner message="Salvando..." />}
-      
+
       <div className="profile">
         <div className="profile-header">
           <div className="header-title">
@@ -150,16 +164,13 @@ export default function Profile() {
               <div className="profile-info">
                 <h2>{memberData.fullName}</h2>
                 <span className={`profile-status ${memberData.status}`}>
-                  {memberData.status === 'aprovado' && <CheckCircle size={18} weight="fill" />}
-                  {memberData.status === 'aprovado' ? 'Membro Ativo' : 
-                   memberData.status === 'pendente' ? 'Cadastro Pendente' : 'Cadastro Rejeitado'}
+                  {memberData.status === 'ativo' && <CheckCircle size={18} weight="fill" />}
+                  {memberData.status === 'ativo' ? 'Membro Ativo' :
+                    memberData.status === 'pendente' ? 'Cadastro Pendente' : 'Cadastro Rejeitado'}
                 </span>
-                {memberData.createdAt && (
-                  <span className="member-since">
-                    Membro desde {new Date(memberData.createdAt).toLocaleDateString('pt-BR', { 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}
+                {memberRole && (
+                  <span className="member-role">
+                    <strong>{memberRole.name}</strong> {memberRole.description && `• ${memberRole.description}`}
                   </span>
                 )}
               </div>
