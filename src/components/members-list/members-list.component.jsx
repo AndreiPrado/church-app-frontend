@@ -197,7 +197,10 @@ export default function MembersList() {
                     />
                   </div>
                   <div className="member-basic-info">
-                    <h3>{member.fullName}</h3>
+                    <div className="member-name-row">
+                      <h3>{member.fullName}</h3>
+                      <span className="member-number">#{member.memberNumber}</span>
+                    </div>
                     <span className={`member-status ${member.status}`}>
                       {getStatusIcon(member.status)}
                       {getStatusLabel(member.status)}
@@ -235,16 +238,13 @@ export default function MembersList() {
                     <span className="detail-item">
                       <strong>Gênero:</strong> {member.gender}
                     </span>
-                    <span className="detail-item">
-                      <strong>Nº Membro:</strong> {member.memberNumber}
-                    </span>
                     {member.baptized ? (
                       <span className="detail-item baptized">
                         <CheckCircle size={16} weight="fill" />
                         Batizado
                       </span>
                     ) : (
-                      <span className="detail-item">
+                      <span className="detail-item not-baptized">
                         <XCircle size={16} weight="fill" />
                         Não batizado
                       </span>
@@ -255,71 +255,70 @@ export default function MembersList() {
             ))}
           </div>
         ) : (
-          <div className="members-table-container">
-            <table className="members-table">
-              <thead>
-                <tr>
-                  <th>Foto</th>
-                  <th>Nome</th>
-                  <th>Status</th>
-                  <th>Email</th>
-                  <th>Telefone</th>
-                  <th>CPF</th>
-                  <th>Nascimento</th>
-                  <th>Gênero</th>
-                  <th>Batizado</th>
-                  <th>Nº Membro</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredMembers.map((member) => (
-                  <tr key={member.id}>
-                    <td>
-                      <div className="table-avatar">
-                        <MemberPhoto 
-                          memberId={member.id}
-                          memberName={member.fullName}
-                          size={32}
-                          fallbackIcon={UserCircle}
-                        />
-                      </div>
-                    </td>
-                    <td>
-                      <strong>{member.fullName}</strong>
-                    </td>
-                    <td>
-                      <span className={`table-status ${member.status}`}>
+          <div className="members-list-view">
+            {filteredMembers.map((member) => (
+              <div key={member.id} className="member-list-item">
+                <div className="list-item-header">
+                  <MemberPhoto 
+                    memberId={member.id}
+                    memberName={member.fullName}
+                    size={48}
+                    fallbackIcon={UserCircle}
+                  />
+                  <div className="list-header-info">
+                    <div className="list-name-row">
+                      <h4>{member.fullName}</h4>
+                      <span className="list-member-number">#{member.memberNumber}</span>
+                    </div>
+                    <div className="list-badges">
+                      <span className={`list-status ${member.status}`}>
                         {getStatusIcon(member.status)}
                         {getStatusLabel(member.status)}
                       </span>
-                    </td>
-                    <td>{member.email}</td>
-                    <td>{member.phone}</td>
-                    <td>{member.cpf || '-'}</td>
-                    <td>
-                      {member.birthDate ? (
-                        <>
-                          {new Date(member.birthDate).toLocaleDateString('pt-BR')}
-                          <br />
-                          <small style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-                            {member.age} anos
-                          </small>
-                        </>
-                      ) : '-'}
-                    </td>
-                    <td>{member.gender}</td>
-                    <td className="baptized-cell">
                       {member.baptized ? (
-                        <CheckCircle size={18} weight="fill" className="baptized-icon" />
+                        <span className="list-baptized">
+                          <CheckCircle size={14} weight="fill" />
+                          Batizado
+                        </span>
                       ) : (
-                        <XCircle size={18} weight="fill" className="not-baptized-icon" />
+                        <span className="list-not-baptized">
+                          <XCircle size={14} weight="fill" />
+                          Não batizado
+                        </span>
                       )}
-                    </td>
-                    <td>{member.memberNumber}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="list-item-body">
+                  <div className="list-detail">
+                    <EnvelopeSimple size={16} weight="duotone" />
+                    <span>{member.email}</span>
+                  </div>
+                  <div className="list-detail">
+                    <Phone size={16} weight="duotone" />
+                    <span>{member.phone}</span>
+                  </div>
+                  {member.birthDate && (
+                    <div className="list-detail">
+                      <CalendarBlank size={16} weight="duotone" />
+                      <span>
+                        {new Date(member.birthDate).toLocaleDateString('pt-BR')} ({member.age} anos)
+                      </span>
+                    </div>
+                  )}
+                  <div className="list-detail">
+                    <span><strong>Gênero:</strong> {member.gender}</span>
+                  </div>
+                  {member.cpf && (
+                    <div className="list-detail">
+                      <IdentificationCard size={16} weight="duotone" />
+                      <span>{member.cpf}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>
