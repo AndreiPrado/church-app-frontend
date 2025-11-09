@@ -17,7 +17,7 @@
       align-items: center;
       gap: 16px;
 
-      > svg {
+      >svg {
         color: #42a5f5;
       }
 
@@ -125,7 +125,7 @@
       display: flex;
       align-items: center;
 
-      > svg {
+      >svg {
         position: absolute;
         left: 16px;
         color: rgba(255, 255, 255, 0.6);
@@ -161,7 +161,7 @@
       display: flex;
       align-items: center;
 
-      > svg {
+      >svg {
         position: absolute;
         left: 16px;
         color: rgba(255, 255, 255, 0.6);
@@ -196,7 +196,6 @@
         &:focus {
           outline: none;
           border-color: #42a5f5;
-          background: rgba(26, 31, 46, 0.8);
           box-shadow: 0 0 0 2px rgba(66, 165, 245, 0.2);
         }
       }
@@ -360,8 +359,8 @@
 
             @media (max-width: 768px) {
               gap: 4px;
-              padding: 4px 8px;
-              font-size: 0.75rem;
+              padding: 2px 6px;
+              font-size: 0.7rem;
             }
 
             svg {
@@ -386,7 +385,8 @@
               color: #4caf50;
             }
 
-            &.rejeitado, &.inativo {
+            &.rejeitado,
+            &.inativo {
               background: rgba(255, 107, 107, 0.15);
               color: #ff6b6b;
             }
@@ -401,8 +401,8 @@
         gap: 12px;
 
         @media (max-width: 768px) {
-          padding: 12px 16px;
-          gap: 8px;
+          padding: 16px;
+          gap: 12px;
         }
 
         .info-item {
@@ -443,7 +443,7 @@
         border-top: 1px solid rgba(66, 165, 245, 0.1);
 
         @media (max-width: 768px) {
-          padding: 12px 16px;
+          padding: 16px;
         }
 
         .member-details {
@@ -508,208 +508,203 @@
     }
   }
 
-  // Modo Lista
+  // Modo Lista - Formato Horizontal Compacto
   .members-list-view {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 
     .member-list-item {
       background: rgba(26, 31, 46, 0.6);
-      border-radius: 12px;
+      border-radius: 8px;
       border: 1px solid rgba(66, 165, 245, 0.2);
       backdrop-filter: blur(20px);
-      transition: all 0.3s ease;
-      overflow: hidden;
+      transition: all 0.2s ease;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+
+      @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+        padding: 12px;
+      }
 
       &:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 20px rgba(66, 165, 245, 0.15);
+        background: rgba(26, 31, 46, 0.8);
         border-color: rgba(66, 165, 245, 0.4);
       }
 
-      // Header com foto, nome e badges
-      .list-item-header {
+      // Avatar
+      .list-avatar {
+        flex-shrink: 0;
+      }
+
+      // Informações principais (nome + contato)
+      .list-main-info {
+        flex: 1;
+        min-width: 0;
         display: flex;
-        gap: 12px;
-        padding: 16px;
-        border-bottom: 1px solid rgba(66, 165, 245, 0.1);
+        flex-direction: column;
+        gap: 4px;
 
-        @media (max-width: 768px) {
-          padding: 12px;
-        }
-
-        .list-header-info {
-          flex: 1;
-          min-width: 0;
+        .list-name-section {
           display: flex;
-          flex-direction: column;
+          align-items: center;
           gap: 8px;
+          justify-content: space-between;
 
-          .list-name-row {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            flex-wrap: wrap;
+          h4 {
+            color: #ffffff;
+            font-size: 0.95rem;
+            font-weight: 700;
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
 
-            h4 {
-              color: #ffffff;
-              font-size: 1.05rem;
-              font-weight: 700;
-              margin: 0;
-              word-wrap: break-word;
-              overflow-wrap: break-word;
-              flex: 1;
-              min-width: 0;
-
-              @media (max-width: 768px) {
-                font-size: 1rem;
-              }
-            }
-
-            .list-member-number {
-              color: #42a5f5;
-              font-size: 0.85rem;
-              font-weight: 700;
-              background: rgba(66, 165, 245, 0.15);
-              padding: 2px 8px;
-              border-radius: 6px;
-              white-space: nowrap;
-
-              @media (max-width: 768px) {
-                font-size: 0.8rem;
-              }
+            @media (max-width: 768px) {
+              font-size: 0.9rem;
             }
           }
 
-          .list-badges {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            align-items: center;
+          .list-member-number {
+            color: #42a5f5;
+            font-size: 0.75rem;
+            font-weight: 700;
+            background: rgba(66, 165, 245, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+            white-space: nowrap;
 
             @media (max-width: 768px) {
-              gap: 6px;
+              font-size: 0.7rem;
             }
+          }
+        }
 
-            .list-status {
-              display: inline-flex;
-              align-items: center;
-              gap: 4px;
-              padding: 3px 8px;
-              border-radius: 6px;
-              font-size: 0.75rem;
-              font-weight: 600;
+        .list-contact-info {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.7);
+          overflow: hidden;
+          justify-content: space-between;
 
-              @media (max-width: 768px) {
-                padding: 2px 6px;
-                font-size: 0.7rem;
-              }
+          @media (max-width: 768px) {
+            flex-wrap: wrap;
+            font-size: 0.75rem;
+          }
 
-              svg {
-                width: 12px;
-                height: 12px;
-              }
+          .list-email,
+          .list-phone {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
 
-              &.ativo {
-                background: rgba(76, 175, 80, 0.15);
-                color: #4caf50;
-              }
-
-              &.pendente {
-                background: rgba(255, 193, 7, 0.15);
-                color: #ffc107;
-              }
-
-              &.inativo {
-                background: rgba(255, 107, 107, 0.15);
-                color: #ff6b6b;
-              }
-            }
-
-            .list-baptized,
-            .list-not-baptized {
-              display: inline-flex;
-              align-items: center;
-              gap: 4px;
-              font-size: 0.75rem;
-              font-weight: 600;
-
-              @media (max-width: 768px) {
-                font-size: 0.7rem;
-              }
-
-              svg {
-                width: 12px;
-                height: 12px;
-              }
-            }
-
-            .list-baptized {
+            svg {
               color: #42a5f5;
-              svg {
-                color: #42a5f5;
-              }
+              flex-shrink: 0;
             }
+          }
 
-            .list-not-baptized {
-              color: #ff6b6b;
-              svg {
-                color: #ff6b6b;
-              }
-            }
+          .list-separator {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: bold;
           }
         }
       }
 
-      // Body com detalhes
-      .list-item-body {
-        padding: 16px;
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
+      // Metadados (status, batizado, idade, gênero)
+      .list-meta-info {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-end;
+        min-width: 200px;
 
         @media (max-width: 768px) {
-          padding: 12px;
-          grid-template-columns: 1fr;
-          gap: 8px;
+          min-width: 0;
+          align-items: flex-start;
         }
 
-        .list-detail {
+        .list-badges-row {
           display: flex;
+          gap: 6px;
           align-items: center;
-          gap: 8px;
-          color: rgba(255, 255, 255, 0.8);
-          font-size: 0.875rem;
-          min-width: 0;
+          justify-content: space-between;
+          width: 100%;
 
-          @media (max-width: 768px) {
-            font-size: 0.8rem;
-            gap: 6px;
-          }
+          .list-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
 
-          svg {
-            color: #42a5f5;
-            min-width: 16px;
-            flex-shrink: 0;
+            svg {
+              width: 10px;
+              height: 10px;
+            }
 
-            @media (max-width: 768px) {
-              min-width: 14px;
-              width: 14px;
-              height: 14px;
+            &.ativo {
+              background: rgba(76, 175, 80, 0.15);
+              color: #4caf50;
+            }
+
+            &.pendente {
+              background: rgba(255, 193, 7, 0.15);
+              color: #ffc107;
+            }
+
+            &.inativo {
+              background: rgba(255, 107, 107, 0.15);
+              color: #ff6b6b;
             }
           }
 
-          span {
-            word-break: break-word;
-            overflow-wrap: break-word;
-            flex: 1;
+          .list-baptized,
+          .list-not-baptized {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.7rem;
+            font-weight: 600;
+
+            svg {
+              width: 10px;
+              height: 10px;
+            }
           }
 
-          strong {
-            color: rgba(255, 255, 255, 0.9);
-            margin-right: 4px;
+          .list-baptized {
+            color: #42a5f5;
+          }
+
+          .list-not-baptized {
+            color: #ff6b6b;
+          }
+        }
+
+        .list-extra-info {
+          display: flex;
+          gap: 6px;
+          align-items: center;
+          font-size: 0.75rem;
+          color: rgba(255, 255, 255, 0.6);
+          justify-content: space-between;
+
+          .list-separator {
+            color: rgba(255, 255, 255, 0.4);
+            font-weight: bold;
           }
         }
       }

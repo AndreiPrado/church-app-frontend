@@ -136,14 +136,14 @@ export default function MembersList() {
           </div>
 
           <div className="view-controls">
-            <button 
+            <button
               className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
               onClick={() => setViewMode('cards')}
             >
               <GridFour size={20} weight="duotone" />
               Cards
             </button>
-            <button 
+            <button
               className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
               onClick={() => setViewMode('list')}
             >
@@ -189,7 +189,7 @@ export default function MembersList() {
               <div key={member.id} className="member-card">
                 <div className="member-card-header">
                   <div className="member-avatar">
-                    <MemberPhoto 
+                    <MemberPhoto
                       memberId={member.id}
                       memberName={member.fullName}
                       size={48}
@@ -258,64 +258,58 @@ export default function MembersList() {
           <div className="members-list-view">
             {filteredMembers.map((member) => (
               <div key={member.id} className="member-list-item">
-                <div className="list-item-header">
-                  <MemberPhoto 
+                <div className="list-avatar">
+                  <MemberPhoto
                     memberId={member.id}
                     memberName={member.fullName}
-                    size={48}
+                    size={40}
                     fallbackIcon={UserCircle}
                   />
-                  <div className="list-header-info">
-                    <div className="list-name-row">
-                      <h4>{member.fullName}</h4>
-                      <span className="list-member-number">#{member.memberNumber}</span>
-                    </div>
-                    <div className="list-badges">
-                      <span className={`list-status ${member.status}`}>
-                        {getStatusIcon(member.status)}
-                        {getStatusLabel(member.status)}
-                      </span>
-                      {member.baptized ? (
-                        <span className="list-baptized">
-                          <CheckCircle size={14} weight="fill" />
-                          Batizado
-                        </span>
-                      ) : (
-                        <span className="list-not-baptized">
-                          <XCircle size={14} weight="fill" />
-                          Não batizado
-                        </span>
-                      )}
-                    </div>
+                </div>
+
+                <div className="list-main-info">
+                  <div className="list-name-section">
+                    <h4>{member.fullName}</h4>
+                    <span className="list-member-number">#{member.memberNumber}</span>
+                  </div>
+                  <div className="list-contact-info">
+                    <span className="list-email">
+                      <EnvelopeSimple size={14} weight="duotone" />
+                      {member.email}
+                    </span>
+                    <span className="list-separator">•</span>
+                    <span className="list-phone">
+                      <Phone size={14} weight="duotone" />
+                      {member.phone}
+                    </span>
                   </div>
                 </div>
-                
-                <div className="list-item-body">
-                  <div className="list-detail">
-                    <EnvelopeSimple size={16} weight="duotone" />
-                    <span>{member.email}</span>
-                  </div>
-                  <div className="list-detail">
-                    <Phone size={16} weight="duotone" />
-                    <span>{member.phone}</span>
-                  </div>
-                  {member.birthDate && (
-                    <div className="list-detail">
-                      <CalendarBlank size={16} weight="duotone" />
-                      <span>
-                        {new Date(member.birthDate).toLocaleDateString('pt-BR')} ({member.age} anos)
+
+                <div className="list-meta-info">
+                  <div className="list-badges-row">
+                    <span className={`list-status ${member.status}`}>
+                      {getStatusIcon(member.status)}
+                      {getStatusLabel(member.status)}
+                    </span>
+                    {member.baptized ? (
+                      <span className="list-baptized">
+                        <CheckCircle size={12} weight="fill" />
+                        Batizado
                       </span>
-                    </div>
-                  )}
-                  <div className="list-detail">
-                    <span><strong>Gênero:</strong> {member.gender}</span>
+                    ) : (
+                      <span className="list-not-baptized">
+                        <XCircle size={12} weight="fill" />
+                        Não batizado
+                      </span>
+                    )}
                   </div>
-                  {member.cpf && (
-                    <div className="list-detail">
-                      <IdentificationCard size={16} weight="duotone" />
-                      <span>{member.cpf}</span>
-                    </div>
-                  )}
+                  <div className="list-extra-info">
+                    {member.birthDate && (
+                      <span className="list-age">{member.age} anos</span>
+                    )}
+                    <span className="list-separator">•</span>
+                    <span className="list-gender">{member.gender}</span>
+                  </div>
                 </div>
               </div>
             ))}
