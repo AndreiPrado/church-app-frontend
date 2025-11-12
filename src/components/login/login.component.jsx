@@ -126,9 +126,6 @@ export default function Login() {
       const token = response.data?.token;
       const refreshToken = response.data?.refreshToken;
 
-      console.log('User extraído:', userData); // Debug
-      console.log('Token extraído:', token); // Debug
-      console.log('RefreshToken extraído:', refreshToken); // Debug
 
       // Verificar se temos os dados necessários
       if (!userData || !token) {

@@ -39,7 +39,7 @@ export default function AdminLayout({ children }) {
       path: "/admin/members", 
       icon: Users, 
       label: "Membros",
-      requiredPermissions: ['members.read', 'admin.full']
+      requiredPermissions: ['admin.full'] // Apenas admins
     },
     { 
       path: "/admin/approvals", 
@@ -64,7 +64,7 @@ export default function AdminLayout({ children }) {
       // Verificar se tem pelo menos uma das permissões necessárias
       return hasAnyPermission(item.requiredPermissions);
     });
-  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [user, hasAnyPermission]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="admin-layout">
