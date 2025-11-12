@@ -5,6 +5,7 @@ import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
 import MemberPhoto from "../member-photo/member-photo.component";
+import AccessDenied from "../access-denied/access-denied.component";
 import {
   UserCheck,
   CheckCircle,
@@ -16,7 +17,8 @@ import {
   CalendarBlank,
   IdentificationCard,
   GridFour,
-  ListBullets
+  ListBullets,
+  ArrowClockwise
 } from "@phosphor-icons/react";
 
 export default function Approvals() {
@@ -25,7 +27,7 @@ export default function Approvals() {
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
@@ -33,6 +35,7 @@ export default function Approvals() {
   const loadPendingMembers = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       
       // Buscar roles e membros pendentes em paralelo
       const [rolesData, membersData] = await Promise.all([
@@ -48,7 +51,12 @@ export default function Approvals() {
         setSelectedRole(rolesData[0].id);
       }
     } catch (err) {
-      setError(err.message || "Erro ao carregar membros pendentes");
+      // Capturar erro 403 (sem permissão) e outros erros
+      setError({
+        message: err.response?.data?.friendlyMessage || err.response?.data?.error || err.message || "Erro ao carregar membros pendentes",
+        statusCode: err.response?.status,
+        isAccessDenied: err.response?.status === 403
+      });
     } finally {
       setLoading(false);
     }
@@ -182,11 +190,24 @@ export default function Approvals() {
   }
 
   if (error) {
+    // Se é erro de permissão (403), mostrar página de acesso negado
+    if (error.isAccessDenied) {
+      return (
+        <AdminLayout>
+          <AccessDenied message={error.message} />
+        </AdminLayout>
+      );
+    }
+
+    // Outros erros
     return (
       <AdminLayout>
         <div className="approvals-error">
-          <p>{error}</p>
-          <button onClick={loadPendingMembers}>Tentar novamente</button>
+          <p>{error.message}</p>
+          <button onClick={loadPendingMembers}>
+            <ArrowClockwise size={20} weight="bold" />
+            Tentar novamente
+          </button>
         </div>
       </AdminLayout>
     );

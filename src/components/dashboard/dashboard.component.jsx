@@ -4,6 +4,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
+import AccessDenied from "../access-denied/access-denied.component";
 import {
   Users,
   UserCheck,
@@ -14,23 +15,30 @@ import {
   GenderFemale,
   ChartPieSlice,
   CheckCircle,
-  XCircle
+  XCircle,
+  ArrowClockwise
 } from "@phosphor-icons/react";
 
 export default function Dashboard() {
   const { getToken } = useAuth();
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
   const loadStatistics = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       const token = getToken();
       const data = await authService.getStatistics(token);
       setStatistics(data);
     } catch (err) {
-      setError(err.message || "Erro ao carregar estatísticas");
+      // Capturar erro 403 (sem permissão) e outros erros
+      setError({
+        message: err.response?.data?.friendlyMessage || err.response?.data?.error || err.message || "Erro ao carregar estatísticas",
+        statusCode: err.response?.status,
+        isAccessDenied: err.response?.status === 403
+      });
     } finally {
       setLoading(false);
     }
@@ -49,11 +57,24 @@ export default function Dashboard() {
   }
 
   if (error) {
+    // Se é erro de permissão (403), mostrar página de acesso negado
+    if (error.isAccessDenied) {
+      return (
+        <AdminLayout>
+          <AccessDenied message={error.message} />
+        </AdminLayout>
+      );
+    }
+
+    // Outros erros
     return (
       <AdminLayout>
         <div className="dashboard-error">
-          <p>{error}</p>
-          <button onClick={loadStatistics}>Tentar novamente</button>
+          <p>{error.message}</p>
+          <button onClick={loadStatistics}>
+            <ArrowClockwise size={20} weight="bold" />
+            Tentar novamente
+          </button>
         </div>
       </AdminLayout>
     );

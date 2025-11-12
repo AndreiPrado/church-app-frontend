@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
+import AccessDenied from "../access-denied/access-denied.component";
 import MemberPhoto from "../member-photo/member-photo.component";
 import {
   Users,
@@ -17,14 +18,15 @@ import {
   Clock,
   GridFour,
   ListBullets,
-  IdentificationCard
+  IdentificationCard,
+  ArrowClockwise
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
@@ -32,12 +34,18 @@ export default function MembersList() {
   const loadMembers = useCallback(async () => {
     try {
       setLoading(true);
+      setError(null);
       // authService.getMembers já usa o token internamente via api.get
       const data = await authService.getMembers();
       setMembers(data);
       setFilteredMembers(data);
     } catch (err) {
-      setError(err.message || "Erro ao carregar membros");
+      // Capturar erro 403 (sem permissão) e outros erros
+      setError({
+        message: err.response?.data?.friendlyMessage || err.response?.data?.error || err.message || "Erro ao carregar membros",
+        statusCode: err.response?.status,
+        isAccessDenied: err.response?.status === 403
+      });
     } finally {
       setLoading(false);
     }
@@ -113,11 +121,24 @@ export default function MembersList() {
   }
 
   if (error) {
+    // Se é erro de permissão (403), mostrar página de acesso negado
+    if (error.isAccessDenied) {
+      return (
+        <AdminLayout>
+          <AccessDenied message={error.message} />
+        </AdminLayout>
+      );
+    }
+
+    // Outros erros
     return (
       <AdminLayout>
-        <div className="members-error">
-          <p>{error}</p>
-          <button onClick={loadMembers}>Tentar novamente</button>
+        <div className="members-list-error">
+          <p>{error.message}</p>
+          <button onClick={loadMembers}>
+            <ArrowClockwise size={20} weight="bold" />
+            Tentar novamente
+          </button>
         </div>
       </AdminLayout>
     );

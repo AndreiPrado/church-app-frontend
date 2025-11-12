@@ -1,7 +1,8 @@
 import "./admin-layout.component.scss";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import { usePermissions } from "../../hooks/usePermissions";
 import PropTypes from "prop-types";
 import {
   ChartBar,
@@ -18,6 +19,7 @@ import logoWithoutBackground from '../../assets/logo-without-background.png';
 export default function AdminLayout({ children }) {
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { hasAnyPermission } = usePermissions();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleLogout = () => {
@@ -25,12 +27,44 @@ export default function AdminLayout({ children }) {
     navigate("/login");
   };
 
-  const menuItems = [
-    { path: "/admin/dashboard", icon: ChartBar, label: "Dashboard" },
-    { path: "/admin/members", icon: Users, label: "Membros" },
-    { path: "/admin/approvals", icon: UserCheck, label: "Aprovações" },
-    { path: "/admin/profile", icon: UserCircle, label: "Minha Conta" },
+  // Definir todos os itens do menu com suas permissões requeridas
+  const allMenuItems = [
+    { 
+      path: "/admin/dashboard", 
+      icon: ChartBar, 
+      label: "Dashboard",
+      requiredPermissions: ['reports.view', 'admin.full'] // Precisa de pelo menos uma dessas
+    },
+    { 
+      path: "/admin/members", 
+      icon: Users, 
+      label: "Membros",
+      requiredPermissions: ['members.read', 'admin.full']
+    },
+    { 
+      path: "/admin/approvals", 
+      icon: UserCheck, 
+      label: "Aprovações",
+      requiredPermissions: ['members.update', 'members.create', 'admin.full']
+    },
+    { 
+      path: "/admin/profile", 
+      icon: UserCircle, 
+      label: "Minha Conta",
+      requiredPermissions: [] // Todos podem acessar
+    },
   ];
+
+  // Filtrar itens do menu baseado nas permissões do usuário
+  const menuItems = useMemo(() => {
+    return allMenuItems.filter(item => {
+      // Se não precisa de permissões, mostrar para todos
+      if (item.requiredPermissions.length === 0) return true;
+      
+      // Verificar se tem pelo menos uma das permissões necessárias
+      return hasAnyPermission(item.requiredPermissions);
+    });
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="admin-layout">

@@ -1,0 +1,140 @@
+.access-denied {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-in;
+
+  .access-denied-content {
+    text-align: center;
+    max-width: 500px;
+    animation: slideUp 0.4s ease-out;
+  }
+
+  .access-denied-icon {
+    color: #e53e3e;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+    
+    svg {
+      filter: drop-shadow(0 4px 12px rgba(229, 62, 62, 0.2));
+    }
+  }
+
+  h1 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin-bottom: 1rem;
+    font-weight: 700;
+  }
+
+  .access-denied-message {
+    font-size: 1.1rem;
+    color: #4a5568;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .access-denied-tip {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 1.25rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+
+    strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+  }
+
+  .access-denied-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #4a5568;
+
+      &:hover {
+        background: #cbd5e0;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .access-denied {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .access-denied-message {
+      font-size: 1rem;
+    }
+
+    .access-denied-actions {
+      flex-direction: column;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+}

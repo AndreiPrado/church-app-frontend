@@ -151,9 +151,23 @@ export default function Login() {
     } catch (err) {
       console.error('Login error completo:', err); // Debug
       setIsLoading(false);
+      
+      // Pegar mensagem amigável do backend (detail)
+      let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
+      
+      if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.response?.data?.message) {
+        errorMessage = err.response.data.message;
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
       setAlert({
         isVisible: true,
-        message: err.message || "Erro ao fazer login. Verifique suas credenciais.",
+        message: errorMessage,
         type: 'error'
       });
     }

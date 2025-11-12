@@ -202,12 +202,15 @@ export default function ResetPassword() {
       console.error('Reset password error:', err);
       setIsLoading(false);
       
+      // Pegar mensagem amigável do backend (detail)
       let errorMessage = 'Erro ao criar senha. Tente novamente.';
       
-      if (err.response?.data?.message) {
+      if (err.response?.data?.detail) {
+        errorMessage = err.response.data.detail;
+      } else if (err.response?.data?.message) {
         errorMessage = err.response.data.message;
-      } else if (err.response?.data?.error === 'INVALID_TOKEN') {
-        errorMessage = 'Link inválido ou expirado. Solicite um novo link.';
+      } else if (err.response?.data?.error) {
+        errorMessage = err.response.data.error;
       }
 
       setAlert({

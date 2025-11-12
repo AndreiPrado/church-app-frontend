@@ -12,7 +12,7 @@
       align-items: center;
       gap: 16px;
 
-      > svg {
+      >svg {
         color: #42a5f5;
       }
 
@@ -154,32 +154,63 @@
     }
   }
 
-  .approvals-error {
-    background: rgba(255, 107, 107, 0.1);
+  &-error {
+    max-width: 500px;
+    margin: 0 auto;
+    background: rgba(26, 31, 46, 0.8);
     border: 1px solid rgba(255, 107, 107, 0.3);
-    border-radius: 12px;
-    padding: 32px;
+    border-radius: 16px;
+    padding: 48px;
     text-align: center;
+    backdrop-filter: blur(20px);
+    box-shadow: 0 8px 32px rgba(255, 107, 107, 0.2);
+    animation: slideUp 0.4s ease-out;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 
     p {
-      color: #ff6b6b;
+      color: rgba(255, 255, 255, 0.9);
       font-size: 1.1rem;
-      margin-bottom: 20px;
+      margin-bottom: 32px;
+      line-height: 1.6;
     }
 
     button {
-      padding: 12px 24px;
+      padding: 14px 32px;
       background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
       color: white;
       border: none;
       border-radius: 8px;
       font-weight: 600;
+      font-size: 1rem;
       cursor: pointer;
-      transition: transform 0.3s;
+      transition: all 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
 
       &:hover {
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(66, 165, 245, 0.4);
       }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translate(-50%, -45%);
+    }
+
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
     }
   }
 
@@ -483,7 +514,7 @@
 
       thead {
         background: rgba(66, 165, 245, 0.1);
-        
+
         tr {
           th {
             padding: 16px 20px;
