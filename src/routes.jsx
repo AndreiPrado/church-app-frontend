@@ -3,6 +3,7 @@ import Home from '../src/components/home/home.component.jsx';
 import SignUp from '../src/components/signup/signup.component.jsx';
 import SignupSuccess from '../src/components/signup/signup-success.component.jsx';
 import Login from '../src/components/login/login.component.jsx';
+import ResetPassword from '../src/components/reset-password/reset-password.component.jsx';
 import Dashboard from '../src/components/dashboard/dashboard.component.jsx';
 import MembersList from '../src/components/members-list/members-list.component.jsx';
 import Approvals from '../src/components/approvals/approvals.component.jsx';
@@ -23,6 +24,7 @@ const Router = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signup/success" element={<SignupSuccess />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
 
