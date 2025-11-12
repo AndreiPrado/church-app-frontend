@@ -7,6 +7,8 @@ import Dashboard from '../src/components/dashboard/dashboard.component.jsx';
 import MembersList from '../src/components/members-list/members-list.component.jsx';
 import Approvals from '../src/components/approvals/approvals.component.jsx';
 import Profile from '../src/components/profile/profile.component.jsx';
+import PrivacyPolicy from '../src/components/privacy-policy/privacy-policy.component.jsx';
+import TermsOfService from '../src/components/terms-of-service/terms-of-service.component.jsx';
 import ProtectedRoute from '../src/components/protected-route/protected-route.component.jsx';
 import ScrollToTop from '../src/components/scroll-to-top/scroll-to-top.component.jsx';
 
@@ -21,6 +23,8 @@ const Router = () => {
                 <Route path="/signup" element={<SignUp />} />
                 <Route path="/signup/success" element={<SignupSuccess />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+                <Route path="/terms-of-service" element={<TermsOfService />} />
 
                 {/* Rotas Administrativas Protegidas */}
                 <Route 
