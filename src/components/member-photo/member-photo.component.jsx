@@ -10,18 +10,20 @@ export default function MemberPhoto({
   size = 64, 
   className = '', 
   fallbackIcon = UserCircle,
-  showName = false 
+  showName = false,
+  hasPhotoUrl = true // Nova prop: indica se o membro tem foto cadastrada
 }) {
   const [photoUrl, setPhotoUrl] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(hasPhotoUrl); // Só carrega se houver foto
   const [hasError, setHasError] = useState(false);
 
   const FallbackIcon = fallbackIcon;
 
   useEffect(() => {
-    if (!memberId) {
+    // Se não tem memberId OU não tem photoUrl, não faz requisição
+    if (!memberId || !hasPhotoUrl) {
       setIsLoading(false);
-      setHasError(true);
+      setHasError(!hasPhotoUrl); // Marca erro se não tem foto (mostra fallback)
       return;
     }
 
@@ -67,7 +69,7 @@ export default function MemberPhoto({
         URL.revokeObjectURL(currentUrl);
       }
     };
-  }, [memberId]);
+  }, [memberId, hasPhotoUrl]);
 
   const containerStyle = {
     width: size,
@@ -109,5 +111,6 @@ MemberPhoto.propTypes = {
   size: PropTypes.number,
   className: PropTypes.string,
   fallbackIcon: PropTypes.elementType,
-  showName: PropTypes.bool
+  showName: PropTypes.bool,
+  hasPhotoUrl: PropTypes.bool
 };

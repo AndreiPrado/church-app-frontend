@@ -1,5 +1,6 @@
 import "./members-list.component.scss";
 import { useState, useEffect, useCallback } from "react";
+import { useSearchParams } from "react-router-dom";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
@@ -23,12 +24,14 @@ import {
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
+  const [searchParams] = useSearchParams();
   const [members, setMembers] = useState([]);
   const [filteredMembers, setFilteredMembers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+  const [baptizedFilter, setBaptizedFilter] = useState("all"); // 'all', 'true', 'false'
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
 
   const loadMembers = useCallback(async () => {
@@ -55,10 +58,24 @@ export default function MembersList() {
     loadMembers();
   }, [loadMembers]);
 
+  // Aplicar filtros vindos dos query params
+  useEffect(() => {
+    const status = searchParams.get('status');
+    const baptized = searchParams.get('baptized');
+    
+    if (status) {
+      setStatusFilter(status);
+    }
+    
+    if (baptized) {
+      setBaptizedFilter(baptized);
+    }
+  }, [searchParams]);
+
   useEffect(() => {
     filterMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, statusFilter, members]);
+  }, [searchTerm, statusFilter, baptizedFilter, members]);
 
   const filterMembers = () => {
     let filtered = [...members];
@@ -66,6 +83,12 @@ export default function MembersList() {
     // Filtro por status
     if (statusFilter !== "all") {
       filtered = filtered.filter(member => member.status === statusFilter);
+    }
+
+    // Filtro por batizado
+    if (baptizedFilter !== "all") {
+      const isBaptized = baptizedFilter === "true";
+      filtered = filtered.filter(member => member.baptized === isBaptized);
     }
 
     // Filtro por busca
@@ -196,6 +219,15 @@ export default function MembersList() {
               <option value="inativo">Inativos</option>
             </select>
           </div>
+
+          <div className="filter-box">
+            <Funnel size={20} />
+            <select value={baptizedFilter} onChange={(e) => setBaptizedFilter(e.target.value)}>
+              <option value="all">Batismo</option>
+              <option value="true">Batizados</option>
+              <option value="false">Não batizados</option>
+            </select>
+          </div>
         </div>
 
         {/* Lista de Membros */}
@@ -215,6 +247,7 @@ export default function MembersList() {
                       memberName={member.fullName}
                       size={48}
                       fallbackIcon={UserCircle}
+                      hasPhotoUrl={!!member.photoUrl}
                     />
                   </div>
                   <div className="member-basic-info">
@@ -285,6 +318,7 @@ export default function MembersList() {
                     memberName={member.fullName}
                     size={40}
                     fallbackIcon={UserCircle}
+                    hasPhotoUrl={!!member.photoUrl}
                   />
                 </div>
 

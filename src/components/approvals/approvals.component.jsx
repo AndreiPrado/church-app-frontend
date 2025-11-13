@@ -305,6 +305,7 @@ export default function Approvals() {
                       memberName={member.fullName}
                       size={64}
                       fallbackIcon={UserCircle}
+                      hasPhotoUrl={!!member.photoUrl}
                     />
                   </div>
                   <div className="member-basic-info">
@@ -431,6 +432,7 @@ export default function Approvals() {
                           memberName={member.fullName}
                           size={32}
                           fallbackIcon={UserCircle}
+                          hasPhotoUrl={!!member.photoUrl}
                         />
                       </div>
                     </td>

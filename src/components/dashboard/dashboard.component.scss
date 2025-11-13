@@ -1,17 +1,45 @@
 .dashboard {
   .dashboard-header {
     margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
 
-    h1 {
-      color: #ffffff;
-      font-size: 2.5rem;
-      font-weight: 800;
-      margin-bottom: 8px;
+    > svg {
+      color: #42a5f5;
+      min-width: 32px;
     }
 
-    p {
-      color: rgba(255, 255, 255, 0.7);
-      font-size: 1.1rem;
+    > div {
+      flex: 1;
+
+      h1 {
+        color: #ffffff;
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 8px;
+      }
+
+      p {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 1.1rem;
+      }
+    }
+  }
+
+  .dashboard-section {
+    margin-bottom: 48px;
+
+    .section-title {
+      color: #ffffff;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      padding-left: 16px;
+      border-left: 4px solid #42a5f5;
+      display: flex;
+      align-items: center;
+      gap: 12px;
     }
   }
 
@@ -77,9 +105,16 @@
 
   .stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-template-columns: repeat(3, 1fr);
     gap: 24px;
-    margin-bottom: 32px;
+
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
 
     .stat-card {
       background: rgba(26, 31, 46, 0.6);
@@ -91,10 +126,12 @@
       align-items: center;
       gap: 20px;
       transition: all 0.3s ease;
+      cursor: pointer;
 
       &:hover {
         transform: translateY(-4px);
         box-shadow: 0 8px 30px rgba(66, 165, 245, 0.2);
+        border-color: rgba(66, 165, 245, 0.4);
       }
 
       .stat-icon {
@@ -141,20 +178,19 @@
         color: #ffc107;
       }
 
-      &.growth .stat-icon {
-        background: rgba(156, 39, 176, 0.15);
-        color: #9c27b0;
+      &.info .stat-icon {
+        background: rgba(33, 150, 243, 0.15);
+        color: #2196f3;
       }
     }
   }
 
   .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 24px;
-    margin-bottom: 32px;
 
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       grid-template-columns: 1fr;
     }
 
@@ -164,10 +200,6 @@
       padding: 24px;
       border: 1px solid rgba(66, 165, 245, 0.2);
       backdrop-filter: blur(20px);
-
-      &.full-width {
-        grid-column: 1 / -1;
-      }
 
       .chart-header {
         display: flex;
@@ -196,12 +228,12 @@
 
         .gender-item {
           display: flex;
-          align-items: center;
+          align-items: flex-start;
           gap: 16px;
 
           >svg {
-            color: #42a5f5;
             min-width: 32px;
+            margin-top: 4px;
           }
 
           .gender-info {
@@ -213,12 +245,13 @@
             .gender-label {
               color: rgba(255, 255, 255, 0.9);
               font-weight: 500;
+              font-size: 1rem;
             }
 
             .gender-value {
-              color: #42a5f5;
               font-size: 1.5rem;
               font-weight: 700;
+              line-height: 1;
             }
 
             .progress-bar {
@@ -244,25 +277,30 @@
         }
       }
 
-      .marital-chart {
+      .age-chart {
         display: flex;
         flex-direction: column;
         gap: 16px;
 
-        .marital-item {
-          .marital-info {
+        .age-item {
+          .age-info {
             display: flex;
             justify-content: space-between;
+            align-items: center;
             margin-bottom: 8px;
 
-            .marital-label {
+            .age-label {
               color: rgba(255, 255, 255, 0.9);
               font-weight: 500;
+              flex: 1;
             }
 
-            .marital-value {
-              color: #42a5f5;
+            .age-value {
               font-weight: 700;
+              font-size: 1.25rem;
+              margin-left: 16px;
+              min-width: 40px;
+              text-align: right;
             }
           }
 
@@ -274,192 +312,87 @@
 
             .progress-fill {
               height: 100%;
-              background: linear-gradient(90deg, #42a5f5 0%, #1976d2 100%);
               transition: width 0.5s ease;
             }
           }
         }
       }
 
-      .monthly-chart {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-around;
-        gap: 12px;
-        height: 250px;
-        padding: 20px 0;
-
-        .month-item {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 12px;
-
-          .month-bar {
-            width: 100%;
-            background: linear-gradient(180deg, #42a5f5 0%, #1976d2 100%);
-            border-radius: 8px 8px 0 0;
-            min-height: 20px;
-            position: relative;
-            transition: all 0.5s ease;
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            padding-top: 8px;
-
-            &:hover {
-              background: linear-gradient(180deg, #64b5f6 0%, #42a5f5 100%);
-              transform: translateY(-4px);
-            }
-
-            .bar-value {
-              color: white;
-              font-weight: 700;
-              font-size: 0.9rem;
-            }
-          }
-
-          .month-label {
-            color: rgba(255, 255, 255, 0.7);
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-align: center;
-          }
-        }
-      }
     }
   }
 
-  .recent-members {
-    background: rgba(26, 31, 46, 0.6);
-    border-radius: 16px;
-    padding: 24px;
-    border: 1px solid rgba(66, 165, 245, 0.2);
-    backdrop-filter: blur(20px);
+  .baptism-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 24px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid rgba(66, 165, 245, 0.2);
-
-      svg {
-        color: #42a5f5;
-      }
-
-      h3 {
-        color: #ffffff;
-        font-size: 1.25rem;
-        font-weight: 600;
-        margin: 0;
-      }
+    @media (max-width: 1024px) {
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    .members-list {
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
+    @media (max-width: 640px) {
+      grid-template-columns: 1fr;
+    }
 
-      .no-data {
-        color: rgba(255, 255, 255, 0.6);
-        text-align: center;
-        padding: 32px;
+    .baptism-card {
+      background: rgba(26, 31, 46, 0.6);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+      backdrop-filter: blur(20px);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      transition: all 0.3s ease;
+      cursor: pointer;
+
+      &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 30px rgba(66, 165, 245, 0.2);
+        border-color: rgba(66, 165, 245, 0.4);
       }
 
-      .member-item {
+      .baptism-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 12px;
         display: flex;
         align-items: center;
-        gap: 16px;
-        padding: 16px;
-        background: rgba(66, 165, 245, 0.05);
-        border-radius: 12px;
-        border: 1px solid rgba(66, 165, 245, 0.1);
-        transition: all 0.3s;
+        justify-content: center;
 
-        &:hover {
-          background: rgba(66, 165, 245, 0.1);
-          border-color: rgba(66, 165, 245, 0.3);
+        &.baptized {
+          background: rgba(76, 175, 80, 0.15);
+          color: #4caf50;
         }
 
-        .member-avatar {
-          width: 48px;
-          height: 48px;
-          border-radius: 50%;
-          background: rgba(66, 165, 245, 0.2);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          overflow: hidden;
-
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-          }
-
-          svg {
-            color: #42a5f5;
-          }
+        &.not-baptized {
+          background: rgba(255, 193, 7, 0.15);
+          color: #ffc107;
         }
 
-        .member-info {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          gap: 4px;
-          min-width: 0;
+        &.rate {
+          background: rgba(156, 39, 176, 0.15);
+          color: #9c27b0;
+        }
+      }
 
-          .member-name {
-            color: rgba(255, 255, 255, 0.9);
-            font-weight: 600;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
+      .baptism-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
 
-          .member-email {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-          }
+        .baptism-label {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.95rem;
+          font-weight: 500;
         }
 
-        .member-status {
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 0.85rem;
-          font-weight: 600;
-
-          &.pendente {
-            background: rgba(255, 193, 7, 0.15);
-            color: #ffc107;
-          }
-
-          &.aprovado {
-            background: rgba(76, 175, 80, 0.15);
-            color: #4caf50;
-          }
-
-          &.rejeitado {
-            background: rgba(255, 107, 107, 0.15);
-            color: #ff6b6b;
-          }
-        }
-
-        .member-date {
-          color: rgba(255, 255, 255, 0.6);
-          font-size: 0.9rem;
-          min-width: 100px;
-          text-align: right;
-
-          @media (max-width: 768px) {
-            display: none;
-          }
+        .baptism-value {
+          color: #ffffff;
+          font-size: 2.5rem;
+          font-weight: 800;
+          line-height: 1;
         }
       }
     }

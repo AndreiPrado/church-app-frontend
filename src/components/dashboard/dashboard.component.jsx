@@ -1,5 +1,6 @@
 import "./dashboard.component.scss";
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
@@ -10,16 +11,16 @@ import {
   UserCheck,
   UserPlus,
   TrendUp,
-  CalendarBlank,
   GenderMale,
   GenderFemale,
   ChartPieSlice,
   CheckCircle,
-  XCircle,
-  ArrowClockwise
+  ArrowClockwise,
+  ChartBar
 } from "@phosphor-icons/react";
 
 export default function Dashboard() {
+  const navigate = useNavigate();
   const { getToken } = useAuth();
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -94,67 +95,53 @@ export default function Dashboard() {
     <AdminLayout>
       <div className="dashboard">
         <div className="dashboard-header">
-          <h1>Dashboard</h1>
-          <p>Visão geral dos membros da igreja</p>
+          <ChartBar size={32} weight="duotone" />
+          <div>
+            <h1>Dashboard</h1>
+            <p>Visão geral dos membros da igreja</p>
+          </div>
         </div>
 
-        {/* Cards de Resumo */}
-        <div className="stats-grid">
-          <div className="stat-card primary">
-            <div className="stat-icon">
-              <Users size={32} weight="duotone" />
+        {/* Seção: Membros por Status */}
+        <div className="dashboard-section">
+          <h2 className="section-title">Membros por Status</h2>
+          <div className="stats-grid">
+            <div className="stat-card success" onClick={() => navigate('/admin/members?status=ativo')}>
+              <div className="stat-icon">
+                <UserCheck size={32} weight="duotone" />
+              </div>
+              <div className="stat-content">
+                <span className="stat-label">Ativos</span>
+                <span className="stat-value">{stats.active}</span>
+              </div>
             </div>
-            <div className="stat-content">
-              <span className="stat-label">Total de Membros</span>
-              <span className="stat-value">{stats.total}</span>
-            </div>
-          </div>
 
-          <div className="stat-card success">
-            <div className="stat-icon">
-              <UserCheck size={32} weight="duotone" />
+            <div className="stat-card warning" onClick={() => navigate('/admin/members?status=pendente')}>
+              <div className="stat-icon">
+                <UserPlus size={32} weight="duotone" />
+              </div>
+              <div className="stat-content">
+                <span className="stat-label">Pendentes</span>
+                <span className="stat-value">{stats.pending || 0}</span>
+              </div>
             </div>
-            <div className="stat-content">
-              <span className="stat-label">Membros Ativos</span>
-              <span className="stat-value">{stats.active}</span>
-            </div>
-          </div>
 
-          <div className="stat-card warning">
-            <div className="stat-icon">
-              <UserPlus size={32} weight="duotone" />
-            </div>
-            <div className="stat-content">
-              <span className="stat-label">Pendentes</span>
-              <span className="stat-value">{stats.pending}</span>
-            </div>
-          </div>
-
-          <div className="stat-card info">
-            <div className="stat-icon">
-              <CheckCircle size={32} weight="duotone" />
-            </div>
-            <div className="stat-content">
-              <span className="stat-label">Batizados</span>
-              <span className="stat-value">{stats.baptized}</span>
-            </div>
-          </div>
-
-          <div className="stat-card growth">
-            <div className="stat-icon">
-              <TrendUp size={32} weight="duotone" />
-            </div>
-            <div className="stat-content">
-              <span className="stat-label">Taxa de Batismo</span>
-              <span className="stat-value">
-                {stats.total > 0 ? Math.round((stats.baptized / stats.total) * 100) : 0}%
-              </span>
+            <div className="stat-card info" onClick={() => navigate('/admin/members?status=visitante')}>
+              <div className="stat-icon">
+                <Users size={32} weight="duotone" />
+              </div>
+              <div className="stat-content">
+                <span className="stat-label">Visitantes</span>
+                <span className="stat-value">{stats.total - stats.active - stats.pending}</span>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Gráficos */}
-        <div className="charts-grid">
+        {/* Seção: Distribuições */}
+        <div className="dashboard-section">
+          <h2 className="section-title">Distribuições</h2>
+          <div className="charts-grid">
           {/* Gráfico por Gênero */}
           <div className="chart-card">
             <div className="chart-header">
@@ -163,10 +150,10 @@ export default function Dashboard() {
             </div>
             <div className="gender-chart">
               <div className="gender-item">
-                <GenderMale size={32} weight="duotone" />
+                <GenderMale size={32} weight="duotone" style={{ color: '#42a5f5' }} />
                 <div className="gender-info">
                   <span className="gender-label">Masculino</span>
-                  <span className="gender-value">{stats.byGender?.masculino || 0}</span>
+                  <span className="gender-value" style={{ color: '#42a5f5' }}>{stats.byGender?.masculino || 0}</span>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill male"
@@ -178,10 +165,10 @@ export default function Dashboard() {
                 </div>
               </div>
               <div className="gender-item">
-                <GenderFemale size={32} weight="duotone" />
+                <GenderFemale size={32} weight="duotone" style={{ color: '#e91e63' }} />
                 <div className="gender-info">
                   <span className="gender-label">Feminino</span>
-                  <span className="gender-value">{stats.byGender?.feminino || 0}</span>
+                  <span className="gender-value" style={{ color: '#e91e63' }}>{stats.byGender?.feminino || 0}</span>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill female"
@@ -203,24 +190,25 @@ export default function Dashboard() {
             </div>
             <div className="age-chart">
               {[
-                { key: 'under13', label: 'Crianças (0-12 anos)' },
-                { key: 'between13and17', label: 'Adolescentes (13-17 anos)' },
-                { key: 'between18and25', label: 'Jovens Adultos (18-25 anos)' },
-                { key: 'between26and35', label: 'Adultos Jovens (26-35 anos)' },
-                { key: 'between36and50', label: 'Adultos (36-50 anos)' },
-                { key: 'between51and65', label: 'Meia-idade (51-65 anos)' },
-                { key: 'over65', label: 'Idosos (65+ anos)' }
-              ].map(({ key, label }) => (
+                { key: 'under13', label: 'Crianças (0-12 anos)', color: '#FF6B9D' },
+                { key: 'between13and17', label: 'Adolescentes (13-17 anos)', color: '#C44569' },
+                { key: 'between18and25', label: 'Jovens (18-25 anos)', color: '#FFA726' },
+                { key: 'between26and35', label: 'Adultos Jovens (26-35 anos)', color: '#42A5F5' },
+                { key: 'between36and50', label: 'Adultos (36-50 anos)', color: '#66BB6A' },
+                { key: 'between51and65', label: 'Meia-idade (51-65 anos)', color: '#AB47BC' },
+                { key: 'over65', label: 'Idosos (65+ anos)', color: '#78909C' }
+              ].map(({ key, label, color }) => (
                 <div key={key} className="age-item">
                   <div className="age-info">
                     <span className="age-label">{label}</span>
-                    <span className="age-value">{stats.byAge?.[key] || 0}</span>
+                    <span className="age-value" style={{ color }}>{stats.byAge?.[key] || 0}</span>
                   </div>
                   <div className="progress-bar">
                     <div 
                       className="progress-fill"
                       style={{ 
-                        width: `${stats.total > 0 ? (stats.byAge?.[key] || 0) / stats.total * 100 : 0}%` 
+                        width: `${stats.total > 0 ? (stats.byAge?.[key] || 0) / stats.total * 100 : 0}%`,
+                        background: `linear-gradient(90deg, ${color}, ${color}dd)`
                       }}
                     />
                   </div>
@@ -228,42 +216,42 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
+        </div>
+        </div>
 
-          {/* Resumo de Batismos */}
-          <div className="chart-card full-width">
-            <div className="chart-header">
-              <CalendarBlank size={24} weight="duotone" />
-              <h3>Estatísticas de Batismo</h3>
+        {/* Seção: Batismo */}
+        <div className="dashboard-section">
+          <h2 className="section-title">Estatísticas de Batismo</h2>
+          <div className="baptism-stats">
+            <div className="baptism-card" onClick={() => navigate('/admin/members?baptized=true')}>
+              <div className="baptism-icon baptized">
+                <CheckCircle size={32} weight="fill" />
+              </div>
+              <div className="baptism-content">
+                <span className="baptism-label">Batizados</span>
+                <span className="baptism-value">{stats.baptized}</span>
+              </div>
             </div>
-            <div className="baptism-stats">
-              <div className="baptism-item">
-                <div className="baptism-icon baptized">
-                  <CheckCircle size={32} weight="duotone" />
-                </div>
-                <div className="baptism-info">
-                  <span className="baptism-value">{stats.baptized}</span>
-                  <span className="baptism-label">Batizados</span>
-                </div>
+
+            <div className="baptism-card" onClick={() => navigate('/admin/members?baptized=false')}>
+              <div className="baptism-icon not-baptized">
+                <CheckCircle size={32} weight="duotone" />
               </div>
-              <div className="baptism-item">
-                <div className="baptism-icon not-baptized">
-                  <XCircle size={32} weight="duotone" />
-                </div>
-                <div className="baptism-info">
-                  <span className="baptism-value">{stats.total - stats.baptized}</span>
-                  <span className="baptism-label">Não Batizados</span>
-                </div>
+              <div className="baptism-content">
+                <span className="baptism-label">Não Batizados</span>
+                <span className="baptism-value">{stats.total - stats.baptized}</span>
               </div>
-              <div className="baptism-item">
-                <div className="baptism-icon percentage">
-                  <TrendUp size={32} weight="duotone" />
-                </div>
-                <div className="baptism-info">
-                  <span className="baptism-value">
-                    {stats.total > 0 ? Math.round((stats.baptized / stats.total) * 100) : 0}%
-                  </span>
-                  <span className="baptism-label">Taxa de Batismo</span>
-                </div>
+            </div>
+
+            <div className="baptism-card">
+              <div className="baptism-icon rate">
+                <TrendUp size={32} weight="fill" />
+              </div>
+              <div className="baptism-content">
+                <span className="baptism-label">Taxa de Batismo</span>
+                <span className="baptism-value">
+                  {stats.total > 0 ? Math.round((stats.baptized / stats.total) * 100) : 0}%
+                </span>
               </div>
             </div>
           </div>
