@@ -6,6 +6,7 @@ import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import AccessDenied from "../access-denied/access-denied.component";
 import MemberPhoto from "../member-photo/member-photo.component";
+import MemberEditDrawer from "../member-edit-drawer/member-edit-drawer.component";
 import {
   Users,
   MagnifyingGlass,
@@ -20,7 +21,9 @@ import {
   GridFour,
   ListBullets,
   IdentificationCard,
-  ArrowClockwise
+  ArrowClockwise,
+  ArrowsDownUp,
+  Eraser
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
@@ -32,7 +35,11 @@ export default function MembersList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [baptizedFilter, setBaptizedFilter] = useState("all"); // 'all', 'true', 'false'
+  const [sortBy, setSortBy] = useState('name'); // 'name', 'createdAt', 'updatedAt'
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
+  const [selectedMember, setSelectedMember] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
 
   const loadMembers = useCallback(async () => {
     try {
@@ -58,15 +65,44 @@ export default function MembersList() {
     loadMembers();
   }, [loadMembers]);
 
+  // Fechar modal de filtros ao redimensionar para desktop
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && showFilters) {
+        setShowFilters(false);
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [showFilters]);
+
+  // Bloquear scroll quando modal de filtros estiver aberto (apenas mobile)
+  useEffect(() => {
+    if (window.innerWidth <= 768) {
+      if (showFilters) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
+    }
+
+    return () => {
+      if (window.innerWidth <= 768) {
+        document.body.style.overflow = 'unset';
+      }
+    };
+  }, [showFilters]);
+
   // Aplicar filtros vindos dos query params
   useEffect(() => {
     const status = searchParams.get('status');
     const baptized = searchParams.get('baptized');
-    
+
     if (status) {
       setStatusFilter(status);
     }
-    
+
     if (baptized) {
       setBaptizedFilter(baptized);
     }
@@ -75,7 +111,7 @@ export default function MembersList() {
   useEffect(() => {
     filterMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, statusFilter, baptizedFilter, members]);
+  }, [searchTerm, statusFilter, baptizedFilter, sortBy, members]);
 
   const filterMembers = () => {
     let filtered = [...members];
@@ -102,7 +138,55 @@ export default function MembersList() {
       );
     }
 
+    // Ordenação
+    filtered.sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          // Ordem alfabética por nome
+          return (a.fullName || '').localeCompare(b.fullName || '', 'pt-BR');
+
+        case 'createdAt': {
+          // Mais recentes primeiro (decrescente)
+          const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+          const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+          return dateB - dateA;
+        }
+
+        case 'updatedAt': {
+          // Mais recentemente editados primeiro (decrescente)
+          const updatedA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
+          const updatedB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
+          return updatedB - updatedA;
+        }
+
+        default:
+          return 0;
+      }
+    });
+
     setFilteredMembers(filtered);
+  };
+
+  const handleMemberClick = (member) => {
+    setSelectedMember(member);
+    setIsDrawerOpen(true);
+  };
+
+  const handleDrawerClose = () => {
+    setIsDrawerOpen(false);
+    setSelectedMember(null);
+  };
+
+  const handleMemberSave = (updatedMember) => {
+    // Atualizar a lista de membros com o membro atualizado
+    setMembers(prev => prev.map(m => m.id === updatedMember.id ? updatedMember : m));
+    loadMembers(); // Recarregar lista completa
+  };
+
+  const handleClearFilters = () => {
+    setStatusFilter('all');
+    setBaptizedFilter('all');
+    setSortBy('name');
   };
 
   const getStatusIcon = (status) => {
@@ -199,6 +283,7 @@ export default function MembersList() {
 
         {/* Filtros */}
         <div className="members-filters">
+          {/* Busca sempre visível */}
           <div className="search-box">
             <MagnifyingGlass size={20} />
             <input
@@ -209,25 +294,66 @@ export default function MembersList() {
             />
           </div>
 
-          <div className="filter-box">
-            <Funnel size={20} />
-            <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-              <option value="all">Todos os status</option>
-              <option value="ativo">Ativos</option>
-              <option value="visitante">Visitantes</option>
-              <option value="pendente">Pendentes</option>
-              <option value="inativo">Inativos</option>
-            </select>
+          {/* Botão de filtro (mobile) */}
+          <button className="filter-toggle-btn" onClick={() => setShowFilters(!showFilters)}>
+            <Funnel size={20} weight={showFilters ? "fill" : "regular"} />
+            Filtros
+            {(statusFilter !== 'all' || baptizedFilter !== 'all' || sortBy !== 'name') && (
+              <span className="filter-badge"></span>
+            )}
+          </button>
+
+          {/* Filtros desktop / Modal mobile */}
+          <div className={`filters-container ${showFilters ? 'show' : ''}`}>
+            <div className="filters-header">
+              <h3>Filtros</h3>
+              <button className="close-filters" onClick={() => setShowFilters(false)}>
+                ×
+              </button>
+            </div>
+
+            <div className="filters-content">
+              {/* Botão Limpar Filtros */}
+              {(statusFilter !== 'all' || baptizedFilter !== 'all' || sortBy !== 'name') && (
+                <button className="clear-filters-btn" onClick={handleClearFilters}>
+                  <Eraser size={18} weight="bold" />
+                  Limpar Filtros
+                </button>
+              )}
+              
+              <div className="filter-box">
+                <Funnel size={20} />
+                <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
+                  <option value="all">Todos os status</option>
+                  <option value="ativo">Ativos</option>
+                  <option value="visitante">Visitantes</option>
+                  <option value="pendente">Pendentes</option>
+                  <option value="inativo">Inativos</option>
+                </select>
+              </div>
+
+              <div className="filter-box">
+                <Funnel size={20} />
+                <select value={baptizedFilter} onChange={(e) => setBaptizedFilter(e.target.value)}>
+                  <option value="all">Batismo</option>
+                  <option value="true">Batizados</option>
+                  <option value="false">Não batizados</option>
+                </select>
+              </div>
+
+              <div className="filter-box">
+                <ArrowsDownUp size={20} />
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option value="name">Nome (A-Z)</option>
+                  <option value="createdAt">Data de Cadastro</option>
+                  <option value="updatedAt">Última Edição</option>
+                </select>
+              </div>
+            </div>
           </div>
 
-          <div className="filter-box">
-            <Funnel size={20} />
-            <select value={baptizedFilter} onChange={(e) => setBaptizedFilter(e.target.value)}>
-              <option value="all">Batismo</option>
-              <option value="true">Batizados</option>
-              <option value="false">Não batizados</option>
-            </select>
-          </div>
+          {/* Overlay para mobile */}
+          {showFilters && <div className="filters-overlay" onClick={() => setShowFilters(false)}></div>}
         </div>
 
         {/* Lista de Membros */}
@@ -239,7 +365,7 @@ export default function MembersList() {
         ) : viewMode === 'cards' ? (
           <div className="members-grid">
             {filteredMembers.map((member) => (
-              <div key={member.id} className="member-card">
+              <div key={member.id} className="member-card" onClick={() => handleMemberClick(member)}>
                 <div className="member-card-header">
                   <div className="member-avatar">
                     <MemberPhoto
@@ -311,7 +437,7 @@ export default function MembersList() {
         ) : (
           <div className="members-list-view">
             {filteredMembers.map((member) => (
-              <div key={member.id} className="member-list-item">
+              <div key={member.id} className="member-list-item" onClick={() => handleMemberClick(member)}>
                 <div className="list-avatar">
                   <MemberPhoto
                     memberId={member.id}
@@ -370,6 +496,14 @@ export default function MembersList() {
             ))}
           </div>
         )}
+        
+        {/* Drawer de Edição */}
+        <MemberEditDrawer
+          member={selectedMember}
+          isOpen={isDrawerOpen}
+          onClose={handleDrawerClose}
+          onSave={handleMemberSave}
+        />
       </div>
     </AdminLayout>
   );

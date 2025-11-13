@@ -159,6 +159,18 @@ class AuthService {
   }
 
   /**
+   * Upload de foto do membro
+   */
+  async uploadMemberPhoto(memberId, formData) {
+    const response = await api.post(`/api/members/${memberId}/photo`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return response.data;
+  }
+
+  /**
    * Logout
    */
   logout() {
