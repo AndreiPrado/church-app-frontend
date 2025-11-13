@@ -1,7 +1,8 @@
 .floating-alert {
   position: fixed;
-  top: 20px;
-  right: 20px;
+  top: 16px;
+  left: 16px;
+  right: 16px;
   z-index: 9999;
   min-width: 300px;
   max-width: 500px;
@@ -12,7 +13,7 @@
   transform: translateX(100%);
   opacity: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  
+
   &.show {
     transform: translateX(0);
     opacity: 1;
@@ -21,11 +22,11 @@
   &.success {
     background: linear-gradient(135deg, #10b981, #059669);
     border: 1px solid rgba(16, 185, 129, 0.3);
-    
+
     .alert-content {
       color: white;
     }
-    
+
     .alert-icon {
       color: rgba(255, 255, 255, 0.9);
     }
@@ -34,11 +35,11 @@
   &.error {
     background: linear-gradient(135deg, #ef4444, #dc2626);
     border: 1px solid rgba(239, 68, 68, 0.3);
-    
+
     .alert-content {
       color: white;
     }
-    
+
     .alert-icon {
       color: rgba(255, 255, 255, 0.9);
     }
@@ -99,7 +100,7 @@
     min-width: auto;
     max-width: none;
     transform: translateY(-100%);
-    
+
     &.show {
       transform: translateY(0);
     }
@@ -112,6 +113,7 @@
     transform: translateX(100%);
     opacity: 0;
   }
+
   to {
     transform: translateX(0);
     opacity: 1;
@@ -123,6 +125,7 @@
     transform: translateX(0);
     opacity: 1;
   }
+
   to {
     transform: translateX(100%);
     opacity: 0;

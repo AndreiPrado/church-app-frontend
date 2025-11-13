@@ -13,6 +13,10 @@ export const usePermissions = () => {
    */
   const hasPermission = (permission) => {
     if (!user || !user.permissions) return false;
+    
+    // Otimização: admin.full garante todas as permissões
+    if (user.permissions.includes('admin.full')) return true;
+    
     return user.permissions.includes(permission);
   };
 
@@ -23,6 +27,10 @@ export const usePermissions = () => {
    */
   const hasAnyPermission = (permissions) => {
     if (!user || !user.permissions) return false;
+    
+    // Otimização: admin.full garante todas as permissões
+    if (user.permissions.includes('admin.full')) return true;
+    
     return permissions.some(permission => user.permissions.includes(permission));
   };
 
@@ -33,6 +41,10 @@ export const usePermissions = () => {
    */
   const hasAllPermissions = (permissions) => {
     if (!user || !user.permissions) return false;
+    
+    // Otimização: admin.full garante todas as permissões
+    if (user.permissions.includes('admin.full')) return true;
+    
     return permissions.every(permission => user.permissions.includes(permission));
   };
 
@@ -41,7 +53,8 @@ export const usePermissions = () => {
    * @returns {boolean}
    */
   const isAdmin = () => {
-    return hasPermission('admin.full');
+    if (!user || !user.permissions) return false;
+    return user.permissions.includes('admin.full');
   };
 
   /**
