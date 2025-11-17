@@ -242,6 +242,8 @@
       flex: 1;
       padding: 40px;
       position: relative;
+      max-width: 100%;
+      overflow-x: hidden;
 
       @media (max-width: 768px) {
         padding: 24px 20px;
