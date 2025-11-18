@@ -162,12 +162,10 @@ class AuthService {
    * Upload de foto do membro
    */
   async uploadMemberPhoto(memberId, formData) {
-    const response = await api.post(`/api/members/${memberId}/photo`, formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    });
-    return response.data;
+    // Não definir Content-Type manualmente - deixar o browser adicionar o boundary automaticamente
+    const response = await api.post(`/api/members/${memberId}/photo`, formData);
+    // api.post já retorna o JSON parseado: { success: true, data: { photoUrl: "..." } }
+    return response;
   }
 
   /**

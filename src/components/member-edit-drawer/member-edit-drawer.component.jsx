@@ -52,7 +52,7 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           setLoading(true);
           const memberDetails = await authService.getMemberById(member.id);
           console.log('Member details loaded:', memberDetails); // Debug
-          
+
           setFormData({
             fullName: memberDetails.fullName || "",
             email: memberDetails.email || "",
@@ -72,7 +72,7 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
             baptized: memberDetails.baptized || false,
             baptismDate: memberDetails.baptismDate ? memberDetails.baptismDate.split('T')[0] : ""
           });
-          
+
           // Carregar foto existente
           if (memberDetails.photoUrl) {
             try {
@@ -96,12 +96,12 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           setLoading(false);
         }
       };
-      
+
       // Limpar mensagens
       setError(null);
       setSuccessMessage(null);
       setPhotoFile(null);
-      
+
       loadMemberDetails();
     }
   }, [member, isOpen]);
@@ -128,75 +128,91 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validação dos campos obrigatórios
     if (!formData.fullName || !formData.fullName.trim()) {
       setError('Nome completo é obrigatório');
       return;
     }
-    
+
     if (!formData.email || !formData.email.trim()) {
       setError('Email é obrigatório');
       return;
     }
-    
+
     // Validação de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
       setError('Email inválido');
       return;
     }
-    
+
     if (!formData.phone || !formData.phone.trim()) {
       setError('Telefone é obrigatório');
       return;
     }
-    
+
     // Validação: pendente não pode mudar para ativo
     if (member.status === 'pendente' && formData.status === 'ativo') {
       setError('Membros pendentes não podem ser ativados manualmente. Eles devem completar o primeiro acesso.');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccessMessage(null);
 
     try {
-      // Preparar dados para envio
+      // 1. Se houver nova foto, fazer upload PRIMEIRO
+      let photoUrl = null;
+      if (photoFile) {
+        try {
+          const formDataPhoto = new FormData();
+          formDataPhoto.append('photo', photoFile);
+          const photoResponse = await authService.uploadMemberPhoto(member.id, formDataPhoto);
+          photoUrl = photoResponse.data.photoUrl;
+          console.log('Foto carregada com sucesso:', photoUrl);
+        } catch (photoErr) {
+          console.error('Erro ao fazer upload da foto:', photoErr);
+          setError('Erro ao fazer upload da foto. Tente novamente.');
+          setLoading(false);
+          return;
+        }
+      }
+
+      // 2. Preparar dados para envio (incluindo nova photoUrl se houver)
       const dataToSend = {
         ...formData,
         // Garantir formato correto de datas (YYYY-MM-DD)
         birthDate: formData.birthDate || null,
         joinDate: formData.joinDate || null,
       };
-      
+
+      // Adicionar photoUrl se foi feito upload
+      if (photoUrl) {
+        dataToSend.photoUrl = photoUrl;
+      }
+
       // Remover baptismDate se não estiver preenchido ou se não estiver batizado
       if (!formData.baptized || !formData.baptismDate) {
         delete dataToSend.baptismDate;
       }
-      
+
       // Remover joinDate do envio (não é editável)
       delete dataToSend.joinDate;
 
-      // Atualizar dados do membro
+      // 3. Atualizar dados do membro
       const updatedMember = await authService.updateMember(member.id, dataToSend);
 
-      // Se houver nova foto, fazer upload
-      if (photoFile) {
-        const formDataPhoto = new FormData();
-        formDataPhoto.append('photo', photoFile);
-        await authService.uploadMemberPhoto(member.id, formDataPhoto);
-      }
-
       setSuccessMessage('Membro atualizado com sucesso!');
-      
+
       // Aguardar um pouco para mostrar a mensagem
       setTimeout(() => {
         onSave(updatedMember);
         onClose();
       }, 1500);
     } catch (err) {
+      console.error('Erro ao atualizar membro:', err);
       setError(err.response?.data?.detail || err.message || "Erro ao atualizar membro");
     } finally {
       setLoading(false);
@@ -241,7 +257,7 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           {/* Informações Pessoais */}
           <div className="form-section">
             <h3>Informações Pessoais</h3>
-            
+
             <div className="form-group">
               <label>
                 <User size={18} weight="duotone" />
@@ -411,7 +427,7 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
               <MapPin size={20} weight="duotone" />
               Endereço
             </h3>
-            
+
             <div className="form-group">
               <label>Logradouro</label>
               <input
@@ -456,7 +472,8 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
                   maxLength="2"
                 />
               </div>
-
+            </div>
+            <div className="form-row">
               <div className="form-group">
                 <label>CEP</label>
                 <input
@@ -485,11 +502,12 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           )}
 
           <div className="drawer-footer">
-            <button type="button" onClick={onClose} className="btn-cancel" disabled={loading}>
-              Cancelar
-            </button>
             <button type="submit" className="btn-save" disabled={loading}>
               {loading ? 'Salvando...' : 'Salvar Alterações'}
+            </button>
+
+            <button type="button" onClick={onClose} className="btn-cancel" disabled={loading}>
+              Cancelar
             </button>
           </div>
         </form>

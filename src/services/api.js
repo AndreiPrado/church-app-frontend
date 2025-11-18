@@ -69,8 +69,12 @@ class ApiClient {
       ...options.headers
     };
 
-    // Adicionar Content-Type apenas se não for requisição de blob
-    if (options.responseType !== 'blob' && !headers['Content-Type']) {
+    // Adicionar Content-Type apenas se:
+    // 1. Não for requisição de blob
+    // 2. Não for FormData (FormData precisa do boundary automático do browser)
+    // 3. Content-Type não estiver definido
+    const isFormData = options.body instanceof FormData;
+    if (options.responseType !== 'blob' && !isFormData && !headers['Content-Type']) {
       headers['Content-Type'] = 'application/json';
     }
 
@@ -206,7 +210,8 @@ class ApiClient {
     return this.request(endpoint, {
       ...options,
       method: 'POST',
-      body: JSON.stringify(body)
+      // Não fazer JSON.stringify se for FormData
+      body: body instanceof FormData ? body : JSON.stringify(body)
     });
   }
 
