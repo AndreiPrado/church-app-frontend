@@ -21,6 +21,7 @@ export default function Profile() {
   const { user, getToken, updateUser } = useAuth();
   const [memberData, setMemberData] = useState(null);
   const [memberRole, setMemberRole] = useState(null);
+  const [photoUrl, setPhotoUrl] = useState(null);
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -34,6 +35,18 @@ export default function Profile() {
       const data = await authService.getMemberById(user.id, token);
       setMemberData(data);
       setEditData(data);
+
+      // Carregar foto do membro (sempre tenta se tiver ID)
+      try {
+        const blob = await authService.getMemberPhoto(user.id);
+        if (blob) {
+          const blobUrl = URL.createObjectURL(blob);
+          setPhotoUrl(blobUrl);
+        }
+      } catch (photoErr) {
+        console.warn('Não foi possível carregar foto:', photoErr);
+        setPhotoUrl(null);
+      }
 
       // Buscar dados da role se houver roleId
       if (data.roleId) {
@@ -61,6 +74,15 @@ export default function Profile() {
   useEffect(() => {
     loadMemberData();
   }, [loadMemberData]);
+
+  // Cleanup: revogar blob URL quando componente desmontar
+  useEffect(() => {
+    return () => {
+      if (photoUrl) {
+        URL.revokeObjectURL(photoUrl);
+      }
+    };
+  }, [photoUrl]); // photoUrl só causa cleanup, não reload
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -155,8 +177,8 @@ export default function Profile() {
           <div className="profile-card">
             <div className="profile-avatar-section">
               <div className="profile-avatar">
-                {memberData.photoUrl ? (
-                  <img src={memberData.photoUrl} alt={memberData.fullName} />
+                {photoUrl ? (
+                  <img src={photoUrl} alt={memberData.fullName} />
                 ) : (
                   <UserCircle size={120} weight="duotone" />
                 )}

@@ -1,8 +1,9 @@
 import "./admin-layout.component.scss";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import { usePermissions } from "../../hooks/usePermissions";
+import authService from "../../services/authService";
 import PropTypes from "prop-types";
 import {
   ChartBar,
@@ -21,11 +22,45 @@ export default function AdminLayout({ children }) {
   const { user, logout } = useAuth();
   const { hasAnyPermission } = usePermissions();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [userPhotoUrl, setUserPhotoUrl] = useState(null);
 
   const handleLogout = () => {
     logout();
     navigate("/login");
   };
+
+  // Carregar foto do usuário (sempre tenta carregar se tiver user.id)
+  useEffect(() => {
+    const loadUserPhoto = async () => {
+      if (user?.id) {
+        console.log('🔍 Admin Layout - Carregando foto do usuário:', user.id);
+        try {
+          const blob = await authService.getMemberPhoto(user.id);
+          console.log('📦 Admin Layout - Blob recebido:', blob);
+          if (blob) {
+            const blobUrl = URL.createObjectURL(blob);
+            console.log('🎨 Admin Layout - Blob URL criada:', blobUrl);
+            setUserPhotoUrl(blobUrl);
+          } else {
+            console.warn('⚠️ Admin Layout - Blob vazio ou null');
+          }
+        } catch (err) {
+          console.error('❌ Admin Layout - Erro ao carregar foto:', err);
+        }
+      }
+    };
+
+    loadUserPhoto();
+  }, [user?.id]);
+
+  // Cleanup separado para revogar blob URL
+  useEffect(() => {
+    return () => {
+      if (userPhotoUrl) {
+        URL.revokeObjectURL(userPhotoUrl);
+      }
+    };
+  }, [userPhotoUrl]);
 
   // Definir todos os itens do menu com suas permissões requeridas
   const allMenuItems = [
@@ -66,6 +101,14 @@ export default function AdminLayout({ children }) {
     });
   }, [user, hasAnyPermission]); // eslint-disable-line react-hooks/exhaustive-deps
 
+  // Debug: mostrar estado atual
+  console.log('🎨 Admin Layout - Estado atual:', {
+    userPhotoUrl,
+    hasUser: !!user,
+    userId: user?.id,
+    userPhotoUrlField: user?.photoUrl
+  });
+
   return (
     <div className="admin-layout">
       {/* Sidebar */}
@@ -97,21 +140,38 @@ export default function AdminLayout({ children }) {
         </nav>
 
         <div className="sidebar-footer">
-          <button onClick={() => navigate("/home")} className="back-to-site">
-            <House size={20} />
-            Ir para o Site
-          </button>
+          {/* User info em destaque no topo */}
           <div className="user-info">
-            <UserCircle size={32} weight="fill" />
+            <div className="user-avatar-wrapper">
+              {userPhotoUrl ? (
+                <img 
+                  src={userPhotoUrl} 
+                  alt={user?.fullName} 
+                  className="user-avatar"
+                  onLoad={() => console.log('✅ Imagem carregada no sidebar!')}
+                  onError={(e) => console.error('❌ Erro ao carregar imagem no sidebar:', e)}
+                />
+              ) : (
+                <UserCircle size={48} weight="fill" />
+              )}
+            </div>
             <div className="user-details">
               <span className="user-name">{user?.fullName || user?.name}</span>
               <span className="user-email">{user?.email}</span>
             </div>
           </div>
-          <button onClick={handleLogout} className="logout-button">
-            <SignOut size={20} />
-            Sair
-          </button>
+
+          {/* Ações */}
+          <div className="footer-actions">
+            <button onClick={() => navigate("/home")} className="back-to-site">
+              <House size={18} />
+              Ir para o Site
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              <SignOut size={18} />
+              Sair
+            </button>
+          </div>
         </div>
       </aside>
 
@@ -128,7 +188,11 @@ export default function AdminLayout({ children }) {
           </button>
           <img src={logoWithoutBackground} alt="Zele Church" className="mobile-logo" />
           <div className="header-actions">
-            <UserCircle size={32} weight="fill" />
+            {userPhotoUrl ? (
+              <img src={userPhotoUrl} alt={user?.fullName} className="user-avatar-mobile" />
+            ) : (
+              <UserCircle size={36} weight="fill" />
+            )}
           </div>
         </header>
 

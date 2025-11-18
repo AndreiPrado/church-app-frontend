@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
+import authService from "../../services/authService";
 import "./navbar.component.scss";
 import logo from "../../assets/logo-blue.png";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [userPhotoUrl, setUserPhotoUrl] = useState(null);
   const location = useLocation();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,6 +24,34 @@ export default function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  // Carregar foto do usuário quando logado
+  useEffect(() => {
+    const loadUserPhoto = async () => {
+      if (user?.id) {
+        try {
+          const blob = await authService.getMemberPhoto(user.id);
+          if (blob) {
+            const blobUrl = URL.createObjectURL(blob);
+            setUserPhotoUrl(blobUrl);
+          }
+        } catch (err) {
+          console.warn('Não foi possível carregar foto do usuário:', err);
+        }
+      }
+    };
+
+    loadUserPhoto();
+  }, [user?.id]);
+
+  // Cleanup blob URL
+  useEffect(() => {
+    return () => {
+      if (userPhotoUrl) {
+        URL.revokeObjectURL(userPhotoUrl);
+      }
+    };
+  }, [userPhotoUrl]);
 
   // Navegação suave apenas em desktop (não conflita com parallax)
   const handleNavClick = (e, hash) => {
@@ -48,7 +80,19 @@ export default function Navbar() {
         <a href="/home#cultos" onClick={(e) => handleNavClick(e, '#cultos')}>Cultos</a>
         <a href="/home#historia" onClick={(e) => handleNavClick(e, '#historia')}>História</a>
         <a href="/home#ministerios" onClick={(e) => handleNavClick(e, '#ministerios')}>Ministérios</a>
-        <a href="/signup" className="cta-button">Quero ser membro</a>
+        {user ? (
+          <a href="/admin/profile" className="user-profile-link">
+            {userPhotoUrl ? (
+              <img src={userPhotoUrl} alt={user?.fullName} className="user-avatar-nav" />
+            ) : (
+              <div className="user-avatar-placeholder">
+                {user?.fullName?.charAt(0) || 'U'}
+              </div>
+            )}
+          </a>
+        ) : (
+          <a href="/signup" className="cta-button">Quero ser membro</a>
+        )}
       </div>
 
       {/* Botão hamburguer → vira X (apenas mobile) */}

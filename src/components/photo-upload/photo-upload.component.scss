@@ -58,7 +58,7 @@
 .upload-dropzone {
   position: relative;
   padding: 5px;
-  height: 130px;
+  height: auto;
   width: 220px;
   border: 2px dashed #2d4263;
   border-radius: 10px;
@@ -71,6 +71,7 @@
   align-items: center;
   justify-content: center;
   font-size: 14px;
+  color: #2d4263;
 }
 
 .upload-dropzone:hover {
@@ -238,6 +239,7 @@
     opacity: 0;
     transform: translateY(-5px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
