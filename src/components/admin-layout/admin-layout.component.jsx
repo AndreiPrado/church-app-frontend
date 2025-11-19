@@ -33,19 +33,14 @@ export default function AdminLayout({ children }) {
   useEffect(() => {
     const loadUserPhoto = async () => {
       if (user?.id) {
-        console.log('🔍 Admin Layout - Carregando foto do usuário:', user.id);
         try {
           const blob = await authService.getMemberPhoto(user.id);
-          console.log('📦 Admin Layout - Blob recebido:', blob);
           if (blob) {
             const blobUrl = URL.createObjectURL(blob);
-            console.log('🎨 Admin Layout - Blob URL criada:', blobUrl);
             setUserPhotoUrl(blobUrl);
-          } else {
-            console.warn('⚠️ Admin Layout - Blob vazio ou null');
           }
         } catch (err) {
-          console.error('❌ Admin Layout - Erro ao carregar foto:', err);
+          console.error('Erro ao carregar foto do usuário:', err);
         }
       }
     };
@@ -101,14 +96,6 @@ export default function AdminLayout({ children }) {
     });
   }, [user, hasAnyPermission]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Debug: mostrar estado atual
-  console.log('🎨 Admin Layout - Estado atual:', {
-    userPhotoUrl,
-    hasUser: !!user,
-    userId: user?.id,
-    userPhotoUrlField: user?.photoUrl
-  });
-
   return (
     <div className="admin-layout">
       {/* Sidebar */}
@@ -148,8 +135,6 @@ export default function AdminLayout({ children }) {
                   src={userPhotoUrl} 
                   alt={user?.fullName} 
                   className="user-avatar"
-                  onLoad={() => console.log('✅ Imagem carregada no sidebar!')}
-                  onError={(e) => console.error('❌ Erro ao carregar imagem no sidebar:', e)}
                 />
               ) : (
                 <UserCircle size={48} weight="fill" />

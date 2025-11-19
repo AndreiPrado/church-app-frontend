@@ -35,21 +35,25 @@ export default function MemberPhoto({
         setIsLoading(true);
         setHasError(false);
         
-        const url = await authService.getMemberPhoto(memberId);
-        currentUrl = url;
+        // authService.getMemberPhoto retorna um Blob, não uma URL
+        const blob = await authService.getMemberPhoto(memberId);
         
         if (isMounted) {
-          if (url) {
-            setPhotoUrl(url);
+          if (blob) {
+            // Criar blob URL a partir do blob
+            const blobUrl = URL.createObjectURL(blob);
+            currentUrl = blobUrl;
+            setPhotoUrl(blobUrl);
           } else {
             setHasError(true);
           }
-        } else if (url) {
-          // Se o componente foi desmontado antes da foto carregar, revogar imediatamente
-          URL.revokeObjectURL(url);
+        } else if (blob) {
+          // Se o componente foi desmontado antes da foto carregar, criar URL só para revogar
+          const blobUrl = URL.createObjectURL(blob);
+          URL.revokeObjectURL(blobUrl);
         }
       } catch (error) {
-        console.error('Erro ao carregar foto:', error);
+        console.error('Erro ao carregar foto do membro:', error);
         if (isMounted) {
           setHasError(true);
         }

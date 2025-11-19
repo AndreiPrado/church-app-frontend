@@ -90,6 +90,16 @@
           box-shadow: 0 6px 25px rgba(76, 175, 80, 0.5);
         }
       }
+
+      @media (max-width: 768px) {
+        width: 100%;
+        justify-content: space-between;
+
+        >button {
+          justify-content: center;
+          width: 100%;
+        }
+      }
     }
   }
 

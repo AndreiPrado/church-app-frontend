@@ -76,9 +76,10 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           // Carregar foto existente
           if (memberDetails.photoUrl) {
             try {
-              const photoUrl = await authService.getMemberPhoto(memberDetails.id);
-              if (photoUrl) {
-                setPhotoPreview(photoUrl);
+              const blob = await authService.getMemberPhoto(memberDetails.id);
+              if (blob) {
+                const blobUrl = URL.createObjectURL(blob);
+                setPhotoPreview(blobUrl);
               } else {
                 setPhotoPreview(null);
               }
@@ -105,6 +106,15 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
       loadMemberDetails();
     }
   }, [member, isOpen]);
+
+  // Cleanup: revogar blob URL quando componente for desmontado ou photoPreview mudar
+  useEffect(() => {
+    return () => {
+      if (photoPreview && photoPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(photoPreview);
+      }
+    };
+  }, [photoPreview]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;

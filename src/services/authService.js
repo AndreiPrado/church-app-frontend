@@ -100,23 +100,15 @@ class AuthService {
    * Obter foto de membro de forma autenticada
    */
   async getMemberPhoto(memberId) {
-    console.log('🔧 authService.getMemberPhoto - Iniciando para:', memberId);
     try {
       const response = await api.get(`/api/members/photo/${memberId}`, {
         responseType: 'blob' // Importante: receber como blob
-      });
-      
-      console.log('✅ authService.getMemberPhoto - Response:', {
-        data: response.data,
-        type: response.data?.type,
-        size: response.data?.size
       });
       
       // Retornar o blob diretamente
       return response.data;
     } catch (error) {
       // Se não conseguir carregar a foto, retornar null (silencioso)
-      console.error('❌ authService.getMemberPhoto - Erro:', error);
       return null;
     }
   }
@@ -125,7 +117,18 @@ class AuthService {
    * Atualizar membro
    */
   async updateMember(id, data) {
+    console.log('🔧 authService.updateMember - Enviando:', { id, data });
     const result = await api.patch(`/api/members/${id}`, data);
+    console.log('📦 authService.updateMember - Response completa:', result);
+    console.log('📦 authService.updateMember - result.data:', result.data);
+    
+    // Backend retorna { success: true, data: member }, então precisamos extrair result.data.data
+    if (result.data && result.data.data) {
+      console.log('✅ authService.updateMember - Retornando member:', result.data.data);
+      return result.data.data;
+    }
+    
+    console.log('⚠️ authService.updateMember - Retornando result.data direto:', result.data);
     return result.data;
   }
 

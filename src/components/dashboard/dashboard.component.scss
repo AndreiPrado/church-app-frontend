@@ -5,12 +5,12 @@
     align-items: center;
     gap: 16px;
 
-    > svg {
+    >svg {
       color: #42a5f5;
       min-width: 32px;
     }
 
-    > div {
+    >div {
       flex: 1;
 
       h1 {
@@ -119,7 +119,7 @@
     .stat-card {
       background: rgba(26, 31, 46, 0.6);
       border-radius: 16px;
-      padding: 24px;
+      padding: 16px;
       border: 1px solid rgba(66, 165, 245, 0.2);
       backdrop-filter: blur(20px);
       display: flex;
@@ -147,7 +147,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
 
         .stat-label {
           color: rgba(255, 255, 255, 0.7);
@@ -337,7 +337,7 @@
     .baptism-card {
       background: rgba(26, 31, 46, 0.6);
       border-radius: 16px;
-      padding: 24px;
+      padding: 16px;
       border: 1px solid rgba(66, 165, 245, 0.2);
       backdrop-filter: blur(20px);
       display: flex;
@@ -380,7 +380,7 @@
         flex: 1;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
 
         .baptism-label {
           color: rgba(255, 255, 255, 0.7);
