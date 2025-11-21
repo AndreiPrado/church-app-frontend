@@ -32,6 +32,18 @@ export default function Approvals() {
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
 
+  // Helper para formatar datas de forma segura
+  const formatDate = (dateString) => {
+    if (!dateString) return 'Data não disponível';
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return 'Data inválida';
+      return date.toLocaleDateString('pt-BR');
+    } catch {
+      return 'Data inválida';
+    }
+  };
+
   const loadPendingMembers = useCallback(async () => {
     try {
       setLoading(true);
@@ -311,7 +323,7 @@ export default function Approvals() {
                   <div className="member-basic-info">
                     <h3>{member.fullName}</h3>
                     <span className="member-date">
-                      Cadastrado em {new Date(member.createdAt).toLocaleDateString('pt-BR')}
+                      Cadastrado em {formatDate(member.createdAt)}
                     </span>
                   </div>
                 </div>
@@ -322,11 +334,11 @@ export default function Approvals() {
                     <div className="info-grid">
                       <div className="info-item">
                         <EnvelopeSimple size={18} weight="duotone" />
-                        <span>{member.email}</span>
+                        <span>{member.email || 'Email não informado'}</span>
                       </div>
                       <div className="info-item">
                         <Phone size={18} weight="duotone" />
-                        <span>{member.phone}</span>
+                        <span>{member.phone || 'Telefone não informado'}</span>
                       </div>
                     </div>
                   </div>
@@ -334,43 +346,69 @@ export default function Approvals() {
                   <div className="info-section">
                     <h4>Dados Pessoais</h4>
                     <div className="info-grid">
-                      <div className="info-item">
-                        <IdentificationCard size={18} weight="duotone" />
-                        <span>CPF: {member.cpf}</span>
-                      </div>
-                      <div className="info-item">
-                        <CalendarBlank size={18} weight="duotone" />
-                        <span>Nascimento: {member.birthDate}</span>
-                      </div>
-                      <div className="info-item">
-                        <span><strong>Gênero:</strong> {member.gender}</span>
-                      </div>
-                      <div className="info-item">
-                        <span><strong>Estado Civil:</strong> {member.maritalStatus}</span>
-                      </div>
+                      {member.cpf && (
+                        <div className="info-item">
+                          <IdentificationCard size={18} weight="duotone" />
+                          <span>CPF: {member.cpf}</span>
+                        </div>
+                      )}
+                      {member.birthDate && (
+                        <div className="info-item">
+                          <CalendarBlank size={18} weight="duotone" />
+                          <span>Nascimento: {formatDate(member.birthDate)}</span>
+                        </div>
+                      )}
+                      {member.gender && (
+                        <div className="info-item">
+                          <span><strong>Gênero:</strong> {member.gender}</span>
+                        </div>
+                      )}
+                      {member.maritalStatus && (
+                        <div className="info-item">
+                          <span><strong>Estado Civil:</strong> {member.maritalStatus}</span>
+                        </div>
+                      )}
+                      {member.profession && (
+                        <div className="info-item">
+                          <span><strong>Profissão:</strong> {member.profession}</span>
+                        </div>
+                      )}
                       {member.baptized && (
                         <div className="info-item baptized">
                           <CheckCircle size={16} weight="fill" />
-                          <span>Batizado{member.baptismDate && ` em ${member.baptismDate}`}</span>
+                          <span>Batizado{member.baptismDate && ` em ${formatDate(member.baptismDate)}`}</span>
                         </div>
                       )}
                     </div>
                   </div>
 
-                  <div className="info-section">
-                    <h4>Endereço</h4>
-                    <div className="info-grid">
-                      <div className="info-item">
-                        <MapPin size={18} weight="duotone" />
-                        <span>{member.address}, {member.city} - {member.state}</span>
+                  {(member.address || member.city || member.state || member.zipCode) && (
+                    <div className="info-section">
+                      <h4>Endereço</h4>
+                      <div className="info-grid">
+                        {(member.address || member.city || member.state) && (
+                          <div className="info-item">
+                            <MapPin size={18} weight="duotone" />
+                            <span>
+                              {member.address || 'Endereço não informado'}
+                              {member.city && `, ${member.city}`}
+                              {member.state && ` - ${member.state}`}
+                            </span>
+                          </div>
+                        )}
+                        {member.zipCode && (
+                          <div className="info-item">
+                            <span><strong>CEP:</strong> {member.zipCode}</span>
+                          </div>
+                        )}
+                        {member.addressComplement && (
+                          <div className="info-item">
+                            <span><strong>Complemento:</strong> {member.addressComplement}</span>
+                          </div>
+                        )}
                       </div>
-                      {member.addressComplement && (
-                        <div className="info-item">
-                          <span>Complemento: {member.addressComplement}</span>
-                        </div>
-                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
 
                 <div className="approval-card-footer">
@@ -439,10 +477,15 @@ export default function Approvals() {
                     <td>
                       <strong>{member.fullName}</strong>
                     </td>
-                    <td>{member.email}</td>
-                    <td>{member.phone}</td>
-                    <td>{member.cpf}</td>
-                    <td>{member.city} - {member.state}</td>
+                    <td>{member.email || '-'}</td>
+                    <td>{member.phone || '-'}</td>
+                    <td>{member.cpf || '-'}</td>
+                    <td>
+                      {member.city && member.state 
+                        ? `${member.city} - ${member.state}` 
+                        : member.city || member.state || '-'
+                      }
+                    </td>
                     <td className="baptized-cell">
                       {member.baptized ? (
                         <CheckCircle size={18} weight="fill" className="baptized-icon" />
@@ -451,7 +494,7 @@ export default function Approvals() {
                       )}
                     </td>
                     <td>
-                      {new Date(member.createdAt).toLocaleDateString('pt-BR')}
+                      {formatDate(member.createdAt)}
                     </td>
                     <td>
                       <div className="table-actions">

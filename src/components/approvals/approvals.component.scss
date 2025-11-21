@@ -34,12 +34,12 @@
       display: flex;
       gap: 4px;
       background: rgba(66, 165, 245, 0.05);
-      padding: 4px;
+      padding: 1px;
       border-radius: 8px;
       border: 1px solid rgba(66, 165, 245, 0.2);
 
       .view-btn {
-        padding: 8px 16px;
+        padding: 6px 14px;
         border: none;
         background: transparent;
         color: rgba(255, 255, 255, 0.7);
@@ -76,7 +76,7 @@
         align-items: center;
         gap: 8px;
         background: rgba(66, 165, 245, 0.05);
-        padding: 8px 16px;
+        padding: 6px 16px;
         border-radius: 8px;
         border: 1px solid rgba(66, 165, 245, 0.2);
 
@@ -92,7 +92,7 @@
           color: #ffffff;
           border: 1px solid rgba(66, 165, 245, 0.3);
           border-radius: 6px;
-          padding: 8px 12px;
+          padding: 3px 12px;
           font-size: 0.9rem;
           min-width: 250px;
           cursor: pointer;
@@ -112,7 +112,7 @@
       }
 
       button {
-        padding: 12px 20px;
+        padding: 7px 16px;
         border-radius: 8px;
         font-weight: 600;
         font-size: 0.95rem;
@@ -336,7 +336,7 @@
       }
 
       .approval-card-header {
-        padding: 24px;
+        padding: 16px 20px;
         display: flex;
         align-items: center;
         gap: 16px;
@@ -377,9 +377,9 @@
 
           h3 {
             color: #ffffff;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             font-weight: 700;
-            margin: 0 0 8px 0;
+            margin: 0 0 4px 0;
           }
 
           .member-date {
@@ -390,10 +390,10 @@
       }
 
       .approval-card-body {
-        padding: 24px;
+        padding: 16px 20px;
         display: flex;
         flex-direction: column;
-        gap: 24px;
+        gap: 16px;
 
         .info-section {
           h4 {
@@ -409,7 +409,7 @@
           .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 12px;
+            gap: 8px;
 
             @media (max-width: 768px) {
               grid-template-columns: 1fr;
@@ -420,8 +420,8 @@
               align-items: center;
               gap: 12px;
               color: rgba(255, 255, 255, 0.8);
-              font-size: 0.95rem;
-              padding: 10px;
+              font-size: 0.9rem;
+              padding: 7px 10px;
               background: rgba(66, 165, 245, 0.05);
               border-radius: 8px;
 
@@ -454,15 +454,25 @@
       }
 
       .approval-card-footer {
-        padding: 20px 24px;
+        padding: 12px 20px;
         background: rgba(66, 165, 245, 0.05);
         border-top: 1px solid rgba(66, 165, 245, 0.1);
         display: flex;
         justify-content: flex-end;
         gap: 12px;
 
+        @media (max-width: 768px) {
+          flex-direction: column;
+          gap: 8px;
+
+          button {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+
         button {
-          padding: 12px 24px;
+          padding: 7px 20px;
           border-radius: 8px;
           font-weight: 600;
           font-size: 1rem;
