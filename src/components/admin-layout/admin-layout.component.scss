@@ -255,7 +255,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        
+
         svg {
           color: #42a5f5;
         }
@@ -275,7 +275,7 @@
       flex: 1;
       padding: 40px;
       position: relative;
-      max-width: 100%;
+      max-width: 100dvw;
       overflow-x: hidden;
 
       @media (max-width: 768px) {

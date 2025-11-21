@@ -58,9 +58,16 @@ export default function Approvals() {
       setRoles(rolesData);
       setPendingMembers(membersData);
       
-      // Selecionar primeira role por padrão
+      // Selecionar role "membro" por padrão
       if (rolesData.length > 0 && !selectedRole) {
-        setSelectedRole(rolesData[0].id);
+        const membroRole = rolesData.find(role => 
+          role.name.toLowerCase() === 'membro'
+        );
+        if (membroRole) {
+          setSelectedRole(membroRole.id);
+        } else {
+          setSelectedRole(rolesData[0].id); // Fallback para primeira role
+        }
       }
     } catch (err) {
       // Capturar erro 403 (sem permissão) e outros erros
@@ -321,7 +328,10 @@ export default function Approvals() {
                     />
                   </div>
                   <div className="member-basic-info">
-                    <h3>{member.fullName}</h3>
+                    <div className="member-name-row">
+                      <h3>{member.fullName}</h3>
+                      <span className="member-number">Nº {member.memberNumber}</span>
+                    </div>
                     <span className="member-date">
                       Cadastrado em {formatDate(member.createdAt)}
                     </span>
@@ -444,10 +454,9 @@ export default function Approvals() {
                   </th>
                   <th>Foto</th>
                   <th>Nome</th>
+                  <th>Nº Membro</th>
                   <th>Email</th>
                   <th>Telefone</th>
-                  <th>CPF</th>
-                  <th>Cidade/UF</th>
                   <th>Batizado</th>
                   <th>Cadastro</th>
                   <th>Ações</th>
@@ -477,15 +486,11 @@ export default function Approvals() {
                     <td>
                       <strong>{member.fullName}</strong>
                     </td>
+                    <td>
+                      <span className="table-member-number">{member.memberNumber}</span>
+                    </td>
                     <td>{member.email || '-'}</td>
                     <td>{member.phone || '-'}</td>
-                    <td>{member.cpf || '-'}</td>
-                    <td>
-                      {member.city && member.state 
-                        ? `${member.city} - ${member.state}` 
-                        : member.city || member.state || '-'
-                      }
-                    </td>
                     <td className="baptized-cell">
                       {member.baptized ? (
                         <CheckCircle size={18} weight="fill" className="baptized-icon" />
