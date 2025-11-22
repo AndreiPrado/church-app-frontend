@@ -12,6 +12,8 @@ import PrivacyPolicy from '../src/components/privacy-policy/privacy-policy.compo
 import TermsOfService from '../src/components/terms-of-service/terms-of-service.component.jsx';
 import ProtectedRoute from '../src/components/protected-route/protected-route.component.jsx';
 import ScrollToTop from '../src/components/scroll-to-top/scroll-to-top.component.jsx';
+import AdminRedirect from '../src/components/admin-redirect/admin-redirect.component.jsx';
+import NotFound from '../src/components/not-found/not-found.component.jsx';
 
 const Router = () => {
     return (
@@ -27,6 +29,16 @@ const Router = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
+
+                {/* Rota de Redirecionamento Inteligente */}
+                <Route 
+                    path="/admin" 
+                    element={
+                        <ProtectedRoute>
+                            <AdminRedirect />
+                        </ProtectedRoute>
+                    } 
+                />
 
                 {/* Rotas Administrativas Protegidas */}
                 <Route 
@@ -61,6 +73,9 @@ const Router = () => {
                         </ProtectedRoute>
                     } 
                 />
+
+                {/* Rota 404 - Deve ser a última */}
+                <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
     )

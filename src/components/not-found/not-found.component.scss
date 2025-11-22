@@ -1,0 +1,118 @@
+.not-found {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 1rem;
+
+  .not-found-content {
+    text-align: center;
+    max-width: 550px;
+  }
+
+  .not-found-icon {
+    color: #ffa726;
+    opacity: 0.9;
+
+    svg {
+      filter: drop-shadow(0 4px 12px rgba(255, 167, 38, 0.2));
+    }
+  }
+
+  h1 {
+    font-size: 4rem;
+    color: #ffffff;
+    margin-bottom: 0.5rem;
+    font-weight: 900;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: #ffffff;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+  }
+
+  .not-found-message {
+    font-size: 1.1rem;
+    color: #cdcdcd;
+    margin-bottom: 1.5rem;
+    line-height: 1.6;
+  }
+
+  .not-found-tip {
+    background: linear-gradient(135deg, #ffa726 0%, #ff7043 100%);
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    box-shadow: 0 4px 12px rgba(255, 167, 38, 0.2);
+  }
+
+  .not-found-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    button {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 7px 16px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      &:active {
+        transform: translateY(0);
+      }
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #e2e8f0;
+      color: #4a5568;
+
+      &:hover {
+        background: #cbd5e0;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .not-found {
+    h1 {
+      font-size: 3rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+    }
+
+    .not-found-message {
+      font-size: 1rem;
+    }
+
+    .not-found-actions {
+      flex-direction: row;
+      flex-wrap: nowrap;
+    }
+  }
+}
