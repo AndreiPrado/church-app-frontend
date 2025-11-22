@@ -190,6 +190,13 @@ class ApiClient {
       const error = new Error(data.detail || data.error || data.message || 'Erro na requisição');
       error.status = response.status;
       error.data = data;
+      // Adicionar estrutura response para compatibilidade com axios
+      error.response = {
+        status: response.status,
+        statusText: response.statusText,
+        data: data,
+        headers: Object.fromEntries(response.headers.entries())
+      };
       throw error;
     }
 

@@ -71,10 +71,14 @@ export default function Approvals() {
       }
     } catch (err) {
       // Capturar erro 403 (sem permissão) e outros erros
+      const errorData = err.response?.data;
+      const statusCode = err.response?.status;
+      
       setError({
-        message: err.response?.data?.friendlyMessage || err.response?.data?.error || err.message || "Erro ao carregar membros pendentes",
-        statusCode: err.response?.status,
-        isAccessDenied: err.response?.status === 403
+        message: errorData?.error || errorData?.detail || err.message || "Erro ao carregar membros pendentes",
+        detail: errorData?.detail,
+        statusCode: statusCode,
+        isAccessDenied: statusCode === 403
       });
     } finally {
       setLoading(false);
@@ -213,7 +217,7 @@ export default function Approvals() {
     if (error.isAccessDenied) {
       return (
         <AdminLayout>
-          <AccessDenied message={error.message} />
+          <AccessDenied message={error.message} detail={error.detail} />
         </AdminLayout>
       );
     }
