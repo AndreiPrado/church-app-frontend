@@ -8,19 +8,20 @@ import MemberPhoto from "../member-photo/member-photo.component";
 import AccessDenied from "../access-denied/access-denied.component";
 import ConfirmationModal from "../confirmation-modal/confirmation-modal.component";
 import {
-  UserCheck,
-  CheckCircle,
-  XCircle,
-  UserCircle,
-  Phone,
-  EnvelopeSimple,
-  MapPin,
-  CalendarBlank,
-  IdentificationCard,
-  GridFour,
-  ListBullets,
-  ArrowClockwise,
-  MagnifyingGlass
+  UserCheckIcon,
+  CheckCircleIcon,
+  XCircleIcon,
+  UserCircleIcon,
+  PhoneIcon,
+  EnvelopeSimpleIcon,
+  MapPinIcon,
+  CalendarBlankIcon,
+  IdentificationCardIcon,
+  GridFourIcon,
+  ListBulletsIcon,
+  ArrowClockwiseIcon,
+  MagnifyingGlassIcon,
+  WarningIcon
 } from "@phosphor-icons/react";
 
 export default function Approvals() {
@@ -49,24 +50,43 @@ export default function Approvals() {
     }
   };
 
+  // Verificar se o membro tem dados completos para aprovação
+  const hasCompleteData = (member) => {
+    const hasEmail = member.email && member.email.trim() !== '';
+    const hasPhone = member.phone && member.phone.trim() !== '';
+    return hasEmail && hasPhone;
+  };
+
+  // Obter campos faltantes
+  const getMissingFields = (member) => {
+    const missing = [];
+    if (!member.email || member.email.trim() === '') {
+      missing.push('email');
+    }
+    if (!member.phone || member.phone.trim() === '') {
+      missing.push('phone');
+    }
+    return missing;
+  };
+
   const loadPendingMembers = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Buscar roles e membros pendentes em paralelo
       const [rolesData, membersData] = await Promise.all([
         authService.getRoles(),
         authService.getMembers('pendente') // Filtrar por status na API
       ]);
-      
+
       setRoles(rolesData);
       setPendingMembers(membersData);
       setFilteredMembers(membersData);
-      
+
       // Selecionar role "membro" por padrão
       if (rolesData.length > 0 && !selectedRole) {
-        const membroRole = rolesData.find(role => 
+        const membroRole = rolesData.find(role =>
           role.name.toLowerCase() === 'membro'
         );
         if (membroRole) {
@@ -79,7 +99,7 @@ export default function Approvals() {
       // Capturar erro 403 (sem permissão) e outros erros
       const errorData = err.response?.data;
       const statusCode = err.response?.status;
-      
+
       setError({
         message: errorData?.error || errorData?.detail || err.message || "Erro ao carregar membros pendentes",
         detail: errorData?.detail,
@@ -98,7 +118,7 @@ export default function Approvals() {
       return;
     }
 
-    const filtered = pendingMembers.filter(member => 
+    const filtered = pendingMembers.filter(member =>
       member.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       member.phone?.includes(searchTerm) ||
@@ -153,12 +173,12 @@ export default function Approvals() {
 
   const confirmApproveSingle = async () => {
     const { member } = confirmModal;
-    
+
     try {
       setConfirmModal({ isOpen: false, member: null, action: null });
       setIsProcessing(true);
       await authService.approveMember(member.id, selectedRole);
-      
+
       setAlert({
         isVisible: true,
         message: 'Membro aprovado com sucesso!',
@@ -181,7 +201,7 @@ export default function Approvals() {
     try {
       setIsProcessing(true);
       await authService.rejectMember(memberId);
-      
+
       setAlert({
         isVisible: true,
         message: 'Membro rejeitado',
@@ -234,7 +254,7 @@ export default function Approvals() {
       setConfirmModal({ isOpen: false, member: null, action: null });
       setIsProcessing(true);
       await authService.approveMembersBatch(selectedMembers, selectedRole);
-      
+
       setAlert({
         isVisible: true,
         message: `${selectedMembers.length} membro(s) aprovado(s) com sucesso!`,
@@ -278,7 +298,7 @@ export default function Approvals() {
         <div className="approvals-error">
           <p>{error.message}</p>
           <button onClick={loadPendingMembers}>
-            <ArrowClockwise size={20} weight="bold" />
+            <ArrowClockwiseIcon size={20} weight="bold" />
             Tentar novamente
           </button>
         </div>
@@ -289,12 +309,12 @@ export default function Approvals() {
   return (
     <AdminLayout>
       {isProcessing && <LoadingSpinner message="Processando..." />}
-      
+
       <div className="approvals">
         {/* Header */}
         <div className="approvals-header">
           <div className="header-title">
-            <UserCheck size={32} weight="duotone" />
+            <UserCheckIcon size={32} weight="duotone" />
             <div>
               <h1>Aprovações</h1>
               <p>{filteredMembers.length} de {pendingMembers.length} cadastro(s)</p>
@@ -302,18 +322,18 @@ export default function Approvals() {
           </div>
 
           <div className="view-controls">
-            <button 
+            <button
               className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
               onClick={() => setViewMode('cards')}
             >
-              <GridFour size={20} weight="duotone" />
+              <GridFourIcon size={20} weight="duotone" />
               Cards
             </button>
-            <button 
+            <button
               className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
               onClick={() => setViewMode('list')}
             >
-              <ListBullets size={20} weight="duotone" />
+              <ListBulletsIcon size={20} weight="duotone" />
               Lista
             </button>
           </div>
@@ -324,7 +344,7 @@ export default function Approvals() {
           <div className="approvals-filters">
             {/* Campo de Busca */}
             <div className="search-box">
-              <MagnifyingGlass size={20} weight="bold" />
+              <MagnifyingGlassIcon size={20} weight="bold" />
               <input
                 type="text"
                 placeholder="Buscar por nome, email, telefone..."
@@ -332,12 +352,12 @@ export default function Approvals() {
                 onChange={(e) => setSearchTerm(e.target.value)}
               />
               {searchTerm && (
-                <button 
+                <button
                   className="clear-search"
                   onClick={() => setSearchTerm('')}
                   title="Limpar busca"
                 >
-                  <XCircle size={18} weight="fill" />
+                  <XCircleIcon size={18} weight="fill" />
                 </button>
               )}
             </div>
@@ -346,9 +366,9 @@ export default function Approvals() {
             <div className="bulk-actions">
               <div className="role-selector">
                 <label htmlFor="role-select">Role:</label>
-                <select 
+                <select
                   id="role-select"
-                  value={selectedRole} 
+                  value={selectedRole}
                   onChange={(e) => setSelectedRole(e.target.value)}
                   className="role-select"
                 >
@@ -360,19 +380,19 @@ export default function Approvals() {
                   ))}
                 </select>
               </div>
-              <button 
+              <button
                 className="select-all-btn"
                 onClick={handleSelectAll}
               >
                 {selectedMembers.length === pendingMembers.length ? 'Desselecionar Todos' : 'Selecionar Todos'}
               </button>
               {selectedMembers.length > 0 && (
-                <button 
+                <button
                   className="approve-batch-btn"
                   onClick={handleApproveBatch}
                   disabled={!selectedRole}
                 >
-                  <CheckCircle size={20} weight="fill" />
+                  <CheckCircleIcon size={20} weight="fill" />
                   Aprovar {selectedMembers.length} Selecionado(s)
                 </button>
               )}
@@ -383,7 +403,7 @@ export default function Approvals() {
         {/* Lista de Membros Pendentes */}
         {filteredMembers.length === 0 && searchTerm ? (
           <div className="no-approvals">
-            <MagnifyingGlass size={64} weight="duotone" />
+            <MagnifyingGlassIcon size={64} weight="duotone" />
             <p>Nenhum resultado encontrado para &quot;{searchTerm}&quot;</p>
             <button onClick={() => setSearchTerm('')} className="clear-search-btn">
               Limpar busca
@@ -391,13 +411,13 @@ export default function Approvals() {
           </div>
         ) : pendingMembers.length === 0 ? (
           <div className="no-approvals">
-            <UserCheck size={64} weight="duotone" />
+            <UserCheckIcon size={64} weight="duotone" />
             <p>Nenhum cadastro pendente de aprovação</p>
           </div>
         ) : viewMode === 'cards' ? (
           <div className="approvals-list cards-view">
             {filteredMembers.map((member) => (
-              <div key={member.id} className="approval-card">
+              <div key={member.id} className={`approval-card ${!hasCompleteData(member) ? 'incomplete-data' : ''}`}>
                 <div className="approval-card-header">
                   <input
                     type="checkbox"
@@ -406,11 +426,11 @@ export default function Approvals() {
                     className="member-checkbox"
                   />
                   <div className="member-avatar">
-                    <MemberPhoto 
+                    <MemberPhoto
                       memberId={member.id}
                       memberName={member.fullName}
                       size={64}
-                      fallbackIcon={UserCircle}
+                      fallbackIcon={UserCircleIcon}
                       hasPhotoUrl={!!member.photoUrl}
                     />
                   </div>
@@ -422,6 +442,12 @@ export default function Approvals() {
                     <span className="member-date">
                       Cadastrado em {formatDate(member.createdAt)}
                     </span>
+                    {!hasCompleteData(member) && (
+                      <span className="incomplete-badge">
+                        <WarningIcon size={16} weight="fill" />
+                        Dados incompletos
+                      </span>
+                    )}
                   </div>
                 </div>
 
@@ -429,13 +455,29 @@ export default function Approvals() {
                   <div className="info-section">
                     <h4>Informações de Contato</h4>
                     <div className="info-grid">
-                      <div className="info-item">
-                        <EnvelopeSimple size={18} weight="duotone" />
-                        <span>{member.email || 'Email não informado'}</span>
+                      <div className={`info-item ${getMissingFields(member).includes('email') ? 'missing-field' : ''}`}>
+                        <EnvelopeSimpleIcon size={18} weight="duotone" />
+                        <div className="info-content">
+                          <span>{member.email || 'Email não informado'}</span>
+                          {getMissingFields(member).includes('email') && (
+                            <span className="field-warning">
+                              <WarningIcon size={14} weight="fill" />
+                              Este campo é obrigatório para aprovação
+                            </span>
+                          )}
+                        </div>
                       </div>
-                      <div className="info-item">
-                        <Phone size={18} weight="duotone" />
-                        <span>{member.phone || 'Telefone não informado'}</span>
+                      <div className={`info-item ${getMissingFields(member).includes('phone') ? 'missing-field' : ''}`}>
+                        <PhoneIcon size={18} weight="duotone" />
+                        <div className="info-content">
+                          <span>{member.phone || 'Telefone não informado'}</span>
+                          {getMissingFields(member).includes('phone') && (
+                            <span className="field-warning">
+                              <WarningIcon size={14} weight="fill" />
+                              Este campo é obrigatório para aprovação
+                            </span>
+                          )}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -445,13 +487,13 @@ export default function Approvals() {
                     <div className="info-grid">
                       {member.cpf && (
                         <div className="info-item">
-                          <IdentificationCard size={18} weight="duotone" />
+                          <IdentificationCardIcon size={18} weight="duotone" />
                           <span>CPF: {member.cpf}</span>
                         </div>
                       )}
                       {member.birthDate && (
                         <div className="info-item">
-                          <CalendarBlank size={18} weight="duotone" />
+                          <CalendarBlankIcon size={18} weight="duotone" />
                           <span>Nascimento: {formatDate(member.birthDate)}</span>
                         </div>
                       )}
@@ -472,7 +514,7 @@ export default function Approvals() {
                       )}
                       {member.baptized && (
                         <div className="info-item baptized">
-                          <CheckCircle size={16} weight="fill" />
+                          <CheckCircleIcon size={16} weight="fill" />
                           <span>Batizado{member.baptismDate && ` em ${formatDate(member.baptismDate)}`}</span>
                         </div>
                       )}
@@ -485,7 +527,7 @@ export default function Approvals() {
                       <div className="info-grid">
                         {(member.address || member.city || member.state) && (
                           <div className="info-item">
-                            <MapPin size={18} weight="duotone" />
+                            <MapPinIcon size={18} weight="duotone" />
                             <span>
                               {member.address || 'Endereço não informado'}
                               {member.city && `, ${member.city}`}
@@ -513,14 +555,16 @@ export default function Approvals() {
                     className="reject-btn"
                     onClick={() => handleRejectSingle(member.id)}
                   >
-                    <XCircle size={20} weight="fill" />
+                    <XCircleIcon size={20} weight="fill" />
                     Rejeitar
                   </button>
                   <button
                     className="approve-btn"
                     onClick={() => handleApproveSingle(member.id)}
+                    disabled={!hasCompleteData(member)}
+                    title={!hasCompleteData(member) ? 'Complete email e telefone para aprovar' : 'Aprovar membro'}
                   >
-                    <CheckCircle size={20} weight="fill" />
+                    <CheckCircleIcon size={20} weight="fill" />
                     Aprovar
                   </button>
                 </div>
@@ -551,7 +595,7 @@ export default function Approvals() {
               </thead>
               <tbody>
                 {filteredMembers.map((member) => (
-                  <tr key={member.id}>
+                  <tr key={member.id} className={!hasCompleteData(member) ? 'incomplete-data' : ''}>
                     <td>
                       <input
                         type="checkbox"
@@ -561,28 +605,49 @@ export default function Approvals() {
                     </td>
                     <td>
                       <div className="table-avatar">
-                        <MemberPhoto 
+                        <MemberPhoto
                           memberId={member.id}
                           memberName={member.fullName}
                           size={32}
-                          fallbackIcon={UserCircle}
+                          fallbackIcon={UserCircleIcon}
                           hasPhotoUrl={!!member.photoUrl}
                         />
                       </div>
                     </td>
                     <td>
-                      <strong>{member.fullName}</strong>
+                      <div className="table-name-cell">
+                        <strong>{member.fullName}</strong>
+                        {!hasCompleteData(member) && (
+                          <span className="incomplete-badge-small">
+                            <WarningIcon size={14} weight="fill" />
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td>
                       <span className="table-member-number">{member.memberNumber}</span>
                     </td>
-                    <td>{member.email || '-'}</td>
-                    <td>{member.phone || '-'}</td>
+                    <td className={getMissingFields(member).includes('email') ? 'missing-field' : ''}>
+                      {member.email || (
+                        <span className="missing-value">
+                          <WarningIcon size={14} weight="fill" />
+                          Obrigatório
+                        </span>
+                      )}
+                    </td>
+                    <td className={getMissingFields(member).includes('phone') ? 'missing-field' : ''}>
+                      {member.phone || (
+                        <span className="missing-value">
+                          <WarningIcon size={14} weight="fill" />
+                          Obrigatório
+                        </span>
+                      )}
+                    </td>
                     <td className="baptized-cell">
                       {member.baptized ? (
-                        <CheckCircle size={18} weight="fill" className="baptized-icon" />
+                        <CheckCircleIcon size={18} weight="fill" className="baptized-icon" />
                       ) : (
-                        <XCircle size={18} weight="fill" className="not-baptized-icon" />
+                        <XCircleIcon size={18} weight="fill" className="not-baptized-icon" />
                       )}
                     </td>
                     <td>
@@ -595,14 +660,15 @@ export default function Approvals() {
                           onClick={() => handleRejectSingle(member.id)}
                           title="Rejeitar"
                         >
-                          <XCircle size={18} weight="fill" />
+                          <XCircleIcon size={18} weight="fill" />
                         </button>
                         <button
                           className="table-approve-btn"
                           onClick={() => handleApproveSingle(member.id)}
-                          title="Aprovar"
+                          disabled={!hasCompleteData(member)}
+                          title={!hasCompleteData(member) ? 'Complete email e telefone para aprovar' : 'Aprovar'}
                         >
-                          <CheckCircle size={18} weight="fill" />
+                          <CheckCircleIcon size={18} weight="fill" />
                         </button>
                       </div>
                     </td>

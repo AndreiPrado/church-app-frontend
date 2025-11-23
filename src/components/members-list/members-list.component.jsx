@@ -8,22 +8,22 @@ import AccessDenied from "../access-denied/access-denied.component";
 import MemberPhoto from "../member-photo/member-photo.component";
 import MemberEditDrawer from "../member-edit-drawer/member-edit-drawer.component";
 import {
-  Users,
-  MagnifyingGlass,
-  Funnel,
-  UserCircle,
-  Phone,
-  EnvelopeSimple,
-  CalendarBlank,
-  CheckCircle,
-  XCircle,
-  Clock,
-  GridFour,
-  ListBullets,
-  IdentificationCard,
-  ArrowClockwise,
-  ArrowsDownUp,
-  Eraser
+  CheckCircleIcon,
+  UserCircleIcon,
+  ClockIcon,
+  XCircleIcon,
+  ArrowClockwiseIcon,
+  UsersIcon,
+  GridFourIcon,
+  ListBulletsIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  EraserIcon,
+  ArrowsDownUpIcon,
+  EnvelopeSimpleIcon,
+  PhoneIcon,
+  IdentificationCardIcon,
+  CalendarBlankIcon
 } from "@phosphor-icons/react";
 
 export default function MembersList() {
@@ -54,7 +54,7 @@ export default function MembersList() {
       // Capturar erro 403 (sem permissão) e outros erros
       const errorData = err.response?.data;
       const statusCode = err.response?.status;
-      
+
       setError({
         message: errorData?.error || errorData?.detail || err.message || "Erro ao carregar membros",
         detail: errorData?.detail,
@@ -210,13 +210,13 @@ export default function MembersList() {
   const getStatusIcon = (status) => {
     switch (status) {
       case "ativo":
-        return <CheckCircle size={20} weight="fill" />;
+        return <CheckCircleIcon size={20} weight="fill" />;
       case "visitante":
-        return <UserCircle size={20} weight="fill" />;
+        return <UserCircleIcon size={20} weight="fill" />;
       case "pendente":
-        return <Clock size={20} weight="fill" />;
+        return <ClockIcon size={20} weight="fill" />;
       case "inativo":
-        return <XCircle size={20} weight="fill" />;
+        return <XCircleIcon size={20} weight="fill" />;
       default:
         return null;
     }
@@ -261,7 +261,7 @@ export default function MembersList() {
         <div className="members-list-error">
           <p>{error.message}</p>
           <button onClick={loadMembers}>
-            <ArrowClockwise size={20} weight="bold" />
+            <ArrowClockwiseIcon size={20} weight="bold" />
             Tentar novamente
           </button>
         </div>
@@ -274,7 +274,7 @@ export default function MembersList() {
       <div className="members-list">
         <div className="members-header">
           <div className="header-title">
-            <Users size={32} weight="duotone" />
+            <UsersIcon size={32} weight="duotone" />
             <div>
               <h1>Membros</h1>
               <p>{filteredMembers.length} de {members.length} membros</p>
@@ -286,14 +286,14 @@ export default function MembersList() {
               className={`view-btn ${viewMode === 'cards' ? 'active' : ''}`}
               onClick={() => setViewMode('cards')}
             >
-              <GridFour size={20} weight="duotone" />
+              <GridFourIcon size={20} weight="duotone" />
               Cards
             </button>
             <button
               className={`view-btn ${viewMode === 'list' ? 'active' : ''}`}
               onClick={() => setViewMode('list')}
             >
-              <ListBullets size={20} weight="duotone" />
+              <ListBulletsIcon size={20} weight="duotone" />
               Lista
             </button>
           </div>
@@ -303,7 +303,7 @@ export default function MembersList() {
         <div className="members-filters">
           {/* Busca sempre visível */}
           <div className="search-box">
-            <MagnifyingGlass size={20} />
+            <MagnifyingGlassIcon size={20} />
             <input
               type="text"
               placeholder="Buscar por nome, email, CPF ou telefone..."
@@ -314,7 +314,7 @@ export default function MembersList() {
 
           {/* Botão de filtro (mobile) */}
           <button className="filter-toggle-btn" onClick={() => setShowFilters(!showFilters)}>
-            <Funnel size={20} weight={showFilters ? "fill" : "regular"} />
+            <FunnelIcon size={20} weight={showFilters ? "fill" : "regular"} />
             Filtros
             {(statusFilter !== 'all' || baptizedFilter !== 'all' || sortBy !== 'name') && (
               <span className="filter-badge"></span>
@@ -334,13 +334,13 @@ export default function MembersList() {
               {/* Botão Limpar Filtros */}
               {(statusFilter !== 'all' || baptizedFilter !== 'all' || sortBy !== 'name') && (
                 <button className="clear-filters-btn" onClick={handleClearFilters}>
-                  <Eraser size={18} weight="bold" />
+                  <EraserIcon size={18} weight="bold" />
                   Limpar Filtros
                 </button>
               )}
-              
+
               <div className="filter-box">
-                <Funnel size={20} />
+                <FunnelIcon size={20} />
                 <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
                   <option value="all">Todos os status</option>
                   <option value="ativo">Ativos</option>
@@ -351,7 +351,7 @@ export default function MembersList() {
               </div>
 
               <div className="filter-box">
-                <Funnel size={20} />
+                <FunnelIcon size={20} />
                 <select value={baptizedFilter} onChange={(e) => setBaptizedFilter(e.target.value)}>
                   <option value="all">Batismo</option>
                   <option value="true">Batizados</option>
@@ -361,14 +361,14 @@ export default function MembersList() {
 
               <div className="sort-controls">
                 <div className="filter-box">
-                  <ArrowsDownUp size={20} />
+                  <ArrowsDownUpIcon size={20} />
                   <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
                     <option value="name">Ordenar por Nome</option>
                     <option value="createdAt">Data de Cadastro</option>
                     <option value="updatedAt">Última Edição</option>
                   </select>
                 </div>
-                <button 
+                <button
                   className="sort-order-btn"
                   onClick={toggleSortOrder}
                   title={sortOrder === 'asc' ? 'Ordem Crescente' : 'Ordem Decrescente'}
@@ -389,7 +389,7 @@ export default function MembersList() {
         {/* Lista de Membros */}
         {filteredMembers.length === 0 ? (
           <div className="no-members">
-            <Users size={64} weight="duotone" />
+            <UsersIcon size={64} weight="duotone" />
             <p>Nenhum membro encontrado</p>
           </div>
         ) : viewMode === 'cards' ? (
@@ -402,7 +402,7 @@ export default function MembersList() {
                       memberId={member.id}
                       memberName={member.fullName}
                       size={48}
-                      fallbackIcon={UserCircle}
+                      fallbackIcon={UserCircleIcon}
                       hasPhotoUrl={!!member.photoUrl}
                     />
                   </div>
@@ -420,22 +420,22 @@ export default function MembersList() {
 
                 <div className="member-card-body">
                   <div className="info-item">
-                    <EnvelopeSimple size={18} weight="duotone" />
+                    <EnvelopeSimpleIcon size={18} weight="duotone" />
                     <span>{member.email}</span>
                   </div>
                   <div className="info-item">
-                    <Phone size={18} weight="duotone" />
+                    <PhoneIcon size={18} weight="duotone" />
                     <span>{member.phone}</span>
                   </div>
                   {member.cpf && (
                     <div className="info-item">
-                      <IdentificationCard size={18} weight="duotone" />
+                      <IdentificationCardIcon size={18} weight="duotone" />
                       <span>{member.cpf}</span>
                     </div>
                   )}
                   {member.birthDate && (
                     <div className="info-item">
-                      <CalendarBlank size={18} weight="duotone" />
+                      <CalendarBlankIcon size={18} weight="duotone" />
                       <span>
                         {new Date(member.birthDate).toLocaleDateString('pt-BR')} ({member.age} anos)
                       </span>
@@ -450,12 +450,12 @@ export default function MembersList() {
                     </span>
                     {member.baptized ? (
                       <span className="detail-item baptized">
-                        <CheckCircle size={16} weight="fill" />
+                        <CheckCircleIcon size={16} weight="fill" />
                         Batizado
                       </span>
                     ) : (
                       <span className="detail-item not-baptized">
-                        <XCircle size={16} weight="fill" />
+                        <XCircleIcon size={16} weight="fill" />
                         Não batizado
                       </span>
                     )}
@@ -473,7 +473,7 @@ export default function MembersList() {
                     memberId={member.id}
                     memberName={member.fullName}
                     size={40}
-                    fallbackIcon={UserCircle}
+                    fallbackIcon={UserCircleIcon}
                     hasPhotoUrl={!!member.photoUrl}
                   />
                 </div>
@@ -485,12 +485,12 @@ export default function MembersList() {
                   </div>
                   <div className="list-contact-info">
                     <span className="list-email">
-                      <EnvelopeSimple size={14} weight="duotone" />
+                      <EnvelopeSimpleIcon size={14} weight="duotone" />
                       {member.email}
                     </span>
                     <span className="list-separator">•</span>
                     <span className="list-phone">
-                      <Phone size={14} weight="duotone" />
+                      <PhoneIcon size={14} weight="duotone" />
                       {member.phone}
                     </span>
                   </div>
@@ -504,12 +504,12 @@ export default function MembersList() {
                     </span>
                     {member.baptized ? (
                       <span className="list-baptized">
-                        <CheckCircle size={12} weight="fill" />
+                        <CheckCircleIcon size={12} weight="fill" />
                         Batizado
                       </span>
                     ) : (
                       <span className="list-not-baptized">
-                        <XCircle size={12} weight="fill" />
+                        <XCircleIcon size={12} weight="fill" />
                         Não batizado
                       </span>
                     )}
@@ -526,7 +526,7 @@ export default function MembersList() {
             ))}
           </div>
         )}
-        
+
         {/* Drawer de Edição */}
         <MemberEditDrawer
           member={selectedMember}

@@ -1,6 +1,6 @@
 import "./access-denied.component.scss";
 import { useNavigate } from "react-router-dom";
-import { Lock, ArrowLeft, House } from "@phosphor-icons/react";
+import { LockIcon, ArrowLeftIcon, HouseIcon } from "@phosphor-icons/react";
 import PropTypes from "prop-types";
 
 export default function AccessDenied({ message, detail, showBackButton = true }) {
@@ -14,7 +14,7 @@ export default function AccessDenied({ message, detail, showBackButton = true })
     <div className="access-denied">
       <div className="access-denied-content">
         <div className="access-denied-icon">
-          <Lock size={70} weight="duotone" />
+          <LockIcon size={70} weight="duotone" />
         </div>
 
         <h1>Acesso Negado</h1>
@@ -31,7 +31,7 @@ export default function AccessDenied({ message, detail, showBackButton = true })
               onClick={() => navigate(-1)}
               className="btn-secondary"
             >
-              <ArrowLeft size={20} />
+              <ArrowLeftIcon size={20} />
               Voltar
             </button>
           )}
@@ -40,7 +40,7 @@ export default function AccessDenied({ message, detail, showBackButton = true })
             onClick={() => navigate("/admin/profile")}
             className="btn-primary"
           >
-            <House size={20} />
+            <HouseIcon size={20} />
             Ir para Minha Conta
           </button>
         </div>

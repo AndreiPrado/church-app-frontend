@@ -1,19 +1,19 @@
 import PropTypes from 'prop-types';
-import { Warning, X } from '@phosphor-icons/react';
+import { WarningIcon, XIcon } from '@phosphor-icons/react';
 import './confirmation-modal.component.scss';
 
 /**
  * Modal de confirmação reutilizável
  */
-const ConfirmationModal = ({ 
-  isOpen, 
-  title, 
-  message, 
-  confirmText = 'Confirmar', 
+const ConfirmationModal = ({
+  isOpen,
+  title,
+  message,
+  confirmText = 'Confirmar',
   cancelText = 'Cancelar',
   confirmType = 'primary', // 'primary', 'danger', 'warning'
-  onConfirm, 
-  onCancel 
+  onConfirm,
+  onCancel
 }) => {
   if (!isOpen) return null;
 
@@ -27,15 +27,15 @@ const ConfirmationModal = ({
     <div className="confirmation-modal-overlay" onClick={handleBackdropClick}>
       <div className="confirmation-modal">
         <button className="close-button" onClick={onCancel}>
-          <X size={24} />
+          <XIcon size={24} />
         </button>
 
         <div className="modal-icon">
-          <Warning size={48} weight="duotone" />
+          <WarningIcon size={48} weight="duotone" />
         </div>
 
         <h2 className="modal-title">{title}</h2>
-        
+
         {typeof message === 'string' ? (
           <p className="modal-message">{message}</p>
         ) : (
@@ -43,14 +43,14 @@ const ConfirmationModal = ({
         )}
 
         <div className="modal-actions">
-          <button 
-            className="btn-cancel" 
+          <button
+            className="btn-cancel"
             onClick={onCancel}
           >
             {cancelText}
           </button>
-          <button 
-            className={`btn-confirm btn-${confirmType}`} 
+          <button
+            className={`btn-confirm btn-${confirmType}`}
             onClick={onConfirm}
           >
             {confirmText}

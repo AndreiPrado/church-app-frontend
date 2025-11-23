@@ -6,14 +6,14 @@ import { usePermissions } from "../../hooks/usePermissions";
 import authService from "../../services/authService";
 import PropTypes from "prop-types";
 import {
-  ChartBar,
-  Users,
-  UserCheck,
-  UserCircle,
-  SignOut,
-  List,
-  X,
-  House
+  ChartBarIcon,
+  UsersIcon,
+  UserCheckIcon,
+  UserCircleIcon,
+  SignOutIcon,
+  ListIcon,
+  XIcon,
+  HouseIcon
 } from "@phosphor-icons/react";
 import logoWithoutBackground from '../../assets/logo-without-background.png';
 
@@ -59,27 +59,27 @@ export default function AdminLayout({ children }) {
 
   // Definir todos os itens do menu com suas permissões requeridas
   const allMenuItems = [
-    { 
-      path: "/admin/dashboard", 
-      icon: ChartBar, 
+    {
+      path: "/admin/dashboard",
+      icon: ChartBarIcon,
       label: "Dashboard",
       requiredPermissions: ['reports.view', 'admin.full'] // Precisa de pelo menos uma dessas
     },
-    { 
-      path: "/admin/members", 
-      icon: Users, 
+    {
+      path: "/admin/members",
+      icon: UsersIcon,
       label: "Membros",
       requiredPermissions: ['admin.full'] // Apenas admins
     },
-    { 
-      path: "/admin/approvals", 
-      icon: UserCheck, 
+    {
+      path: "/admin/approvals",
+      icon: UserCheckIcon,
       label: "Aprovações",
       requiredPermissions: ['members.update', 'members.create', 'admin.full']
     },
-    { 
-      path: "/admin/profile", 
-      icon: UserCircle, 
+    {
+      path: "/admin/profile",
+      icon: UserCircleIcon,
       label: "Minha Conta",
       requiredPermissions: [] // Todos podem acessar
     },
@@ -90,7 +90,7 @@ export default function AdminLayout({ children }) {
     return allMenuItems.filter(item => {
       // Se não precisa de permissões, mostrar para todos
       if (item.requiredPermissions.length === 0) return true;
-      
+
       // Verificar se tem pelo menos uma das permissões necessárias
       return hasAnyPermission(item.requiredPermissions);
     });
@@ -103,12 +103,12 @@ export default function AdminLayout({ children }) {
         <div className="sidebar-header">
           <img src={logoWithoutBackground} alt="Zele Church" />
           <h2>Admin</h2>
-          <button 
+          <button
             className="close-sidebar"
             onClick={() => setIsSidebarOpen(false)}
             aria-label="Fechar menu"
           >
-            <X size={24} />
+            <XIcon size={24} />
           </button>
         </div>
 
@@ -131,13 +131,13 @@ export default function AdminLayout({ children }) {
           <div className="user-info">
             <div className="user-avatar-wrapper">
               {userPhotoUrl ? (
-                <img 
-                  src={userPhotoUrl} 
-                  alt={user?.fullName} 
+                <img
+                  src={userPhotoUrl}
+                  alt={user?.fullName}
                   className="user-avatar"
                 />
               ) : (
-                <UserCircle size={48} weight="fill" />
+                <UserCircleIcon size={48} weight="fill" />
               )}
             </div>
             <div className="user-details">
@@ -149,11 +149,11 @@ export default function AdminLayout({ children }) {
           {/* Ações */}
           <div className="footer-actions">
             <button onClick={() => navigate("/home")} className="back-to-site">
-              <House size={18} />
+              <HouseIcon size={18} />
               Ir para o Site
             </button>
             <button onClick={handleLogout} className="logout-button">
-              <SignOut size={18} />
+              <SignOutIcon size={18} />
               Sair
             </button>
           </div>
@@ -164,19 +164,19 @@ export default function AdminLayout({ children }) {
       <div className="admin-main">
         {/* Mobile Header */}
         <header className="admin-header-mobile">
-          <button 
+          <button
             className="menu-toggle"
             onClick={() => setIsSidebarOpen(true)}
             aria-label="Abrir menu"
           >
-            <List size={28} />
+            <ListIcon size={28} />
           </button>
           <img src={logoWithoutBackground} alt="Zele Church" className="mobile-logo" />
           <div className="header-actions">
             {userPhotoUrl ? (
               <img src={userPhotoUrl} alt={user?.fullName} className="user-avatar-mobile" />
             ) : (
-              <UserCircle size={36} weight="fill" />
+              <UserCircleIcon size={36} weight="fill" />
             )}
           </div>
         </header>
@@ -189,7 +189,7 @@ export default function AdminLayout({ children }) {
 
       {/* Overlay para mobile */}
       {isSidebarOpen && (
-        <div 
+        <div
           className="sidebar-overlay"
           onClick={() => setIsSidebarOpen(false)}
         />

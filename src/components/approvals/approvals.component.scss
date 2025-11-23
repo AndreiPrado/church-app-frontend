@@ -344,12 +344,54 @@
     }
   }
 
+  // Badge de dados incompletos
+  .incomplete-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 5px;
+    background: rgba(255, 152, 0, 0.15);
+    border: 1px solid rgba(255, 152, 0, 0.4);
+    border-radius: 6px;
+    color: #ff9800;
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-top: 6px;
+    margin-left: 8px;
+
+    @media (max-width: 768px) {
+      margin-left: 0;
+    }
+
+    svg {
+      flex-shrink: 0;
+    }
+  }
+
+  .incomplete-badge-small {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 6px;
+    background: rgba(255, 152, 0, 0.15);
+    border: 1px solid rgba(255, 152, 0, 0.4);
+    border-radius: 4px;
+    color: #ff9800;
+    margin-left: 8px;
+  }
+
   .approvals-list {
     display: flex;
     flex-direction: column;
     gap: 20px;
     width: 100%;
     max-width: 100%;
+
+    // Card com dados incompletos
+    .approval-card.incomplete-data {
+      border-color: rgba(255, 152, 0, 0.4);
+      background: rgba(255, 152, 0, 0.03);
+      box-shadow: 0 0 0 1px rgba(255, 152, 0, 0.1);
+    }
 
     // Modo Cards (padrão) - cards menores
     &.cards-view {
@@ -571,9 +613,43 @@
               gap: 12px;
               color: rgba(255, 255, 255, 0.8);
               font-size: 0.9rem;
-              padding: 7px 10px;
+              padding: 8px 10px;
               background: rgba(66, 165, 245, 0.05);
               border-radius: 8px;
+
+              &.missing-field {
+                background: rgba(255, 152, 0, 0.08);
+                border: 1px solid rgba(255, 152, 0, 0.3);
+
+                >svg {
+                  color: #ff9800;
+                }
+              }
+
+              .info-content {
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                position: relative;
+
+                .field-warning {
+                  display: flex;
+                  align-items: center;
+                  gap: 6px;
+                  color: #ff9800;
+                  font-size: 0.8rem;
+                  font-weight: 600;
+                  position: absolute;
+                  bottom: -34px;
+                  left: -40px;
+
+                  svg {
+                    flex-shrink: 0;
+                    color: #ff9800;
+                  }
+                }
+              }
 
               svg {
                 color: #42a5f5;
@@ -639,7 +715,7 @@
           border: 1px solid rgba(255, 107, 107, 0.3);
           color: #ff6b6b;
 
-          &:hover {
+          &:hover:not(:disabled) {
             background: rgba(255, 107, 107, 0.2);
             border-color: #ff6b6b;
             transform: translateY(-2px);
@@ -651,9 +727,22 @@
           color: white;
           box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 
-          &:hover {
+          &:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 6px 25px rgba(76, 175, 80, 0.5);
+          }
+
+          &:disabled {
+            background: rgba(255, 255, 255, 0.1);
+            color: rgba(255, 255, 255, 0.4);
+            cursor: not-allowed;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: none;
+
+            &:hover {
+              transform: none;
+              box-shadow: none;
+            }
           }
         }
       }
@@ -732,6 +821,11 @@
           transition: all 0.3s ease;
           border-bottom: 1px solid rgba(66, 165, 245, 0.1);
 
+          &.incomplete-data {
+            background: rgba(255, 152, 0, 0.05);
+            border-left: 3px solid #ff9800;
+          }
+
           &:hover {
             background: rgba(66, 165, 245, 0.05);
           }
@@ -741,6 +835,24 @@
           }
 
           td {
+            &.missing-field {
+              background: rgba(255, 152, 0, 0.08);
+              color: #ff9800;
+              font-weight: 600;
+
+              .missing-value {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                color: #ff9800;
+                font-size: 0.85rem;
+
+                svg {
+                  flex-shrink: 0;
+                }
+              }
+            }
+
             padding: 16px 20px;
             color: rgba(255, 255, 255, 0.8);
             font-size: 0.9rem;
@@ -771,6 +883,12 @@
               display: flex;
               align-items: center;
               justify-content: center;
+            }
+
+            .table-name-cell {
+              display: flex;
+              align-items: center;
+              gap: 8px;
             }
 
             .table-member-number {
@@ -814,7 +932,7 @@
                   background: rgba(255, 107, 107, 0.15);
                   color: #ff6b6b;
 
-                  &:hover {
+                  &:hover:not(:disabled) {
                     background: rgba(255, 107, 107, 0.25);
                     transform: translateY(-2px);
                   }
@@ -824,9 +942,20 @@
                   background: rgba(76, 175, 80, 0.15);
                   color: #4caf50;
 
-                  &:hover {
+                  &:hover:not(:disabled) {
                     background: rgba(76, 175, 80, 0.25);
                     transform: translateY(-2px);
+                  }
+
+                  &:disabled {
+                    background: rgba(255, 255, 255, 0.05);
+                    color: rgba(255, 255, 255, 0.3);
+                    cursor: not-allowed;
+
+                    &:hover {
+                      background: rgba(255, 255, 255, 0.05);
+                      transform: none;
+                    }
                   }
                 }
               }
