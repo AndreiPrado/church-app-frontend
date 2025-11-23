@@ -6,6 +6,7 @@ import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
 import MemberPhoto from "../member-photo/member-photo.component";
 import AccessDenied from "../access-denied/access-denied.component";
+import ConfirmationModal from "../confirmation-modal/confirmation-modal.component";
 import {
   UserCheck,
   CheckCircle,
@@ -18,11 +19,13 @@ import {
   IdentificationCard,
   GridFour,
   ListBullets,
-  ArrowClockwise
+  ArrowClockwise,
+  MagnifyingGlass
 } from "@phosphor-icons/react";
 
 export default function Approvals() {
   const [pendingMembers, setPendingMembers] = useState([]);
+  const [filteredMembers, setFilteredMembers] = useState([]);
   const [selectedMembers, setSelectedMembers] = useState([]);
   const [roles, setRoles] = useState([]);
   const [selectedRole, setSelectedRole] = useState('');
@@ -31,6 +34,8 @@ export default function Approvals() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
+  const [searchTerm, setSearchTerm] = useState('');
+  const [confirmModal, setConfirmModal] = useState({ isOpen: false, member: null, action: null });
 
   // Helper para formatar datas de forma segura
   const formatDate = (dateString) => {
@@ -57,6 +62,7 @@ export default function Approvals() {
       
       setRoles(rolesData);
       setPendingMembers(membersData);
+      setFilteredMembers(membersData);
       
       // Selecionar role "membro" por padrão
       if (rolesData.length > 0 && !selectedRole) {
@@ -85,6 +91,23 @@ export default function Approvals() {
     }
   }, [selectedRole]);
 
+  // Filtrar membros por busca
+  useEffect(() => {
+    if (!searchTerm.trim()) {
+      setFilteredMembers(pendingMembers);
+      return;
+    }
+
+    const filtered = pendingMembers.filter(member => 
+      member.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      member.phone?.includes(searchTerm) ||
+      member.memberNumber?.toString().includes(searchTerm)
+    );
+
+    setFilteredMembers(filtered);
+  }, [searchTerm, pendingMembers]);
+
   useEffect(() => {
     loadPendingMembers();
   }, [loadPendingMembers]);
@@ -107,7 +130,7 @@ export default function Approvals() {
     }
   };
 
-  const handleApproveSingle = async (memberId) => {
+  const handleApproveSingle = (memberId) => {
     if (!selectedRole) {
       setAlert({
         isVisible: true,
@@ -117,9 +140,24 @@ export default function Approvals() {
       return;
     }
 
+    const member = pendingMembers.find(m => m.id === memberId);
+    const role = roles.find(r => r.id === selectedRole);
+
+    setConfirmModal({
+      isOpen: true,
+      member,
+      role,
+      action: 'approve'
+    });
+  };
+
+  const confirmApproveSingle = async () => {
+    const { member } = confirmModal;
+    
     try {
+      setConfirmModal({ isOpen: false, member: null, action: null });
       setIsProcessing(true);
-      await authService.approveMember(memberId, selectedRole);
+      await authService.approveMember(member.id, selectedRole);
       
       setAlert({
         isVisible: true,
@@ -127,7 +165,7 @@ export default function Approvals() {
         type: 'success'
       });
 
-      setPendingMembers(prev => prev.filter(m => m.id !== memberId));
+      setPendingMembers(prev => prev.filter(m => m.id !== member.id));
     } catch (err) {
       setAlert({
         isVisible: true,
@@ -162,7 +200,7 @@ export default function Approvals() {
     }
   };
 
-  const handleApproveBatch = async () => {
+  const handleApproveBatch = () => {
     if (selectedMembers.length === 0) {
       setAlert({
         isVisible: true,
@@ -181,7 +219,19 @@ export default function Approvals() {
       return;
     }
 
+    const role = roles.find(r => r.id === selectedRole);
+    setConfirmModal({
+      isOpen: true,
+      member: null,
+      role,
+      action: 'approveBatch',
+      count: selectedMembers.length
+    });
+  };
+
+  const confirmApproveBatch = async () => {
     try {
+      setConfirmModal({ isOpen: false, member: null, action: null });
       setIsProcessing(true);
       await authService.approveMembersBatch(selectedMembers, selectedRole);
       
@@ -241,12 +291,13 @@ export default function Approvals() {
       {isProcessing && <LoadingSpinner message="Processando..." />}
       
       <div className="approvals">
+        {/* Header */}
         <div className="approvals-header">
           <div className="header-title">
             <UserCheck size={32} weight="duotone" />
             <div>
               <h1>Aprovações</h1>
-              <p>{pendingMembers.length} cadastro(s) aguardando aprovação</p>
+              <p>{filteredMembers.length} de {pendingMembers.length} cadastro(s)</p>
             </div>
           </div>
 
@@ -266,8 +317,32 @@ export default function Approvals() {
               Lista
             </button>
           </div>
+        </div>
 
-          {pendingMembers.length > 0 && (
+        {/* Filtros e Controles */}
+        {pendingMembers.length > 0 && (
+          <div className="approvals-filters">
+            {/* Campo de Busca */}
+            <div className="search-box">
+              <MagnifyingGlass size={20} weight="bold" />
+              <input
+                type="text"
+                placeholder="Buscar por nome, email, telefone..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+              {searchTerm && (
+                <button 
+                  className="clear-search"
+                  onClick={() => setSearchTerm('')}
+                  title="Limpar busca"
+                >
+                  <XCircle size={18} weight="fill" />
+                </button>
+              )}
+            </div>
+
+            {/* Seletor de Role e Ações em Lote */}
             <div className="bulk-actions">
               <div className="role-selector">
                 <label htmlFor="role-select">Role:</label>
@@ -302,18 +377,26 @@ export default function Approvals() {
                 </button>
               )}
             </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Lista de Membros Pendentes */}
-        {pendingMembers.length === 0 ? (
+        {filteredMembers.length === 0 && searchTerm ? (
+          <div className="no-approvals">
+            <MagnifyingGlass size={64} weight="duotone" />
+            <p>Nenhum resultado encontrado para &quot;{searchTerm}&quot;</p>
+            <button onClick={() => setSearchTerm('')} className="clear-search-btn">
+              Limpar busca
+            </button>
+          </div>
+        ) : pendingMembers.length === 0 ? (
           <div className="no-approvals">
             <UserCheck size={64} weight="duotone" />
             <p>Nenhum cadastro pendente de aprovação</p>
           </div>
         ) : viewMode === 'cards' ? (
           <div className="approvals-list cards-view">
-            {pendingMembers.map((member) => (
+            {filteredMembers.map((member) => (
               <div key={member.id} className="approval-card">
                 <div className="approval-card-header">
                   <input
@@ -467,7 +550,7 @@ export default function Approvals() {
                 </tr>
               </thead>
               <tbody>
-                {pendingMembers.map((member) => (
+                {filteredMembers.map((member) => (
                   <tr key={member.id}>
                     <td>
                       <input
@@ -537,6 +620,32 @@ export default function Approvals() {
         isVisible={alert.isVisible}
         onClose={() => setAlert({ isVisible: false, message: '', type: '' })}
         duration={5000}
+      />
+
+      {/* Modal de Confirmação */}
+      <ConfirmationModal
+        isOpen={confirmModal.isOpen}
+        title={confirmModal.action === 'approveBatch' ? 'Confirmar Aprovação em Lote' : 'Confirmar Aprovação'}
+        message={
+          confirmModal.action === 'approveBatch' ? (
+            <div>
+              <p>Você está prestes a aprovar <strong>{confirmModal.count} membro(s)</strong> com a role:</p>
+              <p className="highlight">{confirmModal.role?.name} - {confirmModal.role?.description}</p>
+              <p>Deseja continuar?</p>
+            </div>
+          ) : (
+            <div>
+              <p>Você está atribuindo a role <span className="highlight">{confirmModal.role?.name}</span> para:</p>
+              <p><strong>{confirmModal.member?.fullName}</strong></p>
+              <p>Deseja confirmar esta ação?</p>
+            </div>
+          )
+        }
+        confirmText="Confirmar"
+        cancelText="Cancelar"
+        confirmType="primary"
+        onConfirm={confirmModal.action === 'approveBatch' ? confirmApproveBatch : confirmApproveSingle}
+        onCancel={() => setConfirmModal({ isOpen: false, member: null, action: null })}
       />
     </AdminLayout>
   );

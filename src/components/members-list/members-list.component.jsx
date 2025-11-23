@@ -36,6 +36,7 @@ export default function MembersList() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [baptizedFilter, setBaptizedFilter] = useState("all"); // 'all', 'true', 'false'
   const [sortBy, setSortBy] = useState('name'); // 'name', 'createdAt', 'updatedAt'
+  const [sortOrder, setSortOrder] = useState('asc'); // 'asc' ou 'desc'
   const [viewMode, setViewMode] = useState('cards'); // 'cards' ou 'list'
   const [selectedMember, setSelectedMember] = useState(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -115,7 +116,7 @@ export default function MembersList() {
   useEffect(() => {
     filterMembers();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchTerm, statusFilter, baptizedFilter, sortBy, members]);
+  }, [searchTerm, statusFilter, baptizedFilter, sortBy, sortOrder, members]);
 
   const filterMembers = () => {
     let filtered = [...members];
@@ -144,28 +145,36 @@ export default function MembersList() {
 
     // Ordenação
     filtered.sort((a, b) => {
+      let comparison = 0;
+
       switch (sortBy) {
         case 'name':
           // Ordem alfabética por nome
-          return (a.fullName || '').localeCompare(b.fullName || '', 'pt-BR');
+          comparison = (a.fullName || '').localeCompare(b.fullName || '', 'pt-BR');
+          break;
 
         case 'createdAt': {
-          // Mais recentes primeiro (decrescente)
+          // Por data de criação
           const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
           const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
-          return dateB - dateA;
+          comparison = dateA - dateB;
+          break;
         }
 
         case 'updatedAt': {
-          // Mais recentemente editados primeiro (decrescente)
+          // Por data de atualização
           const updatedA = a.updatedAt ? new Date(a.updatedAt) : new Date(0);
           const updatedB = b.updatedAt ? new Date(b.updatedAt) : new Date(0);
-          return updatedB - updatedA;
+          comparison = updatedA - updatedB;
+          break;
         }
 
         default:
           return 0;
       }
+
+      // Aplicar ordem (asc ou desc)
+      return sortOrder === 'asc' ? comparison : -comparison;
     });
 
     setFilteredMembers(filtered);
@@ -191,6 +200,11 @@ export default function MembersList() {
     setStatusFilter('all');
     setBaptizedFilter('all');
     setSortBy('name');
+    setSortOrder('asc');
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc');
   };
 
   const getStatusIcon = (status) => {
@@ -345,13 +359,25 @@ export default function MembersList() {
                 </select>
               </div>
 
-              <div className="filter-box">
-                <ArrowsDownUp size={20} />
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="name">Nome (A-Z)</option>
-                  <option value="createdAt">Data de Cadastro</option>
-                  <option value="updatedAt">Última Edição</option>
-                </select>
+              <div className="sort-controls">
+                <div className="filter-box">
+                  <ArrowsDownUp size={20} />
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="name">Ordenar por Nome</option>
+                    <option value="createdAt">Data de Cadastro</option>
+                    <option value="updatedAt">Última Edição</option>
+                  </select>
+                </div>
+                <button 
+                  className="sort-order-btn"
+                  onClick={toggleSortOrder}
+                  title={sortOrder === 'asc' ? 'Ordem Crescente' : 'Ordem Decrescente'}
+                >
+                  {sortOrder === 'asc' ? '↑' : '↓'}
+                  <span className="sort-order-label">
+                    {sortOrder === 'asc' ? 'A-Z' : 'Z-A'}
+                  </span>
+                </button>
               </div>
             </div>
           </div>

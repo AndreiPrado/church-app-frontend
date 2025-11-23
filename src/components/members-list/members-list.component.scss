@@ -149,6 +149,8 @@
     gap: 16px;
     margin-bottom: 32px;
     position: relative;
+    align-items: center;
+    width: 100%;
 
     @media (max-width: 768px) {
       flex-wrap: wrap;
@@ -191,10 +193,12 @@
 
     .filters-container {
       display: flex;
-      gap: 16px;
+      gap: 12px;
+      flex: 1;
+      align-items: center;
 
       .clear-filters-btn {
-        padding: 12px 16px;
+        padding: 7px 16px;
         background: rgba(255, 107, 107, 0.15);
         border: 1px solid rgba(255, 107, 107, 0.3);
         border-radius: 8px;
@@ -228,12 +232,56 @@
           gap: 16px;
           width: 100%;
           align-items: center;
+        }
 
-          .clear-filters-btn {
-            padding: 10px 16px;
-            white-space: nowrap;
-            width: auto;
+        .sort-controls {
+          display: flex;
+          gap: 16px;
+          align-items: stretch;
+
+          .filter-box {
+            flex: 1;
           }
+
+          .sort-order-btn {
+            background: rgba(66, 165, 245, 0.1);
+            border: 1px solid rgba(66, 165, 245, 0.3);
+            border-radius: 8px;
+            padding: 0 14px;
+            color: #42a5f5;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 70px;
+            justify-content: center;
+
+            &:hover {
+              background: rgba(66, 165, 245, 0.2);
+              border-color: #42a5f5;
+              transform: translateY(-2px);
+            }
+
+            &:active {
+              transform: translateY(0);
+            }
+
+            .sort-order-label {
+              font-size: 0.75rem;
+              font-weight: 600;
+              color: rgba(255, 255, 255, 0.7);
+              white-space: nowrap;
+            }
+          }
+        }
+
+        .clear-filters-btn {
+          padding: 10px 16px;
+          white-space: nowrap;
+          width: auto;
         }
       }
 
@@ -261,6 +309,7 @@
           align-items: center;
           padding: 20px;
           border-bottom: 1px solid rgba(66, 165, 245, 0.2);
+          width: 100%;
 
           h3 {
             margin: 0;
@@ -299,6 +348,44 @@
           .clear-filters-btn {
             width: 100%;
           }
+
+          .sort-controls {
+            display: flex;
+            gap: 8px;
+            align-items: stretch;
+
+            .filter-box {
+              flex: 1;
+            }
+
+            .sort-order-btn {
+              background: rgba(66, 165, 245, 0.1);
+              border: 1px solid rgba(66, 165, 245, 0.3);
+              border-radius: 8px;
+              padding: 0 12px;
+              color: #42a5f5;
+              font-size: 1.2rem;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.2s;
+              display: flex;
+              align-items: center;
+              gap: 6px;
+              min-width: 60px;
+              justify-content: center;
+
+              &:hover {
+                background: rgba(66, 165, 245, 0.2);
+                border-color: #42a5f5;
+              }
+
+              .sort-order-label {
+                font-size: 0.75rem;
+                font-weight: 600;
+                color: rgba(255, 255, 255, 0.7);
+              }
+            }
+          }
         }
       }
     }
@@ -324,9 +411,13 @@
       position: relative;
       display: flex;
       align-items: center;
+      min-width: 280px;
+      max-width: 500px;
 
       @media (max-width: 768px) {
         width: calc(100% - 120px);
+        min-width: auto;
+        max-width: none;
       }
 
       >svg {
@@ -374,22 +465,23 @@
       }
 
       select {
-        padding: 6px 40px 6px 48px;
+        padding: 7px 40px 7px 48px;
         background: rgba(26, 31, 46, 0.6);
         border: 1px solid rgba(66, 165, 245, 0.2);
         border-radius: 12px;
         color: #ffffff;
-        font-size: 1rem;
+        font-size: 0.95rem;
         cursor: pointer;
-        min-width: 200px;
         transition: all 0.3s;
         appearance: none;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='rgba(255,255,255,0.6)' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
         background-repeat: no-repeat;
         background-position: right 16px center;
+        white-space: nowrap;
 
         @media (max-width: 768px) {
           width: 100%;
+          min-width: auto;
         }
 
         option {

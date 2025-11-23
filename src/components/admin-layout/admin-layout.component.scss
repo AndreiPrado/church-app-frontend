@@ -278,6 +278,10 @@
       max-width: 100dvw;
       overflow-x: hidden;
 
+      @media (min-width: 968px) {
+        max-width: calc(100dvw - 280px);
+      }
+
       @media (max-width: 768px) {
         padding: 24px 20px;
       }
