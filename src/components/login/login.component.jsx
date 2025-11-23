@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
-import { SignIn, Eye, EyeSlash } from "@phosphor-icons/react";
+import { SignInIcon, EyeIcon, EyeSlashIcon } from "@phosphor-icons/react";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
 import logoWithoutBackground from '../../assets/logo-without-background.png';
@@ -135,6 +135,7 @@ export default function Login() {
       login(userData, token, refreshToken);
 
       console.log('Login function chamada, redirecionando...'); // Debug
+      console.log('Permissões do usuário:', userData.permissions); // Debug
 
       setAlert({
         isVisible: true,
@@ -142,16 +143,23 @@ export default function Login() {
         type: 'success'
       });
 
-      // Redirecionar imediatamente
-      navigate("/admin/profile", { replace: true });
+      // Redirecionar baseado nas permissões
+      // Se tem permissão admin.full, vai para dashboard
+      // Caso contrário, vai para perfil
+      const isAdmin = userData.permissions?.includes('admin.full');
+      const redirectPath = isAdmin ? "/admin/dashboard" : "/admin/profile";
+
+      console.log('É admin?', isAdmin, '- Redirecionando para:', redirectPath); // Debug
+
+      navigate(redirectPath, { replace: true });
 
     } catch (err) {
       console.error('Login error completo:', err); // Debug
       setIsLoading(false);
-      
+
       // Pegar mensagem amigável do backend (detail)
       let errorMessage = "Erro ao fazer login. Verifique suas credenciais.";
-      
+
       if (err.response?.data?.detail) {
         errorMessage = err.response.data.detail;
       } else if (err.response?.data?.message) {
@@ -161,7 +169,7 @@ export default function Login() {
       } else if (err.message) {
         errorMessage = err.message;
       }
-      
+
       setAlert({
         isVisible: true,
         message: errorMessage,
@@ -216,14 +224,14 @@ export default function Login() {
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
               >
-                {showPassword ? <EyeSlash size={20} /> : <Eye size={20} />}
+                {showPassword ? <EyeSlashIcon size={20} /> : <EyeIcon size={20} />}
               </button>
             </div>
             {renderErrorMessage('password')}
           </div>
 
           <button type="submit" className="login-button" disabled={isLoading}>
-            <SignIn size={20} weight="bold" />
+            <SignInIcon size={20} weight="bold" />
             {isLoading ? 'Entrando...' : 'Entrar'}
           </button>
         </form>

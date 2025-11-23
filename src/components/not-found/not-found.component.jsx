@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { House, ArrowLeft, MagnifyingGlass } from '@phosphor-icons/react';
+import { HouseIcon, ArrowLeftIcon, MagnifyingGlassIcon } from '@phosphor-icons/react';
 import './not-found.component.scss';
 
 /**
@@ -20,7 +20,7 @@ const NotFound = () => {
     <div className="not-found">
       <div className="not-found-content">
         <div className="not-found-icon">
-          <MagnifyingGlass size={80} weight="duotone" />
+          <MagnifyingGlassIcon size={80} weight="duotone" />
         </div>
 
         <h1>404</h1>
@@ -39,7 +39,7 @@ const NotFound = () => {
             onClick={handleGoBack}
             className="btn-secondary"
           >
-            <ArrowLeft size={20} />
+            <ArrowLeftIcon size={20} />
             Voltar
           </button>
 
@@ -47,7 +47,7 @@ const NotFound = () => {
             onClick={handleGoHome}
             className="btn-primary"
           >
-            <House size={20} />
+            <HouseIcon size={20} />
             Ir para Início
           </button>
         </div>

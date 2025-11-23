@@ -6,15 +6,15 @@ import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
 import {
-  UserCircle,
-  Phone,
-  EnvelopeSimple,
-  MapPin,
-  CalendarBlank,
-  IdentificationCard,
-  PencilSimple,
-  CheckCircle,
-  XCircle
+  UserCircleIcon,
+  PhoneIcon,
+  EnvelopeSimpleIcon,
+  MapPinIcon,
+  CalendarBlankIcon,
+  IdentificationCardIcon,
+  PencilSimpleIcon,
+  CheckCircleIcon,
+  XCircleIcon
 } from "@phosphor-icons/react";
 
 export default function Profile() {
@@ -93,12 +93,12 @@ export default function Profile() {
     try {
       setIsSaving(true);
       const token = getToken();
-      
+
       console.log('💾 Profile - Enviando dados para salvar:', editData);
       console.log('🔍 Profile - Profissão sendo enviada:', editData.profession);
-      
+
       const updatedData = await authService.updateMember(user.id, editData, token);
-      
+
       console.log('✅ Profile - Dados atualizados recebidos:', updatedData);
       console.log('🔍 Profile - Profissão recebida:', updatedData.profession);
       console.log('📊 Profile - Comparação:', {
@@ -133,6 +133,26 @@ export default function Profile() {
     setIsEditing(false);
   };
 
+  // Formatar data para padrão brasileiro (dd/mm/aaaa)
+  const formatDateBR = (dateString) => {
+    if (!dateString) return '-';
+    try {
+      // Se a data está no formato ISO (YYYY-MM-DD), extrair os componentes diretamente
+      // para evitar problemas com fuso horário
+      if (typeof dateString === 'string' && dateString.match(/^\d{4}-\d{2}-\d{2}/)) {
+        const [year, month, day] = dateString.split('T')[0].split('-');
+        return `${day}/${month}/${year}`;
+      }
+
+      // Fallback para outros formatos
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return dateString;
+      return date.toLocaleDateString('pt-BR');
+    } catch {
+      return dateString;
+    }
+  };
+
   if (loading) {
     return (
       <AdminLayout>
@@ -159,7 +179,7 @@ export default function Profile() {
       <div className="profile">
         <div className="profile-header">
           <div className="header-title">
-            <UserCircle size={32} weight="duotone" />
+            <UserCircleIcon size={32} weight="duotone" />
             <div>
               <h1>Minha Conta</h1>
               <p>Gerencie suas informações pessoais</p>
@@ -168,17 +188,17 @@ export default function Profile() {
 
           {!isEditing ? (
             <button className="edit-btn" onClick={() => setIsEditing(true)}>
-              <PencilSimple size={20} weight="bold" />
+              <PencilSimpleIcon size={20} weight="bold" />
               Editar
             </button>
           ) : (
             <div className="edit-actions">
               <button className="cancel-btn" onClick={handleCancel}>
-                <XCircle size={20} weight="fill" />
+                <XCircleIcon size={20} weight="fill" />
                 Cancelar
               </button>
               <button className="save-btn" onClick={handleSave}>
-                <CheckCircle size={20} weight="fill" />
+                <CheckCircleIcon size={20} weight="fill" />
                 Salvar
               </button>
             </div>
@@ -193,13 +213,13 @@ export default function Profile() {
                 {photoUrl ? (
                   <img src={photoUrl} alt={memberData.fullName} />
                 ) : (
-                  <UserCircle size={120} weight="duotone" />
+                  <UserCircleIcon size={120} weight="duotone" />
                 )}
               </div>
               <div className="profile-info">
                 <h2>{memberData.fullName}</h2>
                 <span className={`profile-status ${memberData.status}`}>
-                  {memberData.status === 'ativo' && <CheckCircle size={18} weight="fill" />}
+                  {memberData.status === 'ativo' && <CheckCircleIcon size={18} weight="fill" />}
                   {memberData.status === 'ativo' ? 'Membro Ativo' :
                     memberData.status === 'pendente' ? 'Cadastro Pendente' : 'Cadastro Rejeitado'}
                 </span>
@@ -215,7 +235,7 @@ export default function Profile() {
           {/* Informações de Contato */}
           <div className="profile-card">
             <h3 className="section-title">
-              <EnvelopeSimple size={24} weight="duotone" />
+              <EnvelopeSimpleIcon size={24} weight="duotone" />
               Informações de Contato
             </h3>
             <div className="info-grid">
@@ -230,7 +250,7 @@ export default function Profile() {
                   />
                 ) : (
                   <div className="info-value">
-                    <EnvelopeSimple size={18} weight="duotone" />
+                    <EnvelopeSimpleIcon size={18} weight="duotone" />
                     <span>{memberData.email}</span>
                   </div>
                 )}
@@ -247,7 +267,7 @@ export default function Profile() {
                   />
                 ) : (
                   <div className="info-value">
-                    <Phone size={18} weight="duotone" />
+                    <PhoneIcon size={18} weight="duotone" />
                     <span>{memberData.phone}</span>
                   </div>
                 )}
@@ -258,14 +278,14 @@ export default function Profile() {
           {/* Dados Pessoais */}
           <div className="profile-card">
             <h3 className="section-title">
-              <IdentificationCard size={24} weight="duotone" />
+              <IdentificationCardIcon size={24} weight="duotone" />
               Dados Pessoais
             </h3>
             <div className="info-grid">
               <div className="info-field">
                 <label>CPF</label>
                 <div className="info-value">
-                  <IdentificationCard size={18} weight="duotone" />
+                  <IdentificationCardIcon size={18} weight="duotone" />
                   <span>{memberData.cpf}</span>
                 </div>
               </div>
@@ -273,8 +293,8 @@ export default function Profile() {
               <div className="info-field">
                 <label>Data de Nascimento</label>
                 <div className="info-value">
-                  <CalendarBlank size={18} weight="duotone" />
-                  <span>{memberData.birthDate}</span>
+                  <CalendarBlankIcon size={18} weight="duotone" />
+                  <span>{formatDateBR(memberData.birthDate)}</span>
                 </div>
               </div>
 
@@ -328,8 +348,8 @@ export default function Profile() {
                 <div className="info-value">
                   {memberData.baptized ? (
                     <>
-                      <CheckCircle size={18} weight="fill" className="baptized-icon" />
-                      <span>Sim{memberData.baptismDate && ` - ${memberData.baptismDate}`}</span>
+                      <CheckCircleIcon size={18} weight="fill" className="baptized-icon" />
+                      <span>Sim{memberData.baptismDate && ` - ${formatDateBR(memberData.baptismDate)}`}</span>
                     </>
                   ) : (
                     <span>Não</span>
@@ -342,7 +362,7 @@ export default function Profile() {
           {/* Endereço */}
           <div className="profile-card">
             <h3 className="section-title">
-              <MapPin size={24} weight="duotone" />
+              <MapPinIcon size={24} weight="duotone" />
               Endereço
             </h3>
             <div className="info-grid">
@@ -357,7 +377,7 @@ export default function Profile() {
                   />
                 ) : (
                   <div className="info-value">
-                    <MapPin size={18} weight="duotone" />
+                    <MapPinIcon size={18} weight="duotone" />
                     <span>{memberData.address}</span>
                   </div>
                 )}
