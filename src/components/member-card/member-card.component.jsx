@@ -2,9 +2,10 @@ import "./member-card.component.scss";
 import { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import { QRCodeSVG } from "qrcode.react";
-import { DownloadIcon, PrinterIcon, FlipHorizontalIcon } from "@phosphor-icons/react";
+import { DownloadIcon, FlipHorizontalIcon } from "@phosphor-icons/react";
 import { generateMemberCardPDF } from "../../utils/generateMemberCardPDF";
-import zeleIcon from '../../assets/zele_icon.png';
+import zeleIcon from '../../assets/zele_logo.png';
+import zeleName from '../../assets/zele_name.png';
 
 /**
  * Componente de Carteirinha Digital de Membro
@@ -95,10 +96,6 @@ export default function MemberCard({
     }
   };
 
-  const handlePrint = () => {
-    window.print();
-  };
-
   const getInitials = (fullName) => {
     if (!fullName) return '?';
     const names = fullName.trim().split(' ');
@@ -118,10 +115,6 @@ export default function MemberCard({
           <DownloadIcon size={20} weight="bold" />
           Baixar PDF
         </button>
-        <button onClick={handlePrint} className="action-btn print-btn">
-          <PrinterIcon size={20} weight="bold" />
-          Imprimir
-        </button>
       </div>
 
       {/* Cartão com Flip 3D */}
@@ -136,9 +129,6 @@ export default function MemberCard({
           {/* Foto Grande à Esquerda e Embaixo */}
           <div className="photo-section">
             {/* Nome da Igreja embaixo da foto */}
-            <div className="church-name-top">
-              <h3>ZELE CHURCH</h3>
-            </div>
 
             {photoUrl ? (
               <img src={photoUrl} alt={name} className="member-photo-large" />
@@ -147,6 +137,10 @@ export default function MemberCard({
                 {getInitials(name)}
               </div>
             )}
+          </div>
+
+          <div className="zele-name-container">
+            <img src={zeleName} alt="Zele Church" className="zele-name" />
           </div>
         </div>
 
@@ -202,81 +196,6 @@ export default function MemberCard({
           <div className="card-back-footer">
             <p className="footer-text">Carteirinha pessoal e intransferível</p>
             <p className="footer-id">ID: {memberId.substring(0, 16)}...</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Versão para Impressão (ambos os lados) */}
-      <div className="print-only">
-        <div className="print-page">
-          <div className="member-card card-front">
-            <div className="zele-icon-container">
-              <img src={zeleIcon} alt="Zele Church" className="zele-icon" />
-            </div>
-            <div className="photo-section">
-              {photoUrl ? (
-                <img src={photoUrl} alt={name} className="member-photo-large" />
-              ) : (
-                <div className="member-photo-placeholder-large">
-                  {getInitials(name)}
-                </div>
-              )}
-              <div className="church-name-bottom">
-                <h3>ZELE CHURCH</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="print-page page-break">
-          <div className="member-card card-back">
-            <div className="card-back-header">
-              <h2 className="member-name-back">{name}</h2>
-              <div className="member-number-back">
-                <span className="label">Nº Membro:</span>
-                <span className="value">{memberNumber || memberId.substring(0, 8).toUpperCase()}</span>
-              </div>
-            </div>
-
-            <div className="member-details-back">
-              <div className="detail-row">
-                <span className="detail-label">Status:</span>
-                <span className={`status-badge-back ${getStatusColor()}`}>
-                  {status?.toUpperCase()}
-                </span>
-              </div>
-
-              <div className="detail-row">
-                <span className="detail-label">Membro desde:</span>
-                <span className="detail-value">{formatDate(joinedAt)}</span>
-              </div>
-
-              {expiresAt && (
-                <div className="detail-row">
-                  <span className="detail-label">Validade:</span>
-                  <span className="detail-value">{formatDate(expiresAt)}</span>
-                </div>
-              )}
-            </div>
-
-            <div className="qr-section-back">
-              <div className="qr-code-wrapper-back">
-                <QRCodeSVG
-                  value={qrCodeUrl}
-                  size={100}
-                  level="H"
-                  includeMargin={true}
-                  bgColor="#ffffff"
-                  fgColor="#000000"
-                />
-              </div>
-              <p className="qr-text">Escaneie para validar</p>
-            </div>
-
-            <div className="card-back-footer">
-              <p className="footer-text">Carteirinha pessoal e intransferível</p>
-              <p className="footer-id">ID: {memberId.substring(0, 16)}...</p>
-            </div>
           </div>
         </div>
       </div>
