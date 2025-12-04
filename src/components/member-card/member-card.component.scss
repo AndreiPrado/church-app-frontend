@@ -1,0 +1,488 @@
+.member-card-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+
+  // Botões de Ação
+  .member-card-actions {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 24px;
+    justify-content: center;
+    flex-wrap: wrap;
+
+    .action-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+
+      &.flip-btn {
+        background: linear-gradient(135deg, #7c4dff 0%, #5e35b1 100%);
+        color: white;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(124, 77, 255, 0.4);
+        }
+      }
+
+      &.download-btn {
+        background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        color: white;
+
+        &:hover:not(:disabled) {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(66, 165, 245, 0.4);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+        }
+      }
+
+      &.print-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
+          transform: translateY(-2px);
+        }
+      }
+    }
+  }
+
+  // Container do Flip 3D
+  .card-flip-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+    position: relative;
+    height: 280px;
+
+    &.flipped {
+      .card-front {
+        transform: rotateY(180deg);
+      }
+
+      .card-back {
+        transform: rotateY(0deg);
+      }
+    }
+  }
+
+  // Cartão Base
+  .member-card {
+    width: 100%;
+    height: 100%;
+    background: url('/src/assets/main_bg.jpg') no-repeat center center;
+    background-size: cover;
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+    border: 2px solid rgba(66, 165, 245, 0.3);
+    position: absolute;
+    backface-visibility: hidden;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  // ============================================================================
+  // FRENTE DO CARTÃO
+  // ============================================================================
+  .card-front {
+    transform: rotateY(0deg);
+    justify-content: space-between;
+
+    // Ícone Zele no topo direito
+    .zele-icon-container {
+      position: absolute;
+      top: 5px;
+      right: 20px;
+      z-index: 10;
+
+      .zele-icon {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.3));
+      }
+    }
+
+    // Foto grande à esquerda e embaixo
+    .photo-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+
+      .church-name-top {
+        text-align: left;
+        padding: 8px 12px;
+
+        h3 {
+          margin: 0;
+          color: #ffffff;
+          font-size: 0.5rem;
+          font-weight: 700;
+          letter-spacing: 2px;
+          text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+      }
+
+      .member-photo-large {
+        width: 140px;
+        height: 180px;
+        border-radius: 12px;
+        object-fit: cover;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        margin-top: 15px;
+      }
+
+      .member-photo-placeholder-large {
+        width: 140px;
+        height: 180px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 3.5rem;
+        font-weight: 700;
+        border: 3px solid rgba(66, 165, 245, 0.4);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      }
+    }
+  }
+
+  // ============================================================================
+  // VERSO DO CARTÃO
+  // ============================================================================
+  .card-back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, #2d3748 0%, #1a1f2e 100%);
+    justify-content: space-between;
+    padding: 24px;
+
+    // Header com nome
+    .card-back-header {
+      border-bottom: 2px solid rgba(66, 165, 245, 0.3);
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+
+      .member-name-back {
+        color: #ffffff;
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin: 0 0 8px 0;
+        line-height: 1.2;
+      }
+
+      .member-number-back {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .label {
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 0.8rem;
+          font-weight: 600;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+
+        .value {
+          color: #42a5f5;
+          font-size: 1rem;
+          font-weight: 700;
+          font-family: 'Courier New', monospace;
+        }
+      }
+    }
+
+    // Detalhes do membro
+    .member-details-back {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 16px;
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 12px;
+        background: rgba(66, 165, 245, 0.05);
+        border-radius: 8px;
+        border: 1px solid rgba(66, 165, 245, 0.1);
+
+        .detail-label {
+          color: rgba(255, 255, 255, 0.7);
+          font-size: 0.85rem;
+          font-weight: 600;
+        }
+
+        .detail-value {
+          color: #ffffff;
+          font-size: 0.9rem;
+          font-weight: 600;
+        }
+
+        .status-badge-back {
+          padding: 4px 12px;
+          border-radius: 6px;
+          font-size: 0.75rem;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+
+          &.status-active {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4caf50;
+            border: 1px solid rgba(76, 175, 80, 0.4);
+          }
+
+          &.status-pending {
+            background: rgba(255, 152, 0, 0.2);
+            color: #ff9800;
+            border: 1px solid rgba(255, 152, 0, 0.4);
+          }
+
+          &.status-inactive {
+            background: rgba(244, 67, 54, 0.2);
+            color: #f44336;
+            border: 1px solid rgba(244, 67, 54, 0.4);
+          }
+        }
+      }
+    }
+
+    // QR Code
+    .qr-section-back {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 16px;
+
+      .qr-code-wrapper-back {
+        background: white;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+      }
+
+      .qr-text {
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin: 0;
+        text-align: center;
+      }
+    }
+
+    // Footer
+    .card-back-footer {
+      border-top: 1px solid rgba(66, 165, 245, 0.2);
+      padding-top: 12px;
+      text-align: center;
+
+      .footer-text {
+        color: rgba(255, 255, 255, 0.6);
+        font-size: 0.7rem;
+        margin: 0 0 6px 0;
+        font-style: italic;
+      }
+
+      .footer-id {
+        color: rgba(255, 255, 255, 0.4);
+        font-size: 0.65rem;
+        margin: 0;
+        font-family: 'Courier New', monospace;
+        letter-spacing: 0.5px;
+      }
+    }
+  }
+
+  // Versão para Impressão
+  .print-only {
+    display: none;
+  }
+
+  // ============================================================================
+  // RESPONSIVIDADE MOBILE - ROTAÇÃO LANDSCAPE
+  // ============================================================================
+  @media (max-width: 768px) {
+    padding: 12px;
+
+    .member-card-actions {
+      .action-btn {
+        padding: 10px 16px;
+        font-size: 0.85rem;
+      }
+    }
+
+    // Rotacionar cartão para landscape no mobile
+    .card-flip-container {
+      transform: rotate(90deg);
+      transform-origin: center center;
+      width: 280px;
+      height: 450px;
+      max-width: none;
+      margin: 80px auto;
+    }
+
+    .member-card {
+      width: 100%;
+      height: 100%;
+    }
+
+    // Ajustar tamanhos no mobile
+    .card-front {
+      .zele-icon-container {
+        top: 16px;
+        right: 16px;
+
+        .zele-icon {
+          width: 50px;
+          height: 50px;
+        }
+      }
+
+      .photo-section {
+        bottom: 16px;
+        left: 16px;
+
+        .member-photo-large,
+        .member-photo-placeholder-large {
+          width: 120px;
+          height: 160px;
+        }
+
+        .church-name-bottom {
+          h3 {
+            font-size: 0.8rem;
+          }
+        }
+      }
+    }
+
+    .card-back {
+      padding: 20px;
+
+      .card-back-header {
+        .member-name-back {
+          font-size: 1.1rem;
+        }
+
+        .member-number-back {
+          .label {
+            font-size: 0.7rem;
+          }
+
+          .value {
+            font-size: 0.9rem;
+          }
+        }
+      }
+
+      .member-details-back {
+        gap: 8px;
+
+        .detail-row {
+          padding: 6px 10px;
+
+          .detail-label {
+            font-size: 0.75rem;
+          }
+
+          .detail-value {
+            font-size: 0.8rem;
+          }
+        }
+      }
+
+      .qr-section-back {
+        .qr-code-wrapper-back {
+          padding: 8px;
+
+          svg {
+            width: 80px !important;
+            height: 80px !important;
+          }
+        }
+
+        .qr-text {
+          font-size: 0.75rem;
+        }
+      }
+    }
+  }
+
+  // Tablets em portrait
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .card-flip-container {
+      max-width: 400px;
+      height: 250px;
+    }
+  }
+}
+
+// ============================================================================
+// ESTILOS DE IMPRESSÃO
+// ============================================================================
+@media print {
+  .member-card-container {
+    .member-card-actions {
+      display: none !important;
+    }
+
+    .card-flip-container {
+      display: none !important;
+    }
+
+    .print-only {
+      display: block !important;
+
+      .print-page {
+        width: 85.6mm;
+        height: 53.98mm;
+        page-break-after: always;
+        margin: 0;
+        padding: 0;
+
+        &:last-child {
+          page-break-after: auto;
+        }
+
+        .member-card {
+          position: relative;
+          width: 100%;
+          height: 100%;
+          box-shadow: none;
+          page-break-inside: avoid;
+          transform: none !important;
+        }
+      }
+    }
+  }
+
+  @page {
+    size: 85.6mm 53.98mm;
+    margin: 0;
+  }
+}

@@ -174,6 +174,33 @@ class AuthService {
   }
 
   /**
+   * Validar carteirinha de membro via QR Code
+   */
+  async validateMemberCard(memberId) {
+    try {
+      const result = await api.get(`/api/members/${memberId}/validate-card`);
+      return result.data || result;
+    } catch (error) {
+      // Se der erro 404 ou 403, retornar como inválido
+      if (error.response?.status === 404) {
+        return {
+          valid: false,
+          message: 'Membro não encontrado',
+          reason: 'ID inválido ou membro não existe'
+        };
+      }
+      if (error.response?.status === 403) {
+        return {
+          valid: false,
+          message: 'Carteirinha inválida',
+          reason: error.response.data?.detail || 'Membro não está ativo'
+        };
+      }
+      throw error;
+    }
+  }
+
+  /**
    * Logout
    */
   logout() {

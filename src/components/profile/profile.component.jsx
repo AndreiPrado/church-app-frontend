@@ -5,6 +5,8 @@ import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
+import MemberCard from "../member-card/member-card.component";
+import logoWithoutBackground from '../../assets/logo-without-background.png';
 import {
   UserCircleIcon,
   PhoneIcon,
@@ -27,6 +29,7 @@ export default function Profile() {
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [editData, setEditData] = useState({});
+  const [showCard, setShowCard] = useState(false);
 
   const loadMemberData = useCallback(async () => {
     try {
@@ -441,6 +444,38 @@ export default function Profile() {
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* Seção da Carteirinha Digital */}
+          <div className="profile-card">
+            <div className="card-header-section">
+              <h3 className="section-title">
+                <IdentificationCardIcon size={24} weight="duotone" />
+                Carteirinha Digital
+              </h3>
+              <button 
+                className="toggle-card-btn"
+                onClick={() => setShowCard(!showCard)}
+              >
+                {showCard ? 'Ocultar Carteirinha' : 'Ver Minha Carteirinha'}
+              </button>
+            </div>
+
+            {showCard && memberData && (
+              <div className="member-card-wrapper">
+                <MemberCard
+                  name={memberData.fullName}
+                  memberId={memberData.id}
+                  memberNumber={memberData.memberNumber}
+                  status={memberData.status}
+                  joinedAt={memberData.createdAt}
+                  expiresAt={null}
+                  photoUrl={photoUrl}
+                  churchName="Igreja Zele"
+                  churchLogoUrl={logoWithoutBackground}
+                />
+              </div>
+            )}
           </div>
         </div>
       </div>

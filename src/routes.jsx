@@ -14,6 +14,7 @@ import ProtectedRoute from '../src/components/protected-route/protected-route.co
 import ScrollToTop from '../src/components/scroll-to-top/scroll-to-top.component.jsx';
 import AdminRedirect from '../src/components/admin-redirect/admin-redirect.component.jsx';
 import NotFound from '../src/components/not-found/not-found.component.jsx';
+import MemberCardValidator from '../src/components/member-card-validator/member-card-validator.component.jsx';
 
 const Router = () => {
     return (
@@ -29,6 +30,9 @@ const Router = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
+                
+                {/* Rota Pública para Validação de Carteirinha */}
+                <Route path="/validar-membro/:memberId" element={<MemberCardValidator />} />
 
                 {/* Rota de Redirecionamento Inteligente */}
                 <Route 

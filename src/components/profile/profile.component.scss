@@ -347,9 +347,64 @@
 
             span {
               flex: 1;
-              word-break: break-word;
             }
           }
+        }
+      }
+    }
+
+    // Seção da Carteirinha Digital
+    .card-header-section {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+      gap: 16px;
+
+      .toggle-card-btn {
+        padding: 10px 20px;
+        background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(66, 165, 245, 0.5);
+        }
+      }
+    }
+
+    .member-card-wrapper {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(10, 14, 26, 0.4);
+      border-radius: 12px;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+
+      @media (max-width: 768px) {
+        padding: 12px;
+      }
+    }
+  }
+
+  @media (max-width: 768px) {
+    .profile-header {
+      flex-direction: column;
+      align-items: flex-start;
+
+      .edit-btn,
+      .edit-actions {
+        width: 100%;
+
+        button {
+          flex: 1;
         }
       }
     }
