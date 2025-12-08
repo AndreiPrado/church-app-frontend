@@ -67,10 +67,11 @@
       padding: 65px 2rem 0;
       max-width: 900px;
       height: 90dvh;
-      display: flex;
+      display: none;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      visibility: hidden;
 
       .logo-container {
         display: flex;
@@ -182,6 +183,13 @@
           transform: translateX(-50%);
           animation: scrollDown 2s infinite;
         }
+      }
+    }
+
+    @media (max-width: 768px) {
+      .background-video {
+        min-height: 70%;
+        box-shadow: 0 0 20px #1a3a52;
       }
     }
   }
@@ -311,7 +319,7 @@
       background: transparent;
       perspective: 1000px;
       height: 280px;
-      
+
       // Garantir isolamento do contexto 3D
       transform-style: preserve-3d;
 
@@ -322,7 +330,7 @@
         text-align: center;
         transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         transform-style: preserve-3d;
-        
+
         // Garantir transformação 3D suave
         -webkit-transform-style: preserve-3d;
         -moz-transform-style: preserve-3d;
@@ -353,10 +361,10 @@
         padding: 3rem 2rem;
         border: 1px solid rgba(66, 165, 245, 0.1);
         backdrop-filter: blur(10px);
-        
+
         // Garantir que não haja overflow visível
         overflow: hidden;
-        
+
         // Forçar rasterização no hardware para melhor performance
         -webkit-transform: translate3d(0, 0, 0);
         -moz-transform: translate3d(0, 0, 0);
@@ -878,7 +886,7 @@
           opacity: 0;
           transform: translateY(-10px) scale(0.95) rotateX(10deg);
         }
-        
+
         60% {
           opacity: 0.8;
           transform: translateY(-2px) scale(1.02) rotateX(-2deg);

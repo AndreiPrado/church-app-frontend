@@ -359,10 +359,10 @@ function Home() {
           preload="auto"
           disablePictureInPicture
           controls={false}
-          poster="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/frame.jpg"
+          poster="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-frame.jpg"
         >
-          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/video-h265.mp4" type="video/mp4; codecs=hevc" />
-          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/video-h264.mp4" type="video/mp4; codecs=avc1" />
+          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h265.mp4" type="video/mp4; codecs=hevc" />
+          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h264.mp4" type="video/mp4; codecs=avc1" />
         </video>
 
         <div className="hero-overlay" />
