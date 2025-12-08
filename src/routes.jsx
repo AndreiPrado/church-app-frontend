@@ -15,6 +15,7 @@ import ScrollToTop from '../src/components/scroll-to-top/scroll-to-top.component
 import AdminRedirect from '../src/components/admin-redirect/admin-redirect.component.jsx';
 import NotFound from '../src/components/not-found/not-found.component.jsx';
 import MemberCardValidator from '../src/components/member-card-validator/member-card-validator.component.jsx';
+import MemberCardPage from '../src/components/member-card-page/member-card-page.component.jsx';
 
 const Router = () => {
     return (
@@ -30,52 +31,60 @@ const Router = () => {
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />
                 <Route path="/terms-of-service" element={<TermsOfService />} />
-                
+
                 {/* Rota Pública para Validação de Carteirinha */}
                 <Route path="/validar-membro/:memberId" element={<MemberCardValidator />} />
 
                 {/* Rota de Redirecionamento Inteligente */}
-                <Route 
-                    path="/admin" 
+                <Route
+                    path="/admin"
                     element={
                         <ProtectedRoute>
                             <AdminRedirect />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
 
                 {/* Rotas Administrativas Protegidas */}
-                <Route 
-                    path="/admin/dashboard" 
+                <Route
+                    path="/admin/dashboard"
                     element={
                         <ProtectedRoute>
                             <Dashboard />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/admin/members" 
+                <Route
+                    path="/admin/members"
                     element={
                         <ProtectedRoute>
                             <MembersList />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/admin/approvals" 
+                <Route
+                    path="/admin/approvals"
                     element={
                         <ProtectedRoute>
                             <Approvals />
                         </ProtectedRoute>
-                    } 
+                    }
                 />
-                <Route 
-                    path="/admin/profile" 
+                <Route
+                    path="/admin/profile"
                     element={
                         <ProtectedRoute>
                             <Profile />
                         </ProtectedRoute>
-                    } 
+                    }
+                />
+                <Route
+                    path="/admin/carteirinha"
+                    element={
+                        <ProtectedRoute>
+                            <MemberCardPage />
+                        </ProtectedRoute>
+                    }
                 />
 
                 {/* Rota 404 - Deve ser a última */}

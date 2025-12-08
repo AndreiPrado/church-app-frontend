@@ -1,12 +1,11 @@
 import "./profile.component.scss";
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
 import FloatingAlert from "../floating-alert/floating-alert.component";
-import MemberCard from "../member-card/member-card.component";
-import logoWithoutBackground from '../../assets/logo-without-background.png';
 import {
   UserCircleIcon,
   PhoneIcon,
@@ -16,11 +15,13 @@ import {
   IdentificationCardIcon,
   PencilSimpleIcon,
   CheckCircleIcon,
-  XCircleIcon
+  XCircleIcon,
+  ArrowRightIcon
 } from "@phosphor-icons/react";
 
 export default function Profile() {
   const { user, getToken, updateUser } = useAuth();
+  const navigate = useNavigate();
   const [memberData, setMemberData] = useState(null);
   const [memberRole, setMemberRole] = useState(null);
   const [photoUrl, setPhotoUrl] = useState(null);
@@ -29,7 +30,6 @@ export default function Profile() {
   const [isSaving, setIsSaving] = useState(false);
   const [alert, setAlert] = useState({ isVisible: false, message: '', type: '' });
   const [editData, setEditData] = useState({});
-  const [showCard, setShowCard] = useState(false);
 
   const loadMemberData = useCallback(async () => {
     try {
@@ -453,29 +453,22 @@ export default function Profile() {
                 <IdentificationCardIcon size={24} weight="duotone" />
                 Carteirinha Digital
               </h3>
-              <button 
-                className="toggle-card-btn"
-                onClick={() => setShowCard(!showCard)}
-              >
-                {showCard ? 'Ocultar Carteirinha' : 'Ver Minha Carteirinha'}
-              </button>
             </div>
 
-            {showCard && memberData && (
-              <div className="member-card-wrapper">
-                <MemberCard
-                  name={memberData.fullName}
-                  memberId={memberData.id}
-                  memberNumber={memberData.memberNumber}
-                  status={memberData.status}
-                  joinedAt={memberData.createdAt}
-                  expiresAt={null}
-                  photoUrl={photoUrl}
-                  churchName="Igreja Zele"
-                  churchLogoUrl={logoWithoutBackground}
-                />
-              </div>
-            )}
+            <div className="card-access-section">
+              <p className="card-description">
+                Acesse sua carteirinha digital de membro da igreja.
+                Você pode visualizá-la, fazer download em PDF ou compartilhá-la.
+              </p>
+              <button
+                className="access-card-btn"
+                onClick={() => navigate('/admin/carteirinha')}
+              >
+                <IdentificationCardIcon size={24} weight="duotone" />
+                <span>Acessar Minha Carteirinha</span>
+                <ArrowRightIcon size={20} weight="bold" />
+              </button>
+            </div>
           </div>
         </div>
       </div>

@@ -1,0 +1,128 @@
+.member-card-page {
+    .page-header {
+        margin-bottom: 32px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 24px;
+        flex-wrap: wrap;
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+
+            >svg {
+                color: #42a5f5;
+            }
+
+            h1 {
+                color: #ffffff;
+                font-size: 2.5rem;
+                font-weight: 800;
+                margin: 0 0 4px 0;
+            }
+
+            p {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 1rem;
+                margin: 0;
+            }
+        }
+
+        .back-button {
+            padding: 6px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.15);
+                transform: translateY(-2px);
+            }
+        }
+    }
+
+    .card-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 60vh;
+        padding: 20px;
+    }
+
+    &.loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+    }
+
+    &.error {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        text-align: center;
+
+        h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(66, 165, 245, 0.4);
+            }
+        }
+    }
+
+    @media (max-width: 768px) {
+        .page-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 30px;
+
+            .header-title {
+                h1 {
+                    font-size: 1.8rem;
+                }
+
+                p {
+                    font-size: 0.9rem;
+                }
+            }
+
+            .back-button {
+                padding: 8px 16px;
+                font-size: 0.9rem;
+            }
+        }
+
+        .card-container {
+            padding: 10px;
+            height: 70dvh;
+        }
+    }
+}

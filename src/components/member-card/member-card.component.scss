@@ -1,5 +1,5 @@
 .member-card-container {
-  max-width: 500px;
+  width: 500px;
   margin: 0 auto;
   padding: 20px;
 
@@ -7,15 +7,15 @@
   .member-card-actions {
     display: flex;
     gap: 12px;
-    margin-bottom: 24px;
-    justify-content: center;
+    margin-bottom: 40px;
+    justify-content: space-around;
     flex-wrap: wrap;
 
     .action-btn {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 12px 24px;
+      padding: 8px 20px;
       border: none;
       border-radius: 8px;
       font-size: 0.95rem;
@@ -153,6 +153,9 @@
         font-weight: 700;
         border: 3px solid rgba(66, 165, 245, 0.4);
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        position: absolute;
+        bottom: 0;
+        left: 0;
       }
     }
 
@@ -324,6 +327,7 @@
   @media (max-width: 768px) {
     padding: 12px;
     position: relative;
+    height: 100%;
 
     .member-card-actions {
       .action-btn {
@@ -337,6 +341,7 @@
       transform: rotate(90deg);
       transform-origin: center center;
       width: 450px;
+      top: 100px;
     }
 
     .card-back {

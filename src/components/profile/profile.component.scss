@@ -355,41 +355,58 @@
 
     // Seção da Carteirinha Digital
     .card-header-section {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       margin-bottom: 24px;
-      flex-wrap: wrap;
-      gap: 16px;
+    }
 
-      .toggle-card-btn {
-        padding: 10px 20px;
+    .card-access-section {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+
+      .card-description {
+        color: rgba(255, 255, 255, 0.7);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin: 0;
+      }
+
+      .access-card-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        padding: 7px 20px;
         background: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+        max-width: 300px;
         color: white;
         border: none;
         border-radius: 8px;
-        font-size: 0.95rem;
-        font-weight: 600;
+        font-size: 1rem;
+        font-weight: 700;
         cursor: pointer;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 12px rgba(66, 165, 245, 0.3);
+        box-shadow: 0 4px 16px rgba(66, 165, 245, 0.3);
 
         &:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 20px rgba(66, 165, 245, 0.5);
+          transform: translateY(-3px);
+          box-shadow: 0 8px 24px rgba(66, 165, 245, 0.5);
         }
-      }
-    }
 
-    .member-card-wrapper {
-      margin-top: 20px;
-      padding: 20px;
-      background: rgba(10, 14, 26, 0.4);
-      border-radius: 12px;
-      border: 1px solid rgba(66, 165, 245, 0.2);
+        &:active {
+          transform: translateY(-1px);
+        }
 
-      @media (max-width: 768px) {
-        padding: 12px;
+        svg {
+          transition: transform 0.3s ease;
+        }
+
+        &:hover svg:last-child {
+          transform: translateX(4px);
+        }
+
+        @media (max-width: 768px) {
+          max-width: 100%;
+        }
       }
     }
   }
