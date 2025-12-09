@@ -447,14 +447,6 @@ function Home() {
         <section className="inauguration-section">
           <div className="container">
             <div className="inauguration-content">
-              {/* 1. Tag de evento especial */}
-              <Parallax translateY={[-5, 5]}>
-                <div className="inauguration-badge">
-                  <CalendarIcon size={32} weight="duotone" />
-                  <span>Evento Especial</span>
-                </div>
-              </Parallax>
-
               {/* 2. Contador */}
               <Parallax translateY={[-10, 10]}>
                 <div className="countdown">
