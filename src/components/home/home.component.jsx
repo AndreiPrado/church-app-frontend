@@ -58,6 +58,9 @@ function Home() {
   // Estado para contagem regressiva da inauguração
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
+  // Estado para meses de caminhada da igreja
+  const [monthsOfJourney, setMonthsOfJourney] = useState(0);
+
   // Detectar se é mobile para otimizações
   const isMobile = useMemo(() => {
     return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth <= 768;
@@ -313,6 +316,26 @@ function Home() {
 
     updateCountdown();
     const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  // Calcular meses de caminhada desde 25 de julho de 2024
+  useEffect(() => {
+    const calculateMonths = () => {
+      const startDate = new Date('2025-07-25');
+      const now = new Date();
+
+      const yearsDiff = now.getFullYear() - startDate.getFullYear();
+      const monthsDiff = now.getMonth() - startDate.getMonth();
+      const totalMonths = yearsDiff * 12 + monthsDiff;
+
+      setMonthsOfJourney(totalMonths);
+    };
+
+    calculateMonths();
+    // Atualizar a cada dia
+    const interval = setInterval(calculateMonths, 1000 * 60 * 60 * 24);
 
     return () => clearInterval(interval);
   }, []);
@@ -711,8 +734,8 @@ function Home() {
               <Parallax translateX={[40, -40]} opacity={[0.3, 1]}>
                 <div className="stat-card">
                   <BookOpenIcon size={40} weight="fill" />
-                  <h3>4</h3>
-                  <p>Meses de caminhada</p>
+                  <h3>{monthsOfJourney}</h3>
+                  <p>{monthsOfJourney === 1 ? 'Mês de caminhada' : 'Meses de caminhada'}</p>
                 </div>
               </Parallax>
               <Parallax translateX={[-40, 40]} opacity={[0.3, 1]}>
