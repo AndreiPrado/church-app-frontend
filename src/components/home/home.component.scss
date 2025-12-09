@@ -194,6 +194,279 @@
     }
   }
 
+  // Inauguration Section
+  .inauguration-section {
+    padding: 6rem 0 4rem;
+    background: url('/src/assets/main_bg.jpg') no-repeat center center;
+    background-size: 100% 100%;
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #42a5f5, transparent);
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: -50%;
+      right: -50%;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(66, 165, 245, 0.08) 0%, transparent 70%);
+      border-radius: 50%;
+      animation: pulseGlow 8s ease-in-out infinite;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+    }
+
+    .inauguration-content {
+      max-width: 700px;
+      margin: 0 auto;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2.5rem;
+    }
+
+    .inauguration-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 1.5rem;
+      background: linear-gradient(135deg, #1a1f2e 0%, #0a0e1a 50%, #1a3a52 100%);
+      border: 1px solid rgba(66, 165, 245, 0.3);
+      border-radius: 50px;
+      color: #42a5f5;
+      font-weight: 600;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+
+      svg {
+        animation: pulse 2s ease-in-out infinite;
+      }
+    }
+
+    .inauguration-description {
+      font-size: clamp(1.1rem, 2vw, 1.3rem);
+      color: rgba(255, 255, 255, 0.85);
+      line-height: 1.6;
+      margin: 0;
+      max-width: 600px;
+    }
+
+    .inauguration-details {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .inauguration-date,
+    .inauguration-time {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.45rem 1.5rem;
+      background: rgba(26, 31, 46, 0.6);
+      border: 1px solid rgba(66, 165, 245, 0.2);
+      border-radius: 12px;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      font-weight: 500;
+
+      svg {
+        color: #42a5f5;
+      }
+    }
+
+    .countdown {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+
+      @media (max-width: 768px) {
+        gap: 0.3rem;
+      }
+    }
+
+    .countdown-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 90px;
+
+      @media (max-width: 768px) {
+        min-width: 60px;
+      }
+    }
+
+    .countdown-value {
+      font-size: clamp(3rem, 5vw, 4.5rem);
+      font-weight: 800;
+      background: linear-gradient(180deg, #1a1f2e 0%, #0a0e1a 50%, #1a3a52 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      text-shadow: 0 0 30px rgba(66, 165, 245, 0.3);
+      font-family: 'Courier New', monospace;
+
+      @media (max-width: 768px) {
+        font-size: clamp(2rem, 4vw, 3rem);
+      }
+    }
+
+    .countdown-label {
+      font-size: 0.9rem;
+      color: rgba(#1a1f2e, 0.9);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+
+      @media (max-width: 768px) {
+        font-size: 0.6rem;
+      }
+    }
+
+    .countdown-separator {
+      font-size: clamp(2.5rem, 4vw, 3.5rem);
+      font-weight: 700;
+      color: rgba(#1a1f2e, 0.9);
+      line-height: 1;
+      margin: 0 0.25rem;
+      animation: pulse 2s ease-in-out infinite;
+
+      @media (max-width: 768px) {
+        font-size: clamp(2rem, 4vw, 3rem);
+        margin: 0;
+      }
+    }
+
+    .inauguration-address {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.45rem 2rem;
+      border: none;
+      border-radius: 50px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      font-family: inherit;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #42a5f5 0%, #64b5f6 100%);
+      color: #ffffff;
+      box-shadow: 0 4px 20px rgba(66, 165, 245, 0.3);
+
+      svg {
+        color: #ffffff;
+        flex-shrink: 0;
+      }
+
+      &:hover {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 30px rgba(66, 165, 245, 0.5);
+      }
+
+      &:active {
+        transform: translateY(-1px) scale(1.02);
+      }
+    }
+
+    .inauguration-image-container {
+      position: relative;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .inauguration-image-link {
+      display: block;
+      position: relative;
+      overflow: hidden;
+      border-radius: 24px;
+
+      &:hover {
+        .inauguration-image {
+          transform: scale(1.05);
+        }
+
+        .instagram-overlay {
+          opacity: 1;
+        }
+      }
+    }
+
+    .inauguration-image {
+      width: 100%;
+      height: auto;
+      display: block;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+      border: 3px solid rgba(131, 58, 180, 0.3);
+      border-radius: 24px;
+    }
+
+    .instagram-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(131, 58, 180, 0.85) 0%, rgba(253, 29, 29, 0.85) 50%, rgba(252, 176, 69, 0.85) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      border-radius: 24px;
+
+      svg {
+        color: #ffffff;
+        filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+      }
+    }
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    50% {
+      opacity: 0.7;
+      transform: scale(1.05);
+    }
+  }
+
   // Buttons
   .btn {
     display: inline-flex;
@@ -478,7 +751,7 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
+        padding: 9px 1.5rem;
         background: rgba(66, 165, 245, 0.1);
         border: 1px solid rgba(66, 165, 245, 0.3);
         border-radius: 50px;

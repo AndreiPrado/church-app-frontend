@@ -9,6 +9,7 @@ import encontro4 from '../../assets/encontro_4.jpeg';
 import historia1 from '../../assets/historia_1.jpeg';
 import historia2 from '../../assets/historia_2.jpeg';
 import historia3 from '../../assets/historia_3.jpeg';
+import inauguracaoPost from '../../assets/inauguracao-post.jpeg';
 import { Parallax } from 'react-scroll-parallax';
 import { useEffect, useMemo, useRef, useState } from "react";
 import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, UsersFourIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
@@ -53,6 +54,9 @@ function Home() {
 
   // Estado para ministérios selecionados
   const [selectedMinistry, setSelectedMinistry] = useState(null);
+
+  // Estado para contagem regressiva da inauguração
+  const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
   // Detectar se é mobile para otimizações
   const isMobile = useMemo(() => {
@@ -286,6 +290,33 @@ function Home() {
     }
   }, []);
 
+  // Contagem regressiva para inauguração
+  useEffect(() => {
+    const targetDate = new Date('2025-12-13T20:00:00-03:00').getTime();
+
+    const updateCountdown = () => {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+
+      if (distance < 0) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+        return;
+      }
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setTimeLeft({ days, hours, minutes, seconds });
+    };
+
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   // Otimizado com useMemo para evitar recálculos desnecessários
   const renderedFooterText = useMemo(() => {
     let remaining = typedCharacters;
@@ -348,43 +379,140 @@ function Home() {
       />
 
       {/* Hero Section */}
-      <section className="hero-section">
-        <video
-          ref={videoRef}
-          className="background-video"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="auto"
-          disablePictureInPicture
-          controls={false}
-          poster="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-frame.jpg"
-        >
-          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h265.mp4" type="video/mp4; codecs=hevc" />
-          <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h264.mp4" type="video/mp4; codecs=avc1" />
-        </video>
+      {timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds < 0 && (
+        <section className="hero-section">
+          <video
+            ref={videoRef}
+            className="background-video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            controls={false}
+            poster="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-frame.jpg"
+          >
+            <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h265.mp4" type="video/mp4; codecs=hevc" />
+            <source src="https://pub-22cbb41d434e4362b0fbd47e35c1874b.r2.dev/video/new-video-h264.mp4" type="video/mp4; codecs=avc1" />
+          </video>
 
-        <div className="hero-overlay" />
-        <div className="hero-content">
-          <Parallax translateY={[-10, 10]} opacity={[0.9, 1]}>
-            <div className="logo-container">
-              <img className="hero-logo" src={logoWithoutBackground} alt="Zele Church Logo" />
+          <div className="hero-overlay" />
+          <div className="hero-content">
+            <Parallax translateY={[-10, 10]} opacity={[0.9, 1]}>
+              <div className="logo-container">
+                <img className="hero-logo" src={logoWithoutBackground} alt="Zele Church Logo" />
+              </div>
+            </Parallax>
+            <Parallax translateY={[0, 10]}>
+              <h1 className="hero-title">Bem-vindo à <span className="highlight">Zele Church</span></h1>
+              <p className="hero-subtitle">
+                Uma igreja para <span className="typing-word">{currentText}</span>
+                <span className="typing-cursor" style={{ opacity: showCursor ? 1 : 0 }}>|</span>
+              </p>
+            </Parallax>
+          </div>
+          <div className="scroll-indicator">
+            <span>Role para descobrir</span>
+            <div className="scroll-arrow"></div>
+          </div>
+        </section>
+      )}
+
+      {/* Inauguração Section */}
+      {timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds > 0 && (
+        <section className="inauguration-section">
+          <div className="container">
+            <div className="inauguration-content">
+              {/* 1. Tag de evento especial */}
+              <Parallax translateY={[-5, 5]}>
+                <div className="inauguration-badge">
+                  <CalendarIcon size={32} weight="duotone" />
+                  <span>Evento Especial</span>
+                </div>
+              </Parallax>
+
+              {/* 2. Contador */}
+              <Parallax translateY={[-10, 10]}>
+                <div className="countdown">
+                  <div className="countdown-item">
+                    <div className="countdown-value">{String(timeLeft.days).padStart(2, '0')}</div>
+                    <div className="countdown-label">Dias</div>
+                  </div>
+                  <div className="countdown-separator">:</div>
+                  <div className="countdown-item">
+                    <div className="countdown-value">{String(timeLeft.hours).padStart(2, '0')}</div>
+                    <div className="countdown-label">Horas</div>
+                  </div>
+                  <div className="countdown-separator">:</div>
+                  <div className="countdown-item">
+                    <div className="countdown-value">{String(timeLeft.minutes).padStart(2, '0')}</div>
+                    <div className="countdown-label">Minutos</div>
+                  </div>
+                  <div className="countdown-separator">:</div>
+                  <div className="countdown-item">
+                    <div className="countdown-value">{String(timeLeft.seconds).padStart(2, '0')}</div>
+                    <div className="countdown-label">Segundos</div>
+                  </div>
+                </div>
+              </Parallax>
+
+              {/* 3. Imagem */}
+              <Parallax translateY={[10, -10]} opacity={[0.8, 1]}>
+                <div className="inauguration-image-container">
+                  <a
+                    href="https://www.instagram.com/p/DR4gg2fDnE7/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inauguration-image-link"
+                  >
+                    <img
+                      src={inauguracaoPost}
+                      alt="Inauguração Zele Church"
+                      className="inauguration-image"
+                    />
+                    <div className="instagram-overlay">
+                      <InstagramLogoIcon size={48} weight="fill" />
+                    </div>
+                  </a>
+                </div>
+              </Parallax>
+
+              {/* 4. Descrição */}
+              <Parallax translateY={[-5, 5]}>
+                <p className="inauguration-description">
+                  Celebre conosco este momento histórico! Traga sua família e seus amigos. Ninguém pode ficar de fora.
+                </p>
+              </Parallax>
+
+              {/* 5. Dia/hora */}
+              <Parallax translateY={[-5, 5]}>
+                <div className="inauguration-details">
+                  <div className="inauguration-date">
+                    <CalendarIcon size={24} weight="fill" />
+                    <span>Sábado, 13 de Dezembro de 2025</span>
+                  </div>
+                  <div className="inauguration-time">
+                    <ClockIcon size={24} weight="fill" />
+                    <span>20h00</span>
+                  </div>
+                </div>
+              </Parallax>
+
+              {/* 6. Endereço */}
+              <Parallax translateY={[-5, 5]}>
+                <button
+                  onClick={() => handleAddressClick('Avenida Jacu Pêssego, 7639, São Paulo')}
+                  className="inauguration-address"
+                >
+                  <MapPinIcon size={20} weight="fill" />
+                  <span>Av. Jacu Pêssego, 7639</span>
+                </button>
+              </Parallax>
             </div>
-          </Parallax>
-          <Parallax translateY={[0, 10]}>
-            <h1 className="hero-title">Bem-vindo à <span className="highlight">Zele Church</span></h1>
-            <p className="hero-subtitle">
-              Uma igreja para <span className="typing-word">{currentText}</span>
-              <span className="typing-cursor" style={{ opacity: showCursor ? 1 : 0 }}>|</span>
-            </p>
-          </Parallax>
-        </div>
-        <div className="scroll-indicator">
-          <span>Role para descobrir</span>
-          <div className="scroll-arrow"></div>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Sobre Section */}
       <section className="about-section" id="sobre" ref={footerRef}>
