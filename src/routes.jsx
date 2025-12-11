@@ -16,6 +16,8 @@ import AdminRedirect from '../src/components/admin-redirect/admin-redirect.compo
 import NotFound from '../src/components/not-found/not-found.component.jsx';
 import MemberCardValidator from '../src/components/member-card-validator/member-card-validator.component.jsx';
 import MemberCardPage from '../src/components/member-card-page/member-card-page.component.jsx';
+import NewBeliever from '../src/components/new-believer/new-believer.component.jsx';
+import BelieverSuccess from '../src/components/new-believer/believer-success.component.jsx';
 
 const Router = () => {
     return (
@@ -86,6 +88,10 @@ const Router = () => {
                         </ProtectedRoute>
                     }
                 />
+
+                {/* Rota pública para cadastro de novos convertidos */}
+                <Route path="/new-believer" element={<NewBeliever />} />
+                <Route path="/new-believer/success" element={<BelieverSuccess />} />
 
                 {/* Rota 404 - Deve ser a última */}
                 <Route path="*" element={<NotFound />} />

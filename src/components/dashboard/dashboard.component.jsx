@@ -16,7 +16,8 @@ import {
   ChartPieSliceIcon,
   CheckCircleIcon,
   ArrowClockwiseIcon,
-  ChartBarIcon
+  ChartBarIcon,
+  HandHeartIcon
 } from "@phosphor-icons/react";
 
 export default function Dashboard() {
@@ -85,12 +86,13 @@ export default function Dashboard() {
     );
   }
 
-  // API retorna: { total, active, pending, baptized, byGender: { masculino, feminino }, byAge: { under13, between13and17, between18and25, between26and35, between36and50, between51and65, over65 } }
+  // API retorna: { total, active, pending, baptized, newConverts, byGender: { masculino, feminino }, byAge: { under13, between13and17, between18and25, between26and35, between36and50, between51and65, over65 } }
   const stats = statistics || {
     total: 0,
     active: 0,
     pending: 0,
     baptized: 0,
+    newConverts: 0,
     byGender: { masculino: 0, feminino: 0 },
     byAge: { under13: 0, between13and17: 0, between18and25: 0, between26and35: 0, between36and50: 0, between51and65: 0, over65: 0 }
   };
@@ -136,9 +138,26 @@ export default function Dashboard() {
               </div>
               <div className="stat-content">
                 <span className="stat-label">Visitantes</span>
-                <span className="stat-value">{stats.total - stats.active - stats.pending}</span>
+                <span className="stat-value">{stats.total - stats.active - stats.pending - (stats.newConverts || 0)}</span>
               </div>
             </div>
+
+            <div className="stat-card new-convert" onClick={() => navigate('/admin/members?status=novo_convertido')}>
+              <div className="stat-icon">
+                <HandHeartIcon size={32} weight="duotone" />
+              </div>
+              <div className="stat-content">
+                <span className="stat-label">Novos Convertidos</span>
+                <span className="stat-value">{stats.newConverts || 0}</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="quick-actions">
+            <button className="action-btn primary" onClick={() => navigate('/new-believer')}>
+              <HandHeartIcon size={20} weight="fill" />
+              Cadastrar Novo Convertido
+            </button>
           </div>
         </div>
 

@@ -12,12 +12,30 @@ class MemberService {
    */
   async createMember(payload) {
     const isFormData = payload instanceof FormData;
-    
+
     const response = await fetch(`${API_BASE_URL}/api/members`, {
       method: "POST",
       headers: isFormData ? {} : { 'Content-Type': 'application/json' },
       credentials: 'include',
       body: isFormData ? payload : JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || errorData.message || errorData.error || `HTTP error! status: ${response.status}`);
+    }
+
+    return await response.json();
+  }
+
+  /**
+   * Criar novo convertido (rota pública, não requer autenticação)
+   */
+  async createNewBeliever(payload) {
+    const response = await fetch(`${API_BASE_URL}/api/members/new-believers`, {
+      method: "POST",
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
     });
 
     if (!response.ok) {
