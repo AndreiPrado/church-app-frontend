@@ -402,7 +402,7 @@ function Home() {
       />
 
       {/* Hero Section */}
-      {timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds < 0 && (
+      {timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds <= 0 && (
         <section className="hero-section">
           <video
             ref={videoRef}
