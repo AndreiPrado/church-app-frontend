@@ -80,7 +80,7 @@ export default function Navbar() {
         <a href="/home#cultos" onClick={(e) => handleNavClick(e, '#cultos')}>Cultos</a>
         <a href="/home#historia" onClick={(e) => handleNavClick(e, '#historia')}>História</a>
         <a href="/home#ministerios" onClick={(e) => handleNavClick(e, '#ministerios')}>Ministérios</a>
-        {user ? (
+        {user && (
           <a href="/admin/profile" className="user-profile-link">
             {userPhotoUrl ? (
               <img src={userPhotoUrl} alt={user?.fullName} className="user-avatar-nav" />
@@ -90,8 +90,6 @@ export default function Navbar() {
               </div>
             )}
           </a>
-        ) : (
-          <a href="/signup" className="cta-button">Quero ser membro</a>
         )}
       </div>
 
@@ -115,7 +113,7 @@ export default function Navbar() {
           <li><a href="/home#cultos" onClick={() => setOpen(false)}>Cultos</a></li>
           <li><a href="/home#historia" onClick={() => setOpen(false)}>História</a></li>
           <li><a href="/home#ministerios" onClick={() => setOpen(false)}>Ministérios</a></li>
-          <li className="cta-link"><a href="/signup" onClick={() => setOpen(false)}>Quero ser membro</a></li>
+          {/* <li className="cta-link"><a href="/signup" onClick={() => setOpen(false)}>Quero ser membro</a></li> */}
         </ul>
       </div>
     </nav>

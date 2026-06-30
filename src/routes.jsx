@@ -1,7 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from '../src/components/home/home.component.jsx';
-import SignUp from '../src/components/signup/signup.component.jsx';
-import SignupSuccess from '../src/components/signup/signup-success.component.jsx';
+// import SignUp from '../src/components/signup/signup.component.jsx';
+// import SignupSuccess from '../src/components/signup/signup-success.component.jsx';
 import Login from '../src/components/login/login.component.jsx';
 import ResetPassword from '../src/components/reset-password/reset-password.component.jsx';
 import Dashboard from '../src/components/dashboard/dashboard.component.jsx';
@@ -27,8 +27,8 @@ const Router = () => {
                 {/* Rotas Públicas */}
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/signup" element={<SignUp />} />
-                <Route path="/signup/success" element={<SignupSuccess />} />
+                {/* <Route path="/signup" element={<SignUp />} />
+                <Route path="/signup/success" element={<SignupSuccess />} /> */}
                 <Route path="/login" element={<Login />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicy />} />

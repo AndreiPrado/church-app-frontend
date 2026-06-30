@@ -13,7 +13,7 @@ import historia3 from '../../assets/historia_3.jpeg';
 import inauguracaoPost from '../../assets/inauguracao-post.jpeg';
 import { Parallax } from 'react-scroll-parallax';
 import { useEffect, useMemo, useRef, useState } from "react";
-import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, UsersFourIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
+import { HandHeartIcon, HeartIcon, UsersIcon, MapPinIcon, CalendarIcon, ClockIcon, CrossIcon, HandsPrayingIcon, BookOpenIcon, HeartHalfIcon, ArrowRightIcon, InstagramLogoIcon, FacebookLogoIcon, UsersThreeIcon, HouseIcon, GenderFemaleIcon, GenderMaleIcon, PlantIcon } from "@phosphor-icons/react";
 
 const FOOTER_TEXT_SEGMENTS = [
   { text: 'A Zele Church ' },
@@ -99,17 +99,10 @@ function Home() {
     },
     {
       icon: UsersThreeIcon,
-      iconColor: '#00bcd4', // Ciano - transição/adolescência
-      title: 'Next Teen',
-      description: 'A próxima geração já está aqui.',
-      mysteryMessage: 'Amizade, identidade e poder. Fique de olho!'
-    },
-    {
-      icon: UsersFourIcon,
       iconColor: '#ff5722', // Laranja escuro - energia jovem
-      title: 'Next Level',
-      description: 'Fogo jovem, raízes firmes.',
-      mysteryMessage: 'Conexão real, propósito eterno. Vem aí!'
+      title: 'Zele Jovens',
+      description: 'A próxima geração com fogo jovem e raízes firmes.',
+      mysteryMessage: 'Amizade, identidade e propósito eterno. Vem aí!'
     },
     {
       icon: HouseIcon,
@@ -446,15 +439,15 @@ function Home() {
       {/* Vídeos da Inauguração Section */}
       <section className="videos-section" id="videos" style={{ backgroundImage: `url(${mainBg})` }}>
         <div className="container">
-          <h2 className="section-title">Vídeos da <span className="highlight">Inauguração</span></h2>
+          <h2 className="section-title">Galeria de <span className="highlight">Vídeos</span></h2>
           <p className="section-description">Reviva os momentos especiais do nosso dia de inauguração</p>
           <div className="videos-grid">
             <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
               <div className="video-card">
                 <div className="video-wrapper">
                   <iframe
-                    src="https://www.youtube.com/embed/VIDEO_ID_1"
-                    title="Vídeo da Inauguração 1"
+                    src="https://www.youtube.com/embed/UrznpjJOKi4"
+                    title="Culto da Inauguração"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                     allowFullScreen
@@ -463,42 +456,6 @@ function Home() {
                 <div className="video-info">
                   <h3>Culto de Inauguração</h3>
                   <p>Primeiro culto oficial da Zele Church</p>
-                </div>
-              </div>
-            </Parallax>
-
-            <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
-              <div className="video-card">
-                <div className="video-wrapper">
-                  <iframe
-                    src="https://www.youtube.com/embed/VIDEO_ID_2"
-                    title="Vídeo da Inauguração 2"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="video-info">
-                  <h3>Momentos Especiais</h3>
-                  <p>Melhores momentos do dia de inauguração</p>
-                </div>
-              </div>
-            </Parallax>
-
-            <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
-              <div className="video-card">
-                <div className="video-wrapper">
-                  <iframe
-                    src="https://www.youtube.com/embed/VIDEO_ID_3"
-                    title="Vídeo da Inauguração 3"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                  ></iframe>
-                </div>
-                <div className="video-info">
-                  <h3>Testemunhos</h3>
-                  <p>Depoimentos sobre a inauguração</p>
                 </div>
               </div>
             </Parallax>
@@ -707,6 +664,8 @@ function Home() {
                 <div className="service-time">
                   <ClockIcon size={20} />
                   <span>10h</span>
+                  <span className="service-time-separator">|</span>
+                  <span>18h30</span>
                 </div>
                 <button
                   onClick={() => handleAddressClick('Avenida Jacu Pêssego, 7639, São Paulo')}
@@ -843,7 +802,7 @@ function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
+      {/* CTA Section
       <section className="cta-section">
         <div className="container">
           <h2>Faça parte da nossa <span className="highlight">família</span></h2>
@@ -852,7 +811,7 @@ function Home() {
             Cadastre-se agora <ArrowRightIcon size={24} weight="bold" />
           </a>
         </div>
-      </section>
+      </section> */}
 
       {/* Footer */}
       <footer className="footer">
@@ -864,7 +823,7 @@ function Home() {
             </div>
             <div className="footer-links">
               <h4>Links</h4>
-              <a href="/signup">Seja membro</a>
+              {/* <a href="/signup">Seja membro</a> */}
               <a href="#sobre">Sobre nós</a>
               <a href="#valores">Valores</a>
             </div>
@@ -881,7 +840,7 @@ function Home() {
             </div>
           </div>
           <div className="footer-bottom">
-            <p>© 2025 Zele Church. Todos os direitos reservados.</p>
+            <p>© 2026 Zele Church. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
