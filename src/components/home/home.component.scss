@@ -1203,6 +1203,103 @@
     }
   }
 
+  // Vídeos da Inauguração Section
+  .videos-section {
+    padding: 6rem 0;
+    background-size: 100% 100%;
+    background-position: center;
+    background-attachment: fixed;
+    position: relative;
+
+    .container {
+      position: relative;
+      z-index: 2;
+    }
+
+    .section-title {
+      text-align: center;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+
+      .highlight {
+        color: #42a5f5;
+      }
+    }
+
+    .section-description {
+      text-align: center;
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 3rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .videos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+      margin-top: 3rem;
+
+      @media (max-width: 768px) {
+        grid-template-columns: 1fr;
+        gap: 2rem;
+      }
+    }
+
+    .video-card {
+      background: rgba(26, 31, 46, 0.8);
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(66, 165, 245, 0.2);
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+
+      &:hover {
+        transform: translateY(-8px);
+        border-color: rgba(66, 165, 245, 0.5);
+        box-shadow: 0 8px 30px rgba(66, 165, 245, 0.2);
+      }
+
+      .video-wrapper {
+        position: relative;
+        padding-bottom: 56.25%; // 16:9 aspect ratio
+        height: 0;
+        overflow: hidden;
+        background: #000;
+
+        iframe {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          border: none;
+        }
+      }
+
+      .video-info {
+        padding: 1.5rem;
+
+        h3 {
+          font-size: 1.3rem;
+          font-weight: 600;
+          color: #fff;
+          margin-bottom: 0.5rem;
+        }
+
+        p {
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.6);
+          line-height: 1.6;
+        }
+      }
+    }
+  }
+
   // CTA Section
   .cta-section {
     padding: 6rem 0;

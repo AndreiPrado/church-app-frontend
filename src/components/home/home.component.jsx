@@ -2,6 +2,7 @@ import "./home.component.scss";
 import Navbar from '../navbar/navbar.component.jsx';
 import NavigationDropdown from '../navigation-dropdown/navigation-dropdown.component.jsx';
 import logoWithoutBackground from '../../assets/logo-without-background.png';
+import mainBg from '../../assets/main_bg.jpg';
 import encontro1 from '../../assets/encontro_1.jpeg';
 import encontro2 from '../../assets/encontro_2.jpeg';
 import encontro3 from '../../assets/encontro_3.jpeg';
@@ -441,6 +442,69 @@ function Home() {
           </div>
         </section>
       )}
+
+      {/* Vídeos da Inauguração Section */}
+      <section className="videos-section" id="videos" style={{ backgroundImage: `url(${mainBg})` }}>
+        <div className="container">
+          <h2 className="section-title">Vídeos da <span className="highlight">Inauguração</span></h2>
+          <p className="section-description">Reviva os momentos especiais do nosso dia de inauguração</p>
+          <div className="videos-grid">
+            <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
+              <div className="video-card">
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/VIDEO_ID_1"
+                    title="Vídeo da Inauguração 1"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="video-info">
+                  <h3>Culto de Inauguração</h3>
+                  <p>Primeiro culto oficial da Zele Church</p>
+                </div>
+              </div>
+            </Parallax>
+
+            <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
+              <div className="video-card">
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/VIDEO_ID_2"
+                    title="Vídeo da Inauguração 2"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="video-info">
+                  <h3>Momentos Especiais</h3>
+                  <p>Melhores momentos do dia de inauguração</p>
+                </div>
+              </div>
+            </Parallax>
+
+            <Parallax opacity={[0.5, 1]} scale={[0.9, 1]}>
+              <div className="video-card">
+                <div className="video-wrapper">
+                  <iframe
+                    src="https://www.youtube.com/embed/VIDEO_ID_3"
+                    title="Vídeo da Inauguração 3"
+                    frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                  ></iframe>
+                </div>
+                <div className="video-info">
+                  <h3>Testemunhos</h3>
+                  <p>Depoimentos sobre a inauguração</p>
+                </div>
+              </div>
+            </Parallax>
+          </div>
+        </div>
+      </section>
 
       {/* Inauguração Section */}
       {timeLeft.days + timeLeft.hours + timeLeft.minutes + timeLeft.seconds > 0 && (
