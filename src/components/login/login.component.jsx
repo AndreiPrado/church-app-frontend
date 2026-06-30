@@ -115,11 +115,7 @@ export default function Login() {
 
     try {
       setIsLoading(true);
-      console.log('Tentando login com:', formData.email); // Debug
-
       const response = await authService.login(formData.email, formData.password);
-
-      console.log('Login response completa:', response); // Debug
 
       // A API retorna { success: true, data: { member, token, refreshToken } }
       const userData = response.data?.member;
@@ -134,9 +130,6 @@ export default function Login() {
 
       login(userData, token, refreshToken);
 
-      console.log('Login function chamada, redirecionando...'); // Debug
-      console.log('Permissões do usuário:', userData.permissions); // Debug
-
       setAlert({
         isVisible: true,
         message: 'Login realizado com sucesso! Redirecionando...',
@@ -149,12 +142,9 @@ export default function Login() {
       const isAdmin = userData.permissions?.includes('admin.full');
       const redirectPath = isAdmin ? "/admin/dashboard" : "/admin/profile";
 
-      console.log('É admin?', isAdmin, '- Redirecionando para:', redirectPath); // Debug
-
       navigate(redirectPath, { replace: true });
 
     } catch (err) {
-      console.error('Login error completo:', err); // Debug
       setIsLoading(false);
 
       // Pegar mensagem amigável do backend (detail)

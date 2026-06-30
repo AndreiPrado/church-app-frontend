@@ -22,7 +22,7 @@ const processQueue = (error, token = null) => {
       promise.resolve(token);
     }
   });
-  
+
   failedQueue = [];
 };
 
@@ -31,7 +31,7 @@ const processQueue = (error, token = null) => {
  */
 const refreshAccessToken = async () => {
   const refreshToken = storage.getRefreshToken();
-  
+
   if (!refreshToken) {
     throw new Error('Refresh token não encontrado');
   }
@@ -63,7 +63,7 @@ class ApiClient {
    */
   async request(endpoint, options = {}) {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
-    
+
     // Preparar headers
     const headers = {
       ...options.headers
@@ -115,35 +115,31 @@ class ApiClient {
       isRefreshing = true;
 
       try {
-        console.log('Token expirado, renovando automaticamente...');
-        
         // Renovar token
         const refreshData = await refreshAccessToken();
-        
+
         // Salvar novos tokens
         storage.setTokens(refreshData.token, refreshData.refreshToken);
         storage.setUser(refreshData.member);
-        
+
         // Atualizar header e processar fila
         config.headers['Authorization'] = `Bearer ${refreshData.token}`;
         processQueue(null, refreshData.token);
-        
-        console.log('Token renovado com sucesso');
-        
+
         // Repetir requisição original
         response = await fetch(url, config);
-        
+
       } catch (error) {
         // Falha na renovação - fazer logout
         console.error('Erro ao renovar token:', error);
         processQueue(error, null);
         storage.clear();
-        
+
         // Redirecionar para login
         if (window.location.pathname !== '/login') {
           window.location.href = '/login';
         }
-        
+
         throw error;
       } finally {
         isRefreshing = false;
@@ -158,15 +154,15 @@ class ApiClient {
    */
   async handleResponse(response, options = {}) {
     const contentType = response.headers.get('content-type');
-    
+
     // Se responseType for 'blob', retornar como Blob (compatível com axios)
     if (options.responseType === 'blob') {
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const blob = await response.blob();
-      
+
       // Retornar no formato axios-like { data: blob, status, headers }
       return {
         data: blob,
@@ -175,7 +171,7 @@ class ApiClient {
         headers: Object.fromEntries(response.headers.entries())
       };
     }
-    
+
     // Se não for JSON, retorna resposta crua
     if (!contentType || !contentType.includes('application/json')) {
       if (!response.ok) {

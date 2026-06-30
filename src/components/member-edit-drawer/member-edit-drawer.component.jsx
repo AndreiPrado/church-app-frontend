@@ -51,7 +51,6 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
         try {
           setLoading(true);
           const memberDetails = await authService.getMemberById(member.id);
-          console.log('Member details loaded:', memberDetails); // Debug
 
           setFormData({
             fullName: memberDetails.fullName || "",
@@ -181,7 +180,6 @@ export default function MemberEditDrawer({ member, isOpen, onClose, onSave }) {
           formDataPhoto.append('photo', photoFile);
           const photoResponse = await authService.uploadMemberPhoto(member.id, formDataPhoto);
           photoUrl = photoResponse.data.photoUrl;
-          console.log('Foto carregada com sucesso:', photoUrl);
         } catch (photoErr) {
           console.error('Erro ao fazer upload da foto:', photoErr);
           setError('Erro ao fazer upload da foto. Tente novamente.');

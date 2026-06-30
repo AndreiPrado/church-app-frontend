@@ -23,9 +23,6 @@ const uploadService = {
 
       // Validar fullName antes de enviar
       const nameToSend = fullName && fullName.trim() !== '' ? fullName.trim() : 'Usuario';
-      
-      console.log('uploadService - fullName recebido:', fullName);
-      console.log('uploadService - nameToSend:', nameToSend);
 
       // Criar FormData
       const formData = new FormData();

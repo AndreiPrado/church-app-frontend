@@ -337,12 +337,6 @@ export default function SignUp() {
 
         formDataMultipart.append('status', 'pendente');
 
-        // 🔍 LOG DE DEBUG: Verificar o que está sendo enviado via FormData
-        console.log('📤 ENVIANDO VIA MULTIPART:', {
-          hasPhoto: true,
-          formDataEntries: Array.from(formDataMultipart.entries())
-        });
-
         await memberService.createMember(formDataMultipart);
       } else {
         // Sem foto - enviar JSON normal - INCLUIR TODOS OS CAMPOS
@@ -368,12 +362,6 @@ export default function SignUp() {
         });
 
         payload.status = "pendente";
-
-        // 🔍 LOG DE DEBUG: Verificar o que está sendo enviado via JSON
-        console.log('📤 ENVIANDO VIA JSON:', {
-          hasPhoto: false,
-          payload
-        });
 
         await memberService.createMember(payload);
       }
@@ -788,13 +776,6 @@ export default function SignUp() {
                   } else {
                     setFieldErrors({});
                     setFormError(false);
-
-                    // 🔍 LOG DE DEBUG: Verificar dados ao avançar etapa
-                    console.log(`📈 AVANÇANDO PARA ETAPA ${currentStep + 1}:`, {
-                      etapaAtual: currentStep,
-                      proximaEtapa: currentStep + 1,
-                      dadosAtuais: formData
-                    });
 
                     setCurrentStep(currentStep + 1);
                   }

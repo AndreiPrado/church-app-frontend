@@ -36,13 +36,13 @@ class AuthService {
    */
   async getMembers(status = null, search = null) {
     const params = new URLSearchParams();
-    
+
     if (status) params.append('status', status);
     if (search) params.append('search', search);
-    
+
     const queryString = params.toString() ? `?${params.toString()}` : '';
     const result = await api.get(`/api/members${queryString}`);
-    
+
     return result.data || [];
   }
 
@@ -75,7 +75,7 @@ class AuthService {
    */
   async approveMembersBatch(ids, roleId) {
     const promises = ids.map(id => this.approveMember(id, roleId));
-    
+
     try {
       const results = await Promise.all(promises);
       return {
@@ -104,7 +104,7 @@ class AuthService {
       const response = await api.get(`/api/members/photo/${memberId}`, {
         responseType: 'blob' // Importante: receber como blob
       });
-      
+
       // Retornar o blob diretamente
       return response.data;
     } catch (error) {
@@ -117,18 +117,13 @@ class AuthService {
    * Atualizar membro
    */
   async updateMember(id, data) {
-    console.log('🔧 authService.updateMember - Enviando:', { id, data });
     const result = await api.patch(`/api/members/${id}`, data);
-    console.log('📦 authService.updateMember - Response completa:', result);
-    console.log('📦 authService.updateMember - result.data:', result.data);
-    
+
     // Backend retorna { success: true, data: member }, então precisamos extrair result.data.data
     if (result.data && result.data.data) {
-      console.log('✅ authService.updateMember - Retornando member:', result.data.data);
       return result.data.data;
     }
-    
-    console.log('⚠️ authService.updateMember - Retornando result.data direto:', result.data);
+
     return result.data;
   }
 

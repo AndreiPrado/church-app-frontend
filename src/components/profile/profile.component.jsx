@@ -97,18 +97,7 @@ export default function Profile() {
       setIsSaving(true);
       const token = getToken();
 
-      console.log('💾 Profile - Enviando dados para salvar:', editData);
-      console.log('🔍 Profile - Profissão sendo enviada:', editData.profession);
-
       const updatedData = await authService.updateMember(user.id, editData, token);
-
-      console.log('✅ Profile - Dados atualizados recebidos:', updatedData);
-      console.log('🔍 Profile - Profissão recebida:', updatedData.profession);
-      console.log('📊 Profile - Comparação:', {
-        enviada: editData.profession,
-        recebida: updatedData.profession,
-        igual: editData.profession === updatedData.profession
-      });
 
       setMemberData(updatedData);
       updateUser(updatedData);
