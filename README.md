@@ -1,27 +1,89 @@
-# React + Vite
+# Church App Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend da aplicação web da Zele Church — site institucional com painel administrativo para gestão de membros, aprovações e carteirinhas digitais.
 
-Currently, two official plugins are available:
+## Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **React 18** com Vite 5
+- **React Router DOM** — roteamento SPA com rotas protegidas
+- **SCSS** — estilização modular por componente
+- **Phosphor Icons** — biblioteca de ícones
+- **react-scroll-parallax** — efeitos de parallax na landing page
+- **jsPDF + QRCode** — geração de carteirinha de membro em PDF
+- **react-imask** — máscaras de input (CPF, telefone, CEP)
 
-## Parallax
-
-This project uses `react-scroll-parallax` to provide a smooth parallax effect on the Home page.
-
-### Install
+## Estrutura do Projeto
 
 ```
-npm install react-scroll-parallax
+src/
+├── assets/              # Imagens e recursos estáticos
+├── components/          # Componentes da aplicação
+├── contexts/            # AuthContext (gerenciamento de sessão)
+├── services/            # Camada de comunicação com a API
+├── utils/               # Helpers (validadores, storage, geração de PDF)
+├── routes.jsx           # Definição de rotas
+└── main.jsx             # Entry point com providers
 ```
 
-### Setup
+## Componentes Principais
 
-- App provider added in `src/main.jsx`:
-  - Wraps the app with `ParallaxProvider`.
-- Usage example in `src/home/home.component.jsx`:
-  - `<Parallax translateY={[-20, 20]} opacity={[0.9, 1]}>` wraps the logo to create motion on scroll.
+### Público
+- **Home** — Landing page com parallax, seções institucionais, ministérios e cultos
+- **Navbar** — Navegação responsiva com menu mobile (hamburger) e avatar do usuário logado
+- **Login** — Autenticação com validação de campos
+- **New Believer** — Formulário público para cadastro de novos convertidos
 
-No additional configuration is required. If you change the navbar height, consider adjusting layout offsets accordingly.
+### Painel Administrativo (rotas protegidas)
+- **Dashboard** — Visão geral com estatísticas de membros
+- **Members List** — Listagem e gerenciamento de membros
+- **Approvals** — Aprovação/rejeição de solicitações de cadastro
+- **Profile** — Perfil do membro logado com edição de dados
+- **Member Card Page** — Carteirinha digital com QR Code
+- **Member Card Validator** — Validação pública de carteirinha via QR Code
+- **Member Edit Drawer** — Drawer lateral para edição de membros (admin)
+
+### Compartilhados
+- **Protected Route** — HOC para proteção de rotas autenticadas
+- **Floating Alert** — Notificações flutuantes
+- **Loading Spinner** — Indicador de carregamento
+- **Confirmation Modal** — Modal de confirmação de ações
+- **Photo Upload** — Componente de upload com preview
+
+## Services
+
+- **api.js** — Cliente HTTP com auto-refresh de tokens JWT (intercepta 401 e renova automaticamente)
+- **authService.js** — Autenticação, CRUD de membros e roles
+- **memberService.js** — Cadastro público de membros (sem autenticação)
+- **uploadService.js** — Upload de fotos para storage externo
+- **cepService.js** — Consulta de endereço via CEP
+
+## Autenticação
+
+O sistema utiliza JWT com refresh token. O `api.js` gerencia a renovação automática de tokens expirados, enfileirando requisições concorrentes durante o refresh. Tokens e dados do usuário são persistidos em localStorage via `utils/storage.js`.
+
+## Setup
+
+```bash
+# Instalar dependências
+npm install
+
+# Configurar variáveis de ambiente
+cp .env.example .env
+# Editar .env com a URL da API
+
+# Desenvolvimento
+npm run dev
+
+# Build (executa health-check do backend antes)
+npm run build
+
+# Build sem health-check
+npm run build:force
+```
+
+## Variáveis de Ambiente
+
+| Variável | Descrição |
+|----------|-----------|
+| `VITE_API_URL` | URL base da API backend |
+| `FAIL_ON_HEALTH_CHECK` | Se `true`, o build falha quando o backend não responde |
