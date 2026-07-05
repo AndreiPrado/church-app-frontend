@@ -198,8 +198,24 @@ class AuthService {
   /**
    * Logout
    */
-  logout() {
-    storage.clear();
+  async logout() {
+    const refreshToken = storage.getRefreshToken();
+    const accessToken = storage.getAccessToken();
+    try {
+      await fetch(`${API_BASE_URL}/api/auth/logout`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
+        },
+        credentials: 'include',
+        body: JSON.stringify({ refreshToken })
+      });
+    } catch {
+      // Logout local mesmo se a chamada ao servidor falhar
+    } finally {
+      storage.clear();
+    }
   }
 }
 

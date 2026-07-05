@@ -1,6 +1,7 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { storage } from '../utils/storage';
+import authService from '../services/authService';
 
 const AuthContext = createContext(null);
 
@@ -17,12 +18,11 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   /**
-   * Logout - limpa dados e redireciona
+   * Logout - revoga token no servidor, limpa dados e redireciona
    */
-  const logout = () => {
-    storage.clear();
+  const logout = async () => {
+    await authService.logout();
     setUser(null);
-    // Opcional: redirecionar para login
     window.location.href = '/login';
   };
 
