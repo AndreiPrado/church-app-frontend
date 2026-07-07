@@ -1,36 +1,13 @@
 /**
- * Gerenciamento centralizado de tokens e dados do usuário
+ * Gerenciamento centralizado de dados do usuário
+ * Tokens JWT agora são gerenciados via cookies httpOnly pelo servidor
  */
 
 const STORAGE_KEYS = {
-  ACCESS_TOKEN: 'token',
-  REFRESH_TOKEN: 'refreshToken',
   USER: 'user'
 };
 
 export const storage = {
-  /**
-   * Salvar tokens após login/refresh
-   */
-  setTokens(accessToken, refreshToken) {
-    localStorage.setItem(STORAGE_KEYS.ACCESS_TOKEN, accessToken);
-    localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, refreshToken);
-  },
-
-  /**
-   * Pegar access token
-   */
-  getAccessToken() {
-    return localStorage.getItem(STORAGE_KEYS.ACCESS_TOKEN);
-  },
-
-  /**
-   * Pegar refresh token
-   */
-  getRefreshToken() {
-    return localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
-  },
-
   /**
    * Salvar dados do usuário
    */
@@ -55,15 +32,13 @@ export const storage = {
    * Limpar tudo (logout)
    */
   clear() {
-    localStorage.removeItem(STORAGE_KEYS.ACCESS_TOKEN);
-    localStorage.removeItem(STORAGE_KEYS.REFRESH_TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
   },
 
   /**
-   * Verificar se está logado
+   * Verificar se está logado (baseado em dados do usuário no localStorage)
    */
   isAuthenticated() {
-    return !!this.getAccessToken();
+    return !!this.getUser();
   }
 };

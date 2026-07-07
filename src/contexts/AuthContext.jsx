@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   /**
-   * Logout - revoga token no servidor, limpa dados e redireciona
+   * Logout - revoga cookies no servidor e limpa dados locais
    */
   const logout = async () => {
     await authService.logout();
@@ -32,13 +32,8 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     try {
       const savedUser = storage.getUser();
-      const token = storage.getAccessToken();
-      
-      if (savedUser && token) {
+      if (savedUser) {
         setUser(savedUser);
-      } else {
-        // Limpar dados inválidos
-        storage.clear();
       }
     } catch (error) {
       console.error('Erro ao carregar dados do usuário:', error);
@@ -49,15 +44,14 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   /**
-   * Login - salva tokens e usuário
+   * Login - salva usuário localmente (tokens ficam nos cookies httpOnly)
    */
-  const login = (userData, token, refreshToken) => {
-    if (userData && token) {
+  const login = (userData) => {
+    if (userData) {
       storage.setUser(userData);
-      storage.setTokens(token, refreshToken);
       setUser(userData);
     } else {
-      console.error('Login falhou: userData ou token ausentes');
+      console.error('Login falhou: userData ausente');
     }
   };
 
@@ -75,21 +69,7 @@ export const AuthProvider = ({ children }) => {
    * Verificar se está autenticado
    */
   const isAuthenticated = () => {
-    return !!user && !!storage.getAccessToken();
-  };
-
-  /**
-   * Pegar token atual
-   */
-  const getToken = () => {
-    return storage.getAccessToken();
-  };
-
-  /**
-   * Pegar refresh token
-   */
-  const getRefreshToken = () => {
-    return storage.getRefreshToken();
+    return !!user;
   };
 
   const value = {
@@ -98,8 +78,6 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     isAuthenticated,
-    getToken,
-    getRefreshToken,
     loading
   };
 

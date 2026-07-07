@@ -9,7 +9,7 @@ import MemberCard from "../member-card/member-card.component";
 import { ArrowLeftIcon, IdentificationCardIcon } from "@phosphor-icons/react";
 
 export default function MemberCardPage() {
-    const { user, getToken } = useAuth();
+    const { user } = useAuth();
     const navigate = useNavigate();
     const [memberData, setMemberData] = useState(null);
     const [photoUrl, setPhotoUrl] = useState(null);
@@ -19,8 +19,7 @@ export default function MemberCardPage() {
         const loadMemberData = async () => {
             try {
                 setLoading(true);
-                const token = getToken();
-                const data = await authService.getMemberById(user.id, token);
+                const data = await authService.getMemberById(user.id);
                 setMemberData(data);
 
                 // Carregar foto do membro
@@ -44,7 +43,7 @@ export default function MemberCardPage() {
         if (user?.id) {
             loadMemberData();
         }
-    }, [user, getToken]);
+    }, [user]);
 
     if (loading) {
         return (

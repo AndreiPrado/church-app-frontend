@@ -20,7 +20,7 @@ import {
 } from "@phosphor-icons/react";
 
 export default function Profile() {
-  const { user, getToken, updateUser } = useAuth();
+  const { user, updateUser } = useAuth();
   const navigate = useNavigate();
   const [memberData, setMemberData] = useState(null);
   const [memberRole, setMemberRole] = useState(null);
@@ -34,8 +34,7 @@ export default function Profile() {
   const loadMemberData = useCallback(async () => {
     try {
       setLoading(true);
-      const token = getToken();
-      const data = await authService.getMemberById(user.id, token);
+      const data = await authService.getMemberById(user.id);
       setMemberData(data);
       setEditData(data);
 
@@ -54,7 +53,7 @@ export default function Profile() {
       // Buscar dados da role se houver roleId
       if (data.roleId) {
         try {
-          const roles = await authService.getRoles(token);
+          const roles = await authService.getRoles();
           const role = roles.find(r => r.id === data.roleId);
           if (role) {
             setMemberRole(role);
@@ -72,7 +71,7 @@ export default function Profile() {
     } finally {
       setLoading(false);
     }
-  }, [user.id, getToken]);
+  }, [user.id]);
 
   useEffect(() => {
     loadMemberData();
@@ -95,9 +94,7 @@ export default function Profile() {
   const handleSave = async () => {
     try {
       setIsSaving(true);
-      const token = getToken();
-
-      const updatedData = await authService.updateMember(user.id, editData, token);
+      const updatedData = await authService.updateMember(user.id, editData);
 
       setMemberData(updatedData);
       updateUser(updatedData);

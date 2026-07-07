@@ -1,6 +1,6 @@
 /**
  * Cliente HTTP centralizado com auto-refresh de tokens
- * Simula interceptors do Axios usando fetch nativo
+ * Tokens JWT são gerenciados via cookies httpOnly — sem acesso via JS
  */
 
 import { storage } from '../utils/storage';
@@ -14,12 +14,12 @@ let failedQueue = [];
 /**
  * Processa fila de requisições pendentes após renovação
  */
-const processQueue = (error, token = null) => {
+const processQueue = (error) => {
   failedQueue.forEach(promise => {
     if (error) {
       promise.reject(error);
     } else {
-      promise.resolve(token);
+      promise.resolve();
     }
   });
 
@@ -27,22 +27,12 @@ const processQueue = (error, token = null) => {
 };
 
 /**
- * Tenta renovar o token usando refresh token
+ * Tenta renovar o token usando o cookie refresh_token httpOnly
  */
 const refreshAccessToken = async () => {
-  const refreshToken = storage.getRefreshToken();
-
-  if (!refreshToken) {
-    throw new Error('Refresh token não encontrado');
-  }
-
   const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-refresh-token': refreshToken
-    },
-    credentials: 'include' // Importante: envia/recebe cookies
+    credentials: 'include' // envia/recebe cookies httpOnly automaticamente
   });
 
   if (!response.ok) {
@@ -51,7 +41,10 @@ const refreshAccessToken = async () => {
   }
 
   const data = await response.json();
-  return data.data; // { token, refreshToken, member }
+  // Atualizar dados do usuário em localStorage (tokens ficam nos cookies)
+  if (data.data?.member) {
+    storage.setUser(data.data.member);
+  }
 };
 
 /**
@@ -59,7 +52,7 @@ const refreshAccessToken = async () => {
  */
 class ApiClient {
   /**
-   * Faz requisição HTTP com tratamento automático de token
+   * Faz requisição HTTP com tratamento automático de token expirado
    */
   async request(endpoint, options = {}) {
     const url = endpoint.startsWith('http') ? endpoint : `${API_BASE_URL}${endpoint}`;
@@ -78,61 +71,41 @@ class ApiClient {
       headers['Content-Type'] = 'application/json';
     }
 
-    // Adicionar token de autenticação se disponível
-    const token = storage.getAccessToken();
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
-    }
-
-    // Fazer requisição
+    // Fazer requisição — cookies httpOnly são enviados automaticamente pelo browser
     const config = {
       ...options,
       headers,
-      credentials: 'include' // Importante: envia/recebe cookies
+      credentials: 'include'
     };
 
     let response = await fetch(url, config);
 
-    // Se receber 401, tentar renovar token
+    // Se receber 401, tentar renovar token via cookie
     if (response.status === 401 && !options._retry) {
       // Se já está renovando, adiciona na fila
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
         })
-          .then(newToken => {
-            config.headers['Authorization'] = `Bearer ${newToken}`;
-            return fetch(url, { ...config, _retry: true });
-          })
-          .then(response => this.handleResponse(response, options))
-          .catch(error => {
-            throw error;
-          });
+          .then(() => fetch(url, { ...config, _retry: true }))
+          .then(res => this.handleResponse(res, options))
+          .catch(error => { throw error; });
       }
 
-      // Marca que está renovando
       config._retry = true;
       isRefreshing = true;
 
       try {
-        // Renovar token
-        const refreshData = await refreshAccessToken();
+        await refreshAccessToken();
+        processQueue(null);
 
-        // Salvar novos tokens
-        storage.setTokens(refreshData.token, refreshData.refreshToken);
-        storage.setUser(refreshData.member);
-
-        // Atualizar header e processar fila
-        config.headers['Authorization'] = `Bearer ${refreshData.token}`;
-        processQueue(null, refreshData.token);
-
-        // Repetir requisição original
+        // Repetir requisição original — novo access_token já está no cookie
         response = await fetch(url, config);
 
       } catch (error) {
         // Falha na renovação - fazer logout
         console.error('Erro ao renovar token:', error);
-        processQueue(error, null);
+        processQueue(error);
         storage.clear();
 
         // Redirecionar para login

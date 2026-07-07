@@ -1,7 +1,6 @@
 import "./dashboard.component.scss";
 import { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../contexts/AuthContext";
 import authService from "../../services/authService";
 import AdminLayout from "../admin-layout/admin-layout.component";
 import LoadingSpinner from "../loading-spinner/loading-spinner.component";
@@ -22,7 +21,6 @@ import {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const { getToken } = useAuth();
   const [statistics, setStatistics] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -31,8 +29,7 @@ export default function Dashboard() {
     try {
       setLoading(true);
       setError(null);
-      const token = getToken();
-      const data = await authService.getStatistics(token);
+      const data = await authService.getStatistics();
       setStatistics(data);
     } catch (err) {
       // Capturar erro 403 (sem permissão) e outros erros
@@ -48,7 +45,7 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [getToken]);
+  }, []);
 
   useEffect(() => {
     loadStatistics();

@@ -6,7 +6,7 @@
 import api from './api';
 import { storage } from '../utils/storage';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL;
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000';
 
 class AuthService {
   /**
@@ -137,16 +137,12 @@ class AuthService {
 
   /**
    * Renovar token manualmente (geralmente não é necessário)
-   * O cliente API já faz isso automaticamente
+   * O cliente API já faz isso automaticamente via cookie httpOnly
    */
-  async refreshToken(refreshToken) {
+  async refreshToken() {
     const response = await fetch(`${API_BASE_URL}/api/auth/refresh`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-refresh-token': refreshToken,
-      },
-      credentials: 'include'
+      credentials: 'include' // cookie refresh_token enviado automaticamente
     });
 
     if (!response.ok) {
@@ -196,20 +192,13 @@ class AuthService {
   }
 
   /**
-   * Logout
+   * Logout - cookies enviados automaticamente, servidor revoga o refresh token
    */
   async logout() {
-    const refreshToken = storage.getRefreshToken();
-    const accessToken = storage.getAccessToken();
     try {
       await fetch(`${API_BASE_URL}/api/auth/logout`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {})
-        },
-        credentials: 'include',
-        body: JSON.stringify({ refreshToken })
+        credentials: 'include' // cookies httpOnly enviados automaticamente
       });
     } catch {
       // Logout local mesmo se a chamada ao servidor falhar

@@ -117,18 +117,14 @@ export default function Login() {
       setIsLoading(true);
       const response = await authService.login(formData.email, formData.password);
 
-      // A API retorna { success: true, data: { member, token, refreshToken } }
+      // A API retorna { success: true, data: { member } } — tokens ficam nos cookies httpOnly
       const userData = response.data?.member;
-      const token = response.data?.token;
-      const refreshToken = response.data?.refreshToken;
 
-
-      // Verificar se temos os dados necessários
-      if (!userData || !token) {
-        throw new Error('Resposta da API inválida - user ou token não encontrados');
+      if (!userData) {
+        throw new Error('Resposta da API inválida - dados do usuário não encontrados');
       }
 
-      login(userData, token, refreshToken);
+      login(userData);
 
       setAlert({
         isVisible: true,
